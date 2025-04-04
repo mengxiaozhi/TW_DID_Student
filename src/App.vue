@@ -158,7 +158,7 @@
                       d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                   </svg>
                 </div>
-                <select @change="onDepartmentChange"
+                <select v-model="form.department_chinese" @change="onDepartmentChange"
                   class="w-full pl-10 border border-slate-300 p-3 pr-8 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none"
                   required>
                   <option value="" disabled selected>請選擇科系</option>
@@ -353,6 +353,15 @@
     </main>
     <main>
       <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6 border border-slate-200 text-sm text-slate-600">
+        <h1>校外測試帳號</h1>
+        <p>
+          did-test@xiaozhi.moe<br>
+          免校內email驗證
+        </p>
+      </div>
+    </main>
+    <main>
+      <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6 border border-slate-200 text-sm text-slate-600">
         <h1 class="font-semibold text-slate-700">說明</h1>
         <p class="mt-2 text-blue-500 underline"><a
             href="https://play.google.com/apps/testing/tw.gov.moda.diw">安卓測試下載</a><br><a
@@ -510,6 +519,26 @@
   }
 
   const sendVerificationEmail = async () => {
+    if (email.value === 'did-test@xiaozhi.moe') {
+      // 測試帳號
+      verified.value = true;
+      emailSent.value = true;
+      verifyPending.value = false;
+      form.value.student_number = '00000000';
+      form.value.name = '張三';
+      form.value.registration_date_start = '20200315';
+      form.value.registration_date_end = '20770315';
+      form.value.department_chinese = '資訊管理系';
+      form.value.department_english = 'DepartmentofInformationManagement';
+
+      // 更新日期選擇器的顯示
+      registrationDateStartRaw.value = '2020-03-15';
+      registrationDateEndRaw.value = '2077-03-15';
+      alert('測試帳號免驗證成功');
+      return;
+    }
+
+
     try {
       const res = await axios.post('https://api.xiaozhi.moe/chihlee/verify-email', { email: email.value })
       if (res.data.success) {
