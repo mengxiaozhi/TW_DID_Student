@@ -103,79 +103,136 @@
           </form>
 
           <!-- 生成學生證頁面 -->
-          <form v-if="verified && !cardGenerated" @submit.prevent="generateCard" class="space-y-5 pt-6">
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-700">姓名</label>
-              <input v-model="form.name"
-                class="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                required pattern="^[\u4e00-\u9fa5_a-zA-Z0-9]+$" />
+          <form v-if="verified && !cardGenerated" @submit.prevent="generateCard" class="space-y-6 pt-6">
+            <!-- Success message on verification -->
+            <div
+              class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg text-sm text-emerald-700 flex items-center mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-emerald-500 flex-shrink-0" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>驗證成功，請填寫以下學生證資訊</span>
             </div>
 
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-700">科系（中文）</label>
-              <input v-model="form.department_chinese"
-                class="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                required pattern="^[^~!@#$%^&*()_\-+*/]+$" />
+            <!-- Two-column layout for personal info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+              <!-- Name field -->
+              <div class="md:col-span-1">
+                <label class="block mb-2 text-sm font-medium text-slate-700">姓名</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <input v-model="form.name"
+                    class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                    required pattern="^[\u4e00-\u9fa5_a-zA-Z0-9]+$" placeholder="請輸入您的姓名" />
+                </div>
+              </div>
+
+              <!-- Student ID field (read-only) -->
+              <div class="md:col-span-1">
+                <label class="block mb-2 text-sm font-medium text-slate-700">學號</label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                    </svg>
+                  </div>
+                  <input v-model="form.student_number"
+                    class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
+                    readonly />
+                </div>
+                <p class="mt-1 text-xs text-slate-500">學號已自動從您的學校信箱取得</p>
+              </div>
             </div>
 
+            <!-- Department selection with enhanced UI -->
             <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-700">Department（英文）</label>
-              <input v-model="form.department_english"
-                class="w-full border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                required pattern="^[^~!@#$%^&*()_\-+*/]+$" />
-            </div>
-
-            <div>
-              <label class="block mb-1.5 text-sm font-medium text-slate-700">學號</label>
+              <label class="block mb-2 text-sm font-medium text-slate-700">科系</label>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
+                    <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                    <path
+                      d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                   </svg>
                 </div>
-                <input v-model="form.student_number"
-                  class="w-full pl-10 border border-slate-300 p-3 rounded-lg bg-slate-50 text-slate-500" readonly />
-              </div>
-            </div>
-
-            <div class="flex space-x-4">
-              <div class="w-1/2">
-                <label class="block mb-1.5 text-sm font-medium text-slate-700">註冊日期（開始）</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <input v-model="form.registration_date_start" maxlength="8"
-                    class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    required pattern="^\d{8}$" placeholder="YYYYMMDD" />
-                </div>
-              </div>
-              <div class="w-1/2">
-                <label class="block mb-1.5 text-sm font-medium text-slate-700">註冊日期（結束）</label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
-                      viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                  <input v-model="form.registration_date_end" maxlength="8"
-                    class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                    required pattern="^\d{8}$" placeholder="YYYYMMDD" />
+                <select @change="onDepartmentChange"
+                  class="w-full pl-10 border border-slate-300 p-3 pr-8 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none"
+                  required>
+                  <option value="" disabled selected>請選擇科系</option>
+                  <option v-for="d in departments" :key="d.zh" :value="d.zh">
+                    {{ d.zh }} / {{ d.en }}
+                  </option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
                 </div>
               </div>
             </div>
 
+            <!-- Registration dates with improved calendar UI -->
+            <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+              <h3 class="text-sm font-medium text-slate-700 mb-4 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                註冊有效期間
+              </h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                  <label class="block mb-2 text-sm font-medium text-slate-700">開始日期</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input type="date" v-model="registrationDateStartRaw"
+                      class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                      required />
+                  </div>
+                </div>
+                <div>
+                  <label class="block mb-2 text-sm font-medium text-slate-700">結束日期</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <input type="date" v-model="registrationDateEndRaw"
+                      class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+                      required />
+                  </div>
+                </div>
+              </div>
+              <p class="mt-3 text-xs text-slate-500">請選擇數位學生證的有效期限，通常為您的學期或學年期間</p>
+            </div>
+
+            <!-- Submit button with animation -->
             <button type="submit"
-              class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg hover:shadow-md transition duration-200 ease-in-out flex justify-center items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none" viewBox="0 0 24 24"
+              class="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex justify-center items-center mt-6">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -223,9 +280,9 @@
               <h2 class="text-xl font-medium text-center text-slate-800">驗證成功，個人資料如下：</h2>
               <div class="bg-slate-50 rounded-xl p-4 mt-4">
                 <div v-for="item in verifiedData" :key="item.ename"
-                  class="border-b border-slate-200 last:border-b-0 py-3 flex justify-between">
+                  class="border-b border-slate-200 last:border-b-0 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
                   <span class="font-medium text-slate-700">{{ item.cname }}：</span>
-                  <span class="text-slate-900">{{ item.value }}</span>
+                  <span class="text-slate-900 break-all">{{ item.value }}</span>
                 </div>
               </div>
             </div>
@@ -347,6 +404,57 @@
     registration_date_start: '',
     registration_date_end: ''
   })
+
+  const departments = [
+    { zh: '商務智慧與創新研究所', en: 'GraduateInstituteofBusinessIntelligenceandInnovation' },
+    { zh: '企業管理系企業管理系', en: 'DepartmentofBusinessAdministration' },
+    { zh: '服務業經營管理碩士班', en: 'MasterProgramofServiceIndustryManagement' },
+    { zh: '財務金融系', en: 'DepartmentofFinance' },
+    { zh: '會計資訊系', en: 'DepartmentofAccounting Information' },
+    { zh: '行銷與流通管理系', en: 'DepartmentofMarketingandDistributionManagement' },
+    { zh: '休閒遊憩管理系', en: 'DepartmentofLeisureandRecreationManagement' },
+    { zh: '國際貿易系', en: 'DepartmentofInternationalTrade' },
+    { zh: '國際貿易系國際經營與數位貿易碩士班', en: 'MasterProgramofInternationalBusinessandDigitalTrade' },
+    { zh: '應用英語系', en: 'DepartmentofAppliedEnglish' },
+    { zh: '應用日語系', en: 'DepartmentofAppliedJapanese' },
+    { zh: '資訊管理系', en: 'DepartmentofInformationManagement' },
+    { zh: '商務科技管理系', en: 'DepartmentofBusinessTechnologyManagement' },
+    { zh: '多媒體設計系', en: 'DepartmentofMultimediaDesign' }
+  ]
+
+  const onDepartmentChange = (e) => {
+    const selectedZh = e.target.value
+    const selected = departments.find(d => d.zh === selectedZh)
+    if (selected) {
+      form.value.department_chinese = selected.zh
+      form.value.department_english = selected.en
+    }
+  }
+
+  // 日期的原始輸入格式 YYYY-MM-DD
+  const registrationDateStartRaw = ref('')
+  const registrationDateEndRaw = ref('')
+
+  // 當使用者選擇新日期時，自動轉換成 YYYYMMDD 格式儲存到表單
+  watch(registrationDateStartRaw, (val) => {
+    if (val) form.value.registration_date_start = val.replace(/-/g, '')
+  })
+  watch(registrationDateEndRaw, (val) => {
+    if (val) form.value.registration_date_end = val.replace(/-/g, '')
+  })
+
+  // 若已有值，初始化 raw（表單 reset 時適用）
+  watch(() => form.value.registration_date_start, (val) => {
+    if (val && val.length === 8) {
+      registrationDateStartRaw.value = `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}`
+    }
+  })
+  watch(() => form.value.registration_date_end, (val) => {
+    if (val && val.length === 8) {
+      registrationDateEndRaw.value = `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}`
+    }
+  })
+
 
   const generateUUID = () => {
     verifyTid.value = crypto.randomUUID()
