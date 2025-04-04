@@ -352,24 +352,58 @@
       </div>
     </main>
     <main>
-      <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6 border border-slate-200 text-sm text-slate-600">
-        <h1>校外測試帳號</h1>
-        <p>
-          did-test@xiaozhi.moe<br>
-          免校內email驗證
-        </p>
-      </div>
-    </main>
+  <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl\">
+    <div class="flex items-center justify-center mb-6">
+      <h1 class="text-2xl font-semibold text-slate-700">校外測試帳號</h1>
+    </div>
+
+    <div class="p-5 bg-emerald-50 rounded-lg border border-emerald-200 text-center hover:shadow-md transition">
+      <p class="text-sm text-slate-700">
+        <span class="font-medium">帳號：</span> did-test@xiaozhi.moe
+      </p>
+      <p class="mt-1 text-sm text-slate-500">
+        此帳號免校內 email 驗證，可直接使用。
+      </p>
+    </div>
+  </div>
+</main>
+
     <main>
-      <div class="max-w-2xl mx-auto bg-white shadow-md rounded-xl p-6 border border-slate-200 text-sm text-slate-600">
-        <h1 class="font-semibold text-slate-700">說明</h1>
-        <p class="mt-2 text-blue-500 underline"><a
-            href="https://play.google.com/apps/testing/tw.gov.moda.diw">安卓測試下載</a><br><a
-            href="https://testflight.apple.com/join/gxr3mQFj">IOS測試下載</a></p>
-        <p class="mt-2">本項目基於「數位發展部」所開發「數位憑證皮夾」之沙盒測試開發而來，僅供學習及參考使用，非正式用途。</p>
-        <p class="mt-2">希望有一天這項技術能普及吧，「數位憑證皮夾」基於 DID 可實現去中心化存儲個人資料實現個人資料自我託管。</p>
-        <p class="mt-2">© Copyright <a href="https://xiaozhi.moe" class="underline text-blue-600">Mengxiaozhi 萌小志</a>
-        </p>
+      <div
+        class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl">
+        <div class="flex items-center justify-center mb-6">
+          <h1 class="text-2xl font-semibold text-slate-700">說明</h1>
+        </div>
+
+        <div class="space-y-5">
+          <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition">
+            <h2 class="font-medium text-lg text-slate-800 mb-2">下載測試版 App</h2>
+            <ul class="list-disc list-inside text-sm text-blue-500 underline">
+              <li><a href="https://play.google.com/apps/testing/tw.gov.moda.diw" target="_blank">Android 測試版下載</a></li>
+              <li><a href="https://testflight.apple.com/join/gxr3mQFj" target="_blank">iOS 測試版下載</a></li>
+            </ul>
+          </div>
+
+          <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition">
+            <h2 class="font-medium text-lg text-slate-800 mb-2">數位憑證皮夾官網</h2>
+            <a href="https://wallet.gov.tw/" target="_blank" class="text-sm text-blue-500 underline">wallet.gov.tw</a>
+          </div>
+
+          <div class="p-5 bg-slate-50 rounded-lg border border-slate-200">
+            <h2 class="font-medium text-lg text-slate-800 mb-2">關於本專案</h2>
+            <p class="text-sm text-slate-600">
+              本專案基於「數位發展部」開發之「數位憑證皮夾」沙盒環境，僅供學習及參考使用，非正式用途。
+              希望這項技術未來能普及，「數位憑證皮夾」透過 DID 技術可實現個人資料的去中心化存儲與自主管理。
+            </p>
+          </div>
+
+          <div class="pt-4 border-t border-slate-200 text-center">
+            <p class="text-sm text-slate-500">© 版權所有
+              <a href="https://xiaozhi.moe" target="_blank" class="underline text-blue-600">Mengxiaozhi 萌小志</a>
+              ｜聯絡：<a class="underline text-blue-600" href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a>
+            </p>
+          </div>
+        </div>
       </div>
     </main>
   </div>
