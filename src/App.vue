@@ -12,7 +12,7 @@
           <span>數位憑證皮夾｜致理科技大學數位學生證</span>
         </a>
         <nav class="flex justify-center md:justify-end space-x-6 text-sm">
-          <a href="https://github.com/your-repo-url" target="_blank"
+          <a href="https://github.com/mengxiaozhi/TW_DID_Student" target="_blank"
             class="text-slate-600 hover:text-blue-600 transition flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor" viewBox="0 0 24 24">
               <path
@@ -185,6 +185,19 @@
           </form>
 
           <div v-if="qrCode" class="mt-8 text-center">
+            <a :href="deepLink">
+              <button
+                class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition duration-200 ease-in-out flex justify-center items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
+                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <polyline points="17 11 19 13 23 9"></polyline>
+                </svg>
+                導入至數位憑證皮夾
+              </button>
+            </a>
+            <br>
             <h2 class="text-lg font-medium mb-4 text-slate-800">掃描 QR Code 領取數位學生證：</h2>
             <div class="bg-slate-50 p-6 rounded-xl inline-block">
               <img :src="qrCode" alt="QRCode"
@@ -250,6 +263,18 @@
             </form>
 
             <div v-if="verifyQrCode" class="mt-8 text-center">
+              <a :href="auth_uri">
+                <button
+                  class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition duration-200 ease-in-out flex justify-center items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                  前往App進行身分驗證
+                </button>
+              </a>
+              <br>
               <h2 class="text-lg font-medium mb-4 text-slate-800">請用錢包 App 掃描以下 QR Code 驗證身份</h2>
               <div class="bg-slate-50 p-6 rounded-xl inline-block">
                 <img :src="verifyQrCode" alt="VerifyQRCode"
@@ -294,143 +319,147 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
-import axios from 'axios'
+  import { ref, watch, onMounted } from 'vue'
+  import axios from 'axios'
 
-const activeTab = ref('generate')
-const qrCode = ref('')
-const verifyQrCode = ref('')
-const verifiedData = ref([])
-const verifyTid = ref('')
-const verifyFailed = ref(false)
-const email = ref('')
-const verifyPending = ref(false)
-const verified = ref(false)
-const emailSent = ref(false)
-const cardGenerated = ref(false)
+  const activeTab = ref('generate')
+  const qrCode = ref('')
+  const verifyQrCode = ref('')
+  const verifiedData = ref([])
+  const verifyTid = ref('')
+  const verifyFailed = ref(false)
+  const email = ref('')
+  const verifyPending = ref(false)
+  const verified = ref(false)
+  const emailSent = ref(false)
+  const cardGenerated = ref(false)
+  const deepLink = ref('')
+  const auth_uri = ref('')
 
-let verifyInterval = null
-let verifyTimeout = null
+  let verifyInterval = null
+  let verifyTimeout = null
 
-const form = ref({
-  name: '',
-  department_chinese: '',
-  department_english: '',
-  student_number: '',
-  registration_date_start: '',
-  registration_date_end: ''
-})
+  const form = ref({
+    name: '',
+    department_chinese: '',
+    department_english: '',
+    student_number: '',
+    registration_date_start: '',
+    registration_date_end: ''
+  })
 
-const generateUUID = () => {
-  verifyTid.value = crypto.randomUUID()
-  verifiedData.value = []
-  verifyFailed.value = false
-  verifyQrCode.value = ''
-}
-
-const generateCard = async () => {
-  try {
-    const response = await axios.post('https://api.xiaozhi.moe/chihlee/vc-item-data', {
-      vcId: 238720,
-      vcCid: 'chihlee_student_card',
-      fields: [
-        { type: 'BASIC', cname: '姓名', ename: 'name', content: form.value.name },
-        { type: 'CUSTOM', cname: '科系', ename: 'department_chinese', content: form.value.department_chinese },
-        { type: 'CUSTOM', cname: 'Department', ename: 'department_english', content: form.value.department_english },
-        { type: 'CUSTOM', cname: '學號', ename: 'student_number', content: form.value.student_number },
-        { type: 'CUSTOM', cname: '註冊日期_開始', ename: 'registration_date_start', content: form.value.registration_date_start },
-        { type: 'CUSTOM', cname: '註冊日期_結束', ename: 'registration_date_end', content: form.value.registration_date_end },
-      ]
-    })
-    qrCode.value = response.data.qrCode || ''
-    cardGenerated.value = true
-  } catch (error) {
-    console.error('產生失敗', error)
-    alert('學生證產生失敗，請確認資料格式是否正確')
-  }
-}
-
-const verifyCard = async () => {
-  try {
-    const qrRes = await axios.get(`https://api.xiaozhi.moe/chihlee/verify-qr`, { params: { transaction_id: verifyTid.value } })
-    verifyQrCode.value = qrRes.data.qrcode_image
-    verifyFailed.value = false
+  const generateUUID = () => {
+    verifyTid.value = crypto.randomUUID()
     verifiedData.value = []
-
-    verifyInterval = setInterval(fetchVerifyResult, 5000)
-    verifyTimeout = setTimeout(() => {
-      clearInterval(verifyInterval)
-      verifyFailed.value = true
-    }, 60000)
-  } catch (error) {
-    console.error('驗證失敗', error)
-    alert('驗證 QR 產生失敗')
+    verifyFailed.value = false
+    verifyQrCode.value = ''
   }
-}
 
-const fetchVerifyResult = async () => {
-  try {
-    const resultRes = await axios.get(`https://api.xiaozhi.moe/chihlee/verify-result`, { params: { transaction_id: verifyTid.value } })
-    if (resultRes.data.verify_result) {
-      verifiedData.value = resultRes.data.data[0]?.claims || []
-      clearInterval(verifyInterval)
-      clearTimeout(verifyTimeout)
-    }
-  } catch (e) {
-    console.warn('查詢中...')
-  }
-}
-
-const sendVerificationEmail = async () => {
-  try {
-    const res = await axios.post('https://api.xiaozhi.moe/chihlee/verify-email', { email: email.value })
-    if (res.data.success) {
-      verifyPending.value = true
-      emailSent.value = true
-      pollVerificationStatus()
-      alert(res.data.message)
-    } else {
-      alert(res.data.error || '驗證失敗')
-    }
-  } catch (err) {
-    alert(err.response?.data?.error || '伺服器錯誤，請稍後再試')
-  }
-}
-
-const pollVerificationStatus = () => {
-  const checkTimer = setInterval(async () => {
+  const generateCard = async () => {
     try {
-      const res = await axios.get('https://api.xiaozhi.moe/chihlee/check-verification', { params: { email: email.value } })
-      if (res.data.verified) {
-        verified.value = true
-        form.value.student_number = res.data.student_id
-        clearInterval(checkTimer)
+      const response = await axios.post('https://api.xiaozhi.moe/chihlee/vc-item-data', {
+        vcId: 238720,
+        vcCid: 'chihlee_student_card',
+        fields: [
+          { type: 'BASIC', cname: '姓名', ename: 'name', content: form.value.name },
+          { type: 'CUSTOM', cname: '科系', ename: 'department_chinese', content: form.value.department_chinese },
+          { type: 'CUSTOM', cname: 'Department', ename: 'department_english', content: form.value.department_english },
+          { type: 'CUSTOM', cname: '學號', ename: 'student_number', content: form.value.student_number },
+          { type: 'CUSTOM', cname: '註冊日期_開始', ename: 'registration_date_start', content: form.value.registration_date_start },
+          { type: 'CUSTOM', cname: '註冊日期_結束', ename: 'registration_date_end', content: form.value.registration_date_end },
+        ]
+      })
+      qrCode.value = response.data.qrCode || ''
+      deepLink.value = response.data.deepLink || ''
+      cardGenerated.value = true
+    } catch (error) {
+      console.error('產生失敗', error)
+      alert('學生證產生失敗，請確認資料格式是否正確')
+    }
+  }
+
+  const verifyCard = async () => {
+    try {
+      const qrRes = await axios.get(`https://api.xiaozhi.moe/chihlee/verify-qr`, { params: { transaction_id: verifyTid.value } })
+      verifyQrCode.value = qrRes.data.qrcode_image
+      verifyFailed.value = false
+      verifiedData.value = []
+      auth_uri.value = qrRes.data.auth_uri
+
+      verifyInterval = setInterval(fetchVerifyResult, 5000)
+      verifyTimeout = setTimeout(() => {
+        clearInterval(verifyInterval)
+        verifyFailed.value = true
+      }, 60000)
+    } catch (error) {
+      console.error('驗證失敗', error)
+      alert('驗證 QR 產生失敗')
+    }
+  }
+
+  const fetchVerifyResult = async () => {
+    try {
+      const resultRes = await axios.get(`https://api.xiaozhi.moe/chihlee/verify-result`, { params: { transaction_id: verifyTid.value } })
+      if (resultRes.data.verify_result) {
+        verifiedData.value = resultRes.data.data[0]?.claims || []
+        clearInterval(verifyInterval)
+        clearTimeout(verifyTimeout)
+      }
+    } catch (e) {
+      console.warn('查詢中...')
+    }
+  }
+
+  const sendVerificationEmail = async () => {
+    try {
+      const res = await axios.post('https://api.xiaozhi.moe/chihlee/verify-email', { email: email.value })
+      if (res.data.success) {
+        verifyPending.value = true
+        emailSent.value = true
+        pollVerificationStatus()
+        alert(res.data.message)
+      } else {
+        alert(res.data.error || '驗證失敗')
       }
     } catch (err) {
-      console.warn('查詢驗證狀態失敗')
+      alert(err.response?.data?.error || '伺服器錯誤，請稍後再試')
     }
-  }, 3000)
-}
-
-watch(email, () => {
-  emailSent.value = false
-  verifyPending.value = false
-  verified.value = false
-})
-
-watch(activeTab, async (newTab) => {
-  if (newTab === 'verify') {
-    generateUUID()
-    await verifyCard()
   }
-})
 
-onMounted(() => {
-  if (activeTab.value === 'verify') {
-    generateUUID()
-    verifyCard()
+  const pollVerificationStatus = () => {
+    const checkTimer = setInterval(async () => {
+      try {
+        const res = await axios.get('https://api.xiaozhi.moe/chihlee/check-verification', { params: { email: email.value } })
+        if (res.data.verified) {
+          verified.value = true
+          form.value.student_number = res.data.student_id
+          clearInterval(checkTimer)
+        }
+      } catch (err) {
+        console.warn('查詢驗證狀態失敗')
+      }
+    }, 3000)
   }
-})
+
+  watch(email, () => {
+    emailSent.value = false
+    verifyPending.value = false
+    verified.value = false
+  })
+
+  watch(activeTab, async (newTab) => {
+    if (newTab === 'verify') {
+      generateUUID()
+      await verifyCard()
+    }
+  })
+
+  onMounted(() => {
+    if (activeTab.value === 'verify') {
+      generateUUID()
+      verifyCard()
+    }
+  })
 </script>
 
 <style>
