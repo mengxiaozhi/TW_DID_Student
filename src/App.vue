@@ -91,15 +91,6 @@
               </svg>
               正在等待驗證中...
             </div>
-            <div v-if="verified && !cardGenerated"
-              class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-sm text-emerald-700 flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5 text-emerald-500" fill="none"
-                viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-              驗證成功，您現在可以填寫表單
-            </div>
           </form>
 
           <!-- 生成學生證頁面 -->
