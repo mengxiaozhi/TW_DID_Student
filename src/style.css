@@ -1,1 +1,143 @@
 @import "tailwindcss";
+
+body {
+    font-family: 'Segoe UI', 'Noto Sans TC', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fa;
+    color: #374151;
+    line-height: 1.6;
+}
+
+h1,
+h2 {
+    font-weight: bold;
+    color: #1e40af;
+}
+
+input[type="email"],
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    background-color: #fff;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+button {
+    cursor: pointer;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.2s ease-in-out;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    font-size: 1rem;
+}
+
+button:hover {
+    transform: scale(1.03);
+}
+
+button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+    display: block;
+    margin-bottom: 0.35rem;
+}
+
+main {
+    padding: 1rem;
+}
+
+.form-card {
+    background-color: #ffffff;
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.3s ease;
+}
+
+.form-card:hover {
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+}
+
+.transition-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.transition-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.highlight-box {
+    background-color: #f3f4f6;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    font-size: 0.95rem;
+    border: 1px solid #e5e7eb;
+}
+
+.qr-image {
+    width: 10rem;
+    height: 10rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.qr-image:hover {
+    transform: scale(1.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 手機響應式調整 */
+@media (max-width: 640px) {
+    h1 {
+        font-size: 1.125rem;
+    }
+
+    input[type="email"],
+    input[type="text"],
+    input[type="number"] {
+        font-size: 0.9rem;
+        padding: 0.65rem 0.85rem;
+    }
+
+    button {
+        padding: 0.65rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .form-card,
+    main>div {
+        padding: 1.5rem;
+    }
+
+    .qr-image {
+        width: 8rem;
+        height: 8rem;
+    }
+}

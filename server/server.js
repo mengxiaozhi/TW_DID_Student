@@ -74,7 +74,7 @@ app.post('/verify-email', async (req, res) => {
             [email, studentId, token, tokenExpiry, token, tokenExpiry]
         )
 
-        const confirmUrl = `https://api.xiaozhi.moe/chihlee/confirm-email?token=${token}`
+        const confirmUrl = `https://chihlee.xiaozhi.moe/chihlee/confirm?token=${token}`
 
         await transporter.sendMail({
             from: '數位憑證皮夾｜致理科技大學數位學生證 <no-reply@xiaozhi.moe>',

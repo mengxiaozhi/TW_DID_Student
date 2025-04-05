@@ -1,18 +1,21 @@
 <template>
-    <!-- Header -->
+    <!-- Enhanced Header -->
     <header class="w-full bg-white shadow-sm py-5 px-4 md:px-8 border-b border-slate-200">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
-            <a href="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none"
+            <!-- Logo and Title -->
+            <router-link to="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600 group-hover:text-blue-700 transition" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-3 3h6a3.001 3.001 0 00-3-3z" />
                 </svg>
-                <span>數位憑證皮夾｜致理科技大學數位學生證</span>
-            </a>
-            <nav class="flex justify-center md:justify-end space-x-6 text-sm">
-                <a href="https://github.com/mengxiaozhi/TW_DID_Student" target="_blank"
-                    class="text-slate-600 hover:text-blue-600 transition flex items-center">
+                <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜致理科技大學數位學生證</span>
+            </router-link>
+            
+            <!-- Navigation -->
+            <nav class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6 text-sm">
+                <a href="https://github.com/mengxiaozhi/TW_DID_Student" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor"
                         viewBox="0 0 24 24">
                         <path
@@ -20,8 +23,8 @@
                     </svg>
                     GitHub
                 </a>
-                <a href="https://youtu.be/9Jn47KhUwtc" target="_blank"
-                    class="text-slate-600 hover:text-blue-600 transition flex items-center">
+                <a href="https://youtu.be/9Jn47KhUwtc" target="_blank" rel="noopener noreferrer"
+                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor"
                         viewBox="0 0 24 24">
                         <path
@@ -29,8 +32,14 @@
                     </svg>
                     演示影片
                 </a>
+                <router-link to="/about" 
+                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    關於
+                </router-link>
             </nav>
         </div>
     </header>
-
 </template>
