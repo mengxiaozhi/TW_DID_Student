@@ -6,6 +6,14 @@
                 <h1 class="text-2xl font-semibold text-slate-700">使用說明</h1>
             </div>
             <div class="space-y-5">
+                <div class="p-5 bg-blue-200 rounded-lg border border-slate-200 hover:shadow-md transition">
+                    <h2 class="font-medium text-lg text-slate-800 mb-2">特別公告</h2>
+
+                    <p class="text-sm text-slate-700">
+                        近期有驗證郵件無法寄送到 @gm.chihlee.edu.tw 或 @mail.chihlee.edu.tw的情況發生<br>
+                        我有檢查我的後端及網頁伺服器，一切正常。不排除是Google或學校方面出於某種原因進行了封鎖。
+                    </p>
+                </div>
                 <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition">
                     <h2 class="font-medium text-lg text-slate-800 mb-2">校外人士測試信箱</h2>
 
