@@ -74,7 +74,7 @@ app.post('/verify-email', async (req, res) => {
             [email, studentId, token, tokenExpiry, token, tokenExpiry]
         )
 
-        const confirmUrl = `https://chihlee.xiaozhi.moe/chihlee/confirm?token=${token}`
+        const confirmUrl = `https://chihlee.xiaozhi.moe/confirm?token=${token}`
 
         await transporter.sendMail({
             from: '數位憑證皮夾｜致理科技大學數位學生證 <no-reply@xiaozhi.moe>',
@@ -118,7 +118,7 @@ app.get('/confirm-email', async (req, res) => {
 
         await conn.query('UPDATE student_verifications SET verified = 1, token = NULL, token_expiry = NULL WHERE id = ?', [user.id])
 
-        res.json({ message: '郵件驗證成功，您現在可以申請學生證' })
+        res.json({ message: '郵件驗證成功，請回到原網頁申請學生證' })
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: '伺服器錯誤，無法驗證郵件' })

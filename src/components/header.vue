@@ -3,14 +3,14 @@
     <header class="w-full bg-white shadow-sm py-5 px-4 md:px-8 border-b border-slate-200">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
             <!-- Logo and Title -->
-            <router-link to="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group">
+            <a href="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600 group-hover:text-blue-700 transition" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-3 3h6a3.001 3.001 0 00-3-3z" />
                 </svg>
                 <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜致理科技大學數位學生證</span>
-            </router-link>
+            </a>
             
             <!-- Navigation -->
             <nav class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6 text-sm">
