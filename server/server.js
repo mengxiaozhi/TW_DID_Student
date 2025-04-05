@@ -53,7 +53,7 @@ db.getConnection((err, connection) => {
 // 驗證學生 email 並發送確認信
 app.post('/verify-email', async (req, res) => {
     const { email } = req.body
-    const eduEmailRegex = /^([a-zA-Z0-9]+)@(gm\.chihlee\.edu\.tw|mail\.chihlee\.edu\.tw)$/
+    const eduEmailRegex = /^([a-zA-Z0-9]+)@(gm\.chihlee\.edu\.tw|mail\.chihlee\.edu\.tw|xiaozhi\.moe)$/
     const match = email.match(eduEmailRegex)
 
     if (!match) {

@@ -11,7 +11,8 @@
 
                     <p class="text-sm text-slate-700">
                         近期有驗證郵件無法寄送到 @gm.chihlee.edu.tw 或 @mail.chihlee.edu.tw的情況發生<br>
-                        我有檢查我的後端及網頁伺服器，一切正常。不排除是Google或學校方面出於某種原因進行了封鎖。
+                        我有檢查我的後端及網頁伺服器，一切正常。不排除是Google或學校方面出於某種原因進行了封鎖或是因為學校主機維護的因素？<br>
+                        總之如果無法收到email又想驗證玩玩看的有兩種方法：1、用測試帳號；2、聯絡我的email在我的輔助下進行email驗證
                     </p>
                 </div>
                 <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition">
