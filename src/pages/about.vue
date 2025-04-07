@@ -46,6 +46,13 @@
 
 
                 <div class="pt-4 border-t border-slate-200 text-center">
+                    <p style="font-size: 0.9em; margin-top:1.5em;">
+                        請參閱
+                        <router-link class="underline blue-500" to="terms" target="_blank">使用條款</router-link>
+                        與
+                        <router-link class="underline" to="privacy" target="_blank">隱私政策</router-link>
+                    </p>
+                    <br>
                     <p class="text-xs text-slate-500 md:text-sm ">© 版權所有
                         <a href="https://xiaozhi.moe" target="_blank" class="underline text-blue-600">Mengxiaozhi</a>
                         ｜聯絡：<a class="underline text-blue-600" href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a>

@@ -3,10 +3,10 @@
     <header class="w-full bg-white shadow-sm py-7 px-4 md:px-8 border-b border-slate-200">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
             <!-- Logo and Title -->
-            <a href="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group">
+            <router-link class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group" to="/">
                 <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜學生證</span>
-            </a>
-            
+            </router-link>
+
             <!-- Navigation -->
             <nav class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6 text-sm">
                 <a href="https://github.com/mengxiaozhi/TW_DID_Student" target="_blank" rel="noopener noreferrer"
@@ -27,10 +27,12 @@
                     </svg>
                     演示影片
                 </a>
-                <router-link to="/about" 
+                <router-link to="/about"
                     class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     關於
                 </router-link>
