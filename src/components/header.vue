@@ -3,7 +3,8 @@
     <header class="w-full bg-white shadow-sm py-7 px-4 md:px-8 border-b border-slate-200">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
             <!-- Logo and Title -->
-            <router-link class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group" to="/">
+            <router-link class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center gap-2 group" to="/">
+                <img src="/logo.png" alt="logo" class="h-7 w-7 object-contain" />
                 <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜學生證</span>
             </router-link>
 

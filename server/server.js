@@ -91,7 +91,7 @@ const knownDomains = {
     'nou.edu.tw': '國立空中大學',
     'ncut.edu.tw': '國立勤益科技大學',
     'ntub.edu.tw': '國立臺北商業大學',
-    'ntit.edu.tw': '國立臺中科技大學',
+    'nutc.edu.tw': '國立臺中科技大學',
     'nkfust.edu.tw': '國立高雄第一科技大學',
     'kuas.edu.tw': '國立高雄應用科技大學',
     'ntcpe.edu.tw': '國立臺灣體育學院',
