@@ -16,6 +16,19 @@
                     </p>
                 </div>
 
+                <div class="p-5 bg-slate-50 rounded-lg border border-slate-200">
+                    <h2 class="font-medium text-lg text-slate-800 mb-2">關於作者想說的話</h2>
+                    <p class="text-sm text-slate-600">
+                        我叫劉訊志，開發這個的當下就讀於致理科技大學資訊管理系一年級。<br>
+                        Email:me@xiaozhi.moe<br>
+                        <br>
+                        這是我對於未來證件的想像，我們可以僅授權單一部分來證明我們擁有學生身分而不必上傳證件照片或一直重複的驗證edu信箱。健保卡和身分證同理（理工男的浪漫吧）<br>
+                        我真的覺得數位憑證皮夾是個應該要大力推廣的東西，我也正在努力開發著它的其他用途。<br>
+                        原本這個東西只開放我自己的學校，然後被告知這樣違反本校的商標權所以我改成了開放全部學校然後卡面及資料全部重新設計……<br>
+                        我只是想做技術演示而已，致理科技大學太扯了，所以後來我決定開放全部學校<br>
+                    </p>
+                </div>
+
                 <div class="p-5 bg-slate-50 rounded-lg border border-slate-200 hover:shadow-md transition">
                     <h2 class="font-medium text-lg text-slate-800 mb-2">數位憑證皮夾官網</h2>
                     <a href="https://wallet.gov.tw/" target="_blank"
