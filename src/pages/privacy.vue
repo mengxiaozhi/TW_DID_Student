@@ -9,14 +9,14 @@ td{
             class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl\">
             <div class="flex items-center justify-center mb-6"></div>
             <h1>隱私政策</h1>
-            <p><strong>最後更新日期：</strong>2025 年 4 月 7 日</p>
+            <p><strong>最後更新日期：</strong>2025 年 4 月 8 日</p>
             <p>本文件針對平台：<code>did-edu.xiaozhi.moe</code></p>
 
             <h2>一、資料控管者（Data Controller）</h2>
             <p>本平台由個人開發者 Mengxiaozhi（以下稱「我們」）運營。</p>
             <ul>
                 <li>Email：me@xiaozhi.moe</li>
-                <li>聯絡地址：請改為聯絡請以電子郵件為主</li>
+                <li>聯絡請以電子郵件為主</li>
             </ul>
 
             <h2>二、資料蒐集項目與用途</h2>
@@ -48,7 +48,7 @@ td{
                     </tbody>
                 </table>
             </div>
-            <p><strong>我們不會蒐集以下類型資訊：</strong>Cookies、IP、裝置資料、學號、成績等敏感個資。</p>
+            <p><strong>我們不會蒐集以下類型資訊：</strong>Cookies、IP、裝置資料、個人照片、住址等敏感個資。</p>
 
             <h2>三、合法性依據（Legal Basis）</h2>
             <ol>
@@ -58,8 +58,8 @@ td{
 
             <h2>四、資料儲存與保留期限</h2>
             <ul>
-                <li>本系統不會永久儲存任何個資，信箱驗證資料處理後即時銷毀</li>
-                <li>所有資料僅用於該次憑證生成，不建立資料庫留存</li>
+                <li>本系統不會永久儲存任何個資，除驗證信箱外處理後即時銷毀</li>
+                <li>所有資料僅用於該次憑證生成，除驗證信箱外不建立資料庫留存</li>
             </ul>
 
             <h2>五、資料接收對象</h2>
