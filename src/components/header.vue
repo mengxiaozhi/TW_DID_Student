@@ -4,7 +4,7 @@
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
             <!-- Logo and Title -->
             <a href="/" class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center group">
-                <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜致理科技大學數位學生證（技術演示）</span>
+                <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜學生證</span>
             </a>
             
             <!-- Navigation -->

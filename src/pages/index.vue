@@ -37,9 +37,9 @@
                             <div class="relative">
                                 <input v-model="email" type="email"
                                     class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                    required placeholder="@gm.chihlee.edu.tw" />
+                                    required placeholder="@xxx.edu.tw" />
                             </div>
-                            <p class="mt-1 text-xs text-slate-500">僅限 @gm.chihlee.edu.tw 或 @mail.chihlee.edu.tw</p>
+                            <p class="mt-1 text-xs text-slate-500">僅限 @xxx.edu.tw 申請</p>
                         </div>
                         <button v-if="!emailSent" type="submit"
                             class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg hover:shadow-md transition duration-200 ease-in-out flex justify-center items-center">
@@ -77,25 +77,14 @@
                             <span>驗證成功，請填寫以下學生證資訊</span>
                         </div>
 
-                        <!-- Two-column layout for personal info -->
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <!-- Name field -->
-                            <div class="md:col-span-1">
+                            <!-- 姓名 -->
+                            <div>
                                 <label class="block mb-2 text-sm font-medium text-slate-700">姓名</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                    </div>
-                                    <input v-model="form.name"
-                                        class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                        required pattern="^[\u4e00-\u9fa5_a-zA-Z0-9]+$" placeholder="請輸入您的姓名" />
-                                </div>
+                                <input v-model="form.name" required pattern="^[一-龥_a-zA-Z0-9]+$"
+                                    class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="請輸入姓名" />
                             </div>
-
                             <!-- Student ID field (read-only) -->
                             <div class="md:col-span-1">
                                 <label class="block mb-2 text-sm font-medium text-slate-700">學號</label>
@@ -107,103 +96,23 @@
                                                 d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                         </svg>
                                     </div>
-                                    <input v-model="form.student_number"
+                                    <input v-model="form.number"
                                         class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
                                         readonly />
                                 </div>
                                 <p class="mt-1 text-xs text-slate-500">學號已自動從您的學校信箱取得</p>
                             </div>
                         </div>
-
-                        <!-- Department selection with enhanced UI -->
+                        <!-- 學校 -->
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-slate-700">科系</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path d="M12 14l9-5-9-5-9 5 9 5z" />
-                                        <path
-                                            d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-                                    </svg>
-                                </div>
-                                <select v-model="form.department_chinese" @change="onDepartmentChange"
-                                    class="w-full pl-10 border border-slate-300 p-3 pr-8 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 appearance-none"
-                                    required>
-                                    <option value="" disabled selected>請選擇科系</option>
-                                    <option v-for="d in departments" :key="d.zh" :value="d.zh">
-                                        {{ d.zh }} / {{ d.en }}
-                                    </option>
-                                </select>
-                                <div
-                                    class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M19 9l-7 7-7-7" />
-                                    </svg>
-                                </div>
-                            </div>
+                            <label class="block mb-2 text-sm font-medium text-slate-700">學校</label>
+                            <input v-model="form.school_CN" required pattern="^[一-龥]+$"
+                                class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                placeholder="請輸入學校名稱（中文）" />
                         </div>
-
-                        <!-- Registration dates with improved calendar UI -->
-                        <div class="bg-slate-50 p-5 rounded-lg border border-slate-200">
-                            <h3 class="text-sm font-medium text-slate-700 mb-4 flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-blue-500" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                註冊有效期間
-                            </h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-slate-700">開始日期</label>
-                                    <div class="relative">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <input type="date" v-model="registrationDateStartRaw"
-                                            class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                            required />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="block mb-2 text-sm font-medium text-slate-700">結束日期</label>
-                                    <div class="relative">
-                                        <div
-                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                            </svg>
-                                        </div>
-                                        <input type="date" v-model="registrationDateEndRaw"
-                                            class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-                                            required />
-                                    </div>
-                                </div>
-                            </div>
-                            <p class="mt-3 text-xs text-slate-500">請選擇數位學生證的有效期限，通常為您的學期或學年期間</p>
-                        </div>
-
-                        <!-- Submit button with animation -->
                         <button type="submit"
-                            class="w-full py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-medium rounded-lg shadow-md hover:shadow-lg transition-all duration-200 flex justify-center items-center mt-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                            </svg>
-                            生成數位學生證
+                            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">
+                            提交生成
                         </button>
                     </form>
 
@@ -335,6 +244,35 @@
             <information />
         </div>
     </div>
+    <!-- 隱私聲明 Modal -->
+    <div v-if="!closeDisclaimer" id="disclaimer-modal"
+        style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        <div
+            style="background:#fff;padding:2rem;border-radius:0.5rem;max-width:600px;box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+            <h2 style="margin-top:0;">用戶須知與免責聲明</h2>
+            <p>本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。</p>
+            <ul style="padding-left: 1.2em;">
+                <li>本系統所顯示之學校名稱係根據您提供之學術信箱網域自動推論，僅供技術驗證與識別用途，不具備任何法律效力。</li>
+                <li>本系統未與任何學校資料庫或資訊系統連接，亦不模擬或破解任何學校登入機制。</li>
+                <li>所產生之數位學生證為模擬性質，僅用於展示憑證技術格式與樣式，不得作為正式學生證使用。</li>
+                <li>本平台不蒐集、處理或儲存除信箱驗證必要資訊外的個人資料，所有資料僅用於即時驗證與憑證產生，不另作他用。</li>
+                <li>本平台所生成的學校名稱、憑證資訊，均為使用者自行提供，若造成任何誤解、冒用或第三方損害，本平台概不負責。</li>
+            </ul>
+            <p>若您為教育機構代表，有合作意願或欲提出下架通知，請聯繫本站開發者：<a href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a></p>
+
+            <p style="font-size: 0.9em; margin-top:1.5em;">
+                詳情請參閱
+                <router-link class="underline blue-500" to="terms" target="_blank">使用條款</router-link>
+                與
+                <router-link class="underline" to="privacy" target="_blank">隱私政策</router-link>
+            </p>
+
+            <div style="text-align:right; margin-top:1.5em;">
+                <button @click="closeDisclaimer = true"
+                    style="padding:0.6em 1.2em;font-size:1em;background:#3182ce;color:white;border:none;border-radius:4px;cursor:pointer;">我已閱讀並同意</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
@@ -361,44 +299,15 @@
 
     const form = ref({
         name: '',
-        department_chinese: '',
-        department_english: '',
-        student_number: '',
-        registration_date_start: '',
-        registration_date_end: ''
+        number: '',
+        school_CN: ''
     })
 
-    const departments = [
-        { zh: '商務智慧與創新研究所', en: 'GraduateInstituteofBusinessIntelligenceandInnovation' },
-        { zh: '企業管理系企業管理系', en: 'DepartmentofBusinessAdministration' },
-        { zh: '服務業經營管理碩士班', en: 'MasterProgramofServiceIndustryManagement' },
-        { zh: '財務金融系', en: 'DepartmentofFinance' },
-        { zh: '會計資訊系', en: 'DepartmentofAccounting Information' },
-        { zh: '行銷與流通管理系', en: 'DepartmentofMarketingandDistributionManagement' },
-        { zh: '休閒遊憩管理系', en: 'DepartmentofLeisureandRecreationManagement' },
-        { zh: '國際貿易系', en: 'DepartmentofInternationalTrade' },
-        { zh: '國際貿易系國際經營與數位貿易碩士班', en: 'MasterProgramofInternationalBusinessandDigitalTrade' },
-        { zh: '應用英語系', en: 'DepartmentofAppliedEnglish' },
-        { zh: '應用日語系', en: 'DepartmentofAppliedJapanese' },
-        { zh: '資訊管理系', en: 'DepartmentofInformationManagement' },
-        { zh: '商務科技管理系', en: 'DepartmentofBusinessTechnologyManagement' },
-        { zh: '多媒體設計系', en: 'DepartmentofMultimediaDesign' }
-    ]
-
-    const onDepartmentChange = (e) => {
-        const selectedZh = e.target.value
-        const selected = departments.find(d => d.zh === selectedZh)
-        if (selected) {
-            form.value.department_chinese = selected.zh
-            form.value.department_english = selected.en
-        }
-    }
-
-    // 日期的原始輸入格式 YYYY-MM-DD
     const registrationDateStartRaw = ref('')
     const registrationDateEndRaw = ref('')
 
-    // 當使用者選擇新日期時，自動轉換成 YYYYMMDD 格式儲存到表單
+    const closeDisclaimer = ref(false)
+
     watch(registrationDateStartRaw, (val) => {
         if (val) form.value.registration_date_start = val.replace(/-/g, '')
     })
@@ -406,7 +315,6 @@
         if (val) form.value.registration_date_end = val.replace(/-/g, '')
     })
 
-    // 若已有值，初始化 raw（表單 reset 時適用）
     watch(() => form.value.registration_date_start, (val) => {
         if (val && val.length === 8) {
             registrationDateStartRaw.value = `${val.slice(0, 4)}-${val.slice(4, 6)}-${val.slice(6, 8)}`
@@ -418,7 +326,6 @@
         }
     })
 
-
     const generateUUID = () => {
         verifyTid.value = crypto.randomUUID()
         verifiedData.value = []
@@ -429,15 +336,12 @@
     const generateCard = async () => {
         try {
             const response = await axios.post('https://api.xiaozhi.moe/chihlee/vc-item-data', {
-                vcId: 238720,
-                vcCid: 'chihlee_student_card',
+                vcId: 322251,
+                vcCid: 'did_edu_card',
                 fields: [
                     { type: 'BASIC', cname: '姓名', ename: 'name', content: form.value.name },
-                    { type: 'CUSTOM', cname: '科系', ename: 'department_chinese', content: form.value.department_chinese },
-                    { type: 'CUSTOM', cname: 'Department', ename: 'department_english', content: form.value.department_english },
-                    { type: 'CUSTOM', cname: '學號', ename: 'student_number', content: form.value.student_number },
-                    { type: 'CUSTOM', cname: '註冊日期_開始', ename: 'registration_date_start', content: form.value.registration_date_start },
-                    { type: 'CUSTOM', cname: '註冊日期_結束', ename: 'registration_date_end', content: form.value.registration_date_end },
+                    { type: 'CUSTOM', cname: '學號', ename: 'number', content: form.value.number },
+                    { type: 'CUSTOM', cname: '學校', ename: 'school_CN', content: form.value.school_CN }
                 ]
             })
             qrCode.value = response.data.qrCode || ''
@@ -483,30 +387,24 @@
 
     const sendVerificationEmail = async () => {
         if (email.value === 'did-test@xiaozhi.moe') {
-            // 測試帳號
             verified.value = true;
             emailSent.value = true;
             verifyPending.value = false;
-            form.value.student_number = '00000000';
+            form.value.school_CN = '國立台灣大學'
+            form.value.number = '00000000';
             form.value.name = '張三';
-            form.value.registration_date_start = '20200315';
-            form.value.registration_date_end = '20770315';
-            form.value.department_chinese = '資訊管理系';
-            form.value.department_english = 'DepartmentofInformationManagement';
-
-            // 更新日期選擇器的顯示
             registrationDateStartRaw.value = '2020-03-15';
             registrationDateEndRaw.value = '2077-03-15';
             alert('測試帳號免驗證成功');
             return;
         }
 
-
         try {
             const res = await axios.post('https://api.xiaozhi.moe/chihlee/verify-email', { email: email.value })
             if (res.data.success) {
                 verifyPending.value = true
                 emailSent.value = true
+                form.value.school_CN = res.data.school_name || '' // ⬅ 自動填入學校名稱
                 pollVerificationStatus()
                 alert(res.data.message)
             } else {
@@ -523,7 +421,7 @@
                 const res = await axios.get('https://api.xiaozhi.moe/chihlee/check-verification', { params: { email: email.value } })
                 if (res.data.verified) {
                     verified.value = true
-                    form.value.student_number = res.data.student_id
+                    form.value.number = res.data.student_id // ⬅ 修正 student_number 欄位綁定
                     clearInterval(checkTimer)
                 }
             } catch (err) {

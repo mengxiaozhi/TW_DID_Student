@@ -4,6 +4,8 @@ const routes = [
     { name: '首頁', path: '/', meta: { title: '示例页面' }, component: () => import('../pages/index.vue') },
     { name: '確認電子郵件', path: '/confirm', component: () => import('../pages/confirm.vue') },
     { name: '關於', path: '/about', component: () => import('../pages/about.vue') },
+    { name: '使用條款', path: '/terms', component: () => import('../pages/terms.vue') },
+    { name: '隱私政策', path: '/privacy', component: () => import('../pages/privacy.vue') },
     { name: 'NotFound', path: '/404', component: () => import('../pages/404.vue') },
     { path: '/:pathMatch(.*)*', redirect: '/404' }
 ]

@@ -2,8 +2,8 @@
   import headerVue from './components/header.vue'
   import banner from './components/banner.vue';
   import { useRouter } from 'vue-router'
-
 </script>
+
 <template>
   <headerVue />
   <banner />

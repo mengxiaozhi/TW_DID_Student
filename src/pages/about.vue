@@ -35,10 +35,10 @@
                         <span class="text-lg font-medium">本證件VP資料如下</span><br>
                         <br>
                         <span class="font-medium">組織名稱：</span>一般帳號組織<br>
-                        <span class="font-medium">VC模板代碼/名稱：</span>chihlee_student_card/致理科技大學數位學生證<br>
-                        <span class="font-medium">驗證服務代碼(ref)：</span>自訂（例如：00000000_chihlee_student_card_full）<br>
-                        <span class="font-medium">VP代碼：</span>自訂（例如：chihlee_student_card_full）<br>
-                        <span class="font-medium">VP名稱：</span>自訂（例如：致理科技大學學生證全部資料）<br>
+                        <span class="font-medium">VC模板代碼/名稱：</span>did_edu_card/數位憑證皮夾學生證<br>
+                        <span class="font-medium">驗證服務代碼(ref)：</span>自訂（例如：00000000_did_edu_card_full）<br>
+                        <span class="font-medium">VP代碼：</span>自訂（例如：did_edu_card_full）<br>
+                        <span class="font-medium">VP名稱：</span>自訂（例如：數位學生證全部資料）<br>
                         <br>
                         具體步驟請查閱數位憑證皮夾開發文檔
                     </p>

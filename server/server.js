@@ -45,27 +45,91 @@ transporter.verify((error, success) => {
 db.getConnection((err, connection) => {
     if (err) {
         console.error('❌資料庫連接失敗');
-    }else{
+    } else {
         console.log('✅ 成功連接到 MySQL 資料庫');
     }
 });
 
+// edu.tw 學校網域對應
+const knownDomains = {
+    'gm.chihlee.edu.tw': '致理科技大學',
+    'mail.chihlee.edu.tw': '致理科技大學',
+    'chihlee.edu.tw': '致理科技大學',
+    'ntu.edu.tw': '國立臺灣大學',
+    'nthu.edu.tw': '國立清華大學',
+    'ncku.edu.tw': '國立成功大學',
+    'nctu.edu.tw': '國立交通大學',
+    'nsysu.edu.tw': '國立中山大學',
+    'nchu.edu.tw': '國立中興大學',
+    'nccu.edu.tw': '國立政治大學',
+    'ntnu.edu.tw': '國立臺灣師範大學',
+    'ncu.edu.tw': '國立中央大學',
+    'ccu.edu.tw': '國立中正大學',
+    'ntust.edu.tw': '國立臺灣科技大學',
+    'ntut.edu.tw': '國立臺北科技大學',
+    'nkust.edu.tw': '國立高雄科技大學',
+    'ntua.edu.tw': '國立臺灣藝術大學',
+    'tnnua.edu.tw': '國立臺南藝術大學',
+    'nycu.edu.tw': '國立陽明交通大學',
+    'ntou.edu.tw': '國立臺灣海洋大學',
+    'niu.edu.tw': '國立宜蘭大學',
+    'ntcu.edu.tw': '國立臺中教育大學',
+    'ncue.edu.tw': '國立彰化師範大學',
+    'yuntech.edu.tw': '國立雲林科技大學',
+    'ncyu.edu.tw': '國立嘉義大學',
+    'npust.edu.tw': '國立屏東科技大學',
+    'nttu.edu.tw': '國立臺東大學',
+    'nknu.edu.tw': '國立高雄師範大學',
+    'ndhu.edu.tw': '國立東華大學',
+    'ncnu.edu.tw': '國立暨南國際大學',
+    'ntpu.edu.tw': '國立臺北大學',
+    'ntus.edu.tw': '國立臺灣體育運動大學',
+    'ntunhs.edu.tw': '國立臺北護理健康大學',
+    'nfu.edu.tw': '國立虎尾科技大學',
+    'nkuht.edu.tw': '國立高雄餐旅大學',
+    'tcpa.edu.tw': '國立臺灣戲曲學院',
+    'nou.edu.tw': '國立空中大學',
+    'ncut.edu.tw': '國立勤益科技大學',
+    'ntub.edu.tw': '國立臺北商業大學',
+    'ntit.edu.tw': '國立臺中科技大學',
+    'nkfust.edu.tw': '國立高雄第一科技大學',
+    'kuas.edu.tw': '國立高雄應用科技大學',
+    'ntcpe.edu.tw': '國立臺灣體育學院',
+    'ntue.edu.tw': '國立臺北教育大學',
+    'nptu.edu.tw': '國立屏東大學',
+    'ntc.edu.tw': '國立臺東專科學校',
+    'ntin.edu.tw': '國立臺南護理專科學校'
+}
+
+// 從完整子網域逐層向上尋找對應學校名稱
+function matchSchoolName(domain) {
+    const parts = domain.split('.')
+    while (parts.length >= 2) {
+        const current = parts.join('.')
+        if (knownDomains[current]) return knownDomains[current]
+        parts.shift()
+    }
+    return '未知學校'
+}
+const eduEmailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.edu\.tw)$/
+
 // 驗證學生 email 並發送確認信
 app.post('/verify-email', async (req, res) => {
     const { email } = req.body
-    const eduEmailRegex = /^([a-zA-Z0-9]+)@(gm\.chihlee\.edu\.tw|mail\.chihlee\.edu\.tw|xiaozhi\.moe)$/
     const match = email.match(eduEmailRegex)
 
     if (!match) {
         return res.status(400).json({
             success: false,
-            error: '僅允許使用 chihlee.edu.tw 學生信箱'
+            error: '僅允許使用 .edu.tw 學生信箱'
         })
     }
 
     const studentId = match[1]
+    const domain = match[2].toLowerCase()
+    const schoolName = matchSchoolName(domain)
     const token = crypto.randomBytes(20).toString('hex')
-    const tokenExpiry = Date.now() + 3 * 24 * 60 * 60 * 1000
+    const tokenExpiry = Date.now() + 3 * 24 * 60 * 60 * 1000 // 三天有效
 
     try {
         const conn = await db.promise()
@@ -74,25 +138,27 @@ app.post('/verify-email', async (req, res) => {
             [email, studentId, token, tokenExpiry, token, tokenExpiry]
         )
 
-        const confirmUrl = `https://chihlee.xiaozhi.moe/confirm?token=${token}`
+        const confirmUrl = `https://did-edu.xiaozhi.moe/confirm?token=${token}`
 
         await transporter.sendMail({
-            from: '數位憑證皮夾｜致理科技大學數位學生證 <no-reply@xiaozhi.moe>',
+            from: '數位憑證皮夾｜學生證 <no-reply@xiaozhi.moe>',
             to: email,
-            subject: '學生證申請郵件驗證',
+            subject: '數位憑證皮夾｜學生證，申請郵件驗證',
             html: `
-            <p>請點擊以下連結驗證您的學校信箱，有效期限三天：</p>
-            <a href="${confirmUrl}">${confirmUrl}</a>
-            <p>此為系統自動郵件，請勿回覆。</p>
+                <p>請點擊以下連結驗證您的學校信箱：</p>
+                <a href="${confirmUrl}">${confirmUrl}</a>
+                <p>系統識別您來自「<strong>${schoolName}</strong>」，如果有錯誤請至頁面主動修改。</p>
+                <p>此為系統自動郵件，請勿回覆。</p>
             `
         })
 
         return res.json({
             success: true,
-            message: '驗證信已寄出，請至信箱完成驗證'
+            message: `驗證信已寄出，請至信箱完成驗證`,
+            school_name: schoolName
         })
     } catch (error) {
-        console.error('📧 郵件發送失敗：', error.response || error.message)
+        console.error('📧 郵件發送失敗：', error)
         return res.status(500).json({
             success: false,
             error: '伺服器錯誤，無法發送驗證信'
@@ -170,7 +236,7 @@ app.get('/verify-qr', async (req, res) => {
                     'Access-Token': VERIFY_TOKEN
                 },
                 params: {
-                    ref: '00000000_chihlee_student_card_full',
+                    ref: '00000000_did_edu_card_full',
                     transaction_id
                 }
             }
@@ -205,4 +271,4 @@ app.get('/verify-result', async (req, res) => {
     }
 })
 
-app.listen(process.env.PORT, () => console.log('✅ 服務器運行在 http://localhost:'+process.env.PORT))
+app.listen(process.env.PORT, () => console.log('✅ 服務器運行在 http://localhost:' + process.env.PORT))
