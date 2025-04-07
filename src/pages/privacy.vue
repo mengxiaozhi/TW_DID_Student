@@ -1,3 +1,8 @@
+<style>
+td{
+    width: 200px;
+}
+</style>
 <template>
     <main class="pt-3">
         <div
@@ -15,32 +20,34 @@
             </ul>
 
             <h2>二、資料蒐集項目與用途</h2>
-            <table class="w-[300px] text-center border divide-x">
-                <thead>
-                    <tr>
-                        <th>資料項目</th>
-                        <th>蒐集方式</th>
-                        <th>使用目的</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Email 信箱</td>
-                        <td>使用者主動輸入</td>
-                        <td>用於驗證學術身份、自動辨識學校名稱，生成憑證後由本網站紀錄留存。</td>
-                    </tr>
-                    <tr>
-                        <td>學生姓名</td>
-                        <td>使用者主動輸入</td>
-                        <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
-                    </tr>
-                    <tr>
-                        <td>學生學校</td>
-                        <td>使用者主動輸入</td>
-                        <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="py-3 px-3 my-6 w-full border-2 rounded-xl">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>資料項目</th>
+                            <th>蒐集方式</th>
+                            <th>使用目的</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Email 信箱</td>
+                            <td>使用者主動輸入</td>
+                            <td>用於驗證學術身份、自動辨識學校名稱，生成憑證後由本網站紀錄留存。</td>
+                        </tr>
+                        <tr>
+                            <td>學生姓名</td>
+                            <td>使用者主動輸入</td>
+                            <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
+                        </tr>
+                        <tr>
+                            <td>學生學校</td>
+                            <td>使用者主動輸入</td>
+                            <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
             <p><strong>我們不會蒐集以下類型資訊：</strong>Cookies、IP、裝置資料、學號、成績等敏感個資。</p>
 
             <h2>三、合法性依據（Legal Basis）</h2>

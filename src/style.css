@@ -141,3 +141,10 @@ main {
         height: 8rem;
     }
 }
+
+@media (max-width: 600px) {
+    #disclaimer-modal>div {
+        padding: 1rem;
+        font-size: 0.95em;
+    }
+}

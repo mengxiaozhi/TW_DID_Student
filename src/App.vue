@@ -1,21 +1,21 @@
 <script setup>
-  import headerVue from './components/header.vue'
-  import banner from './components/banner.vue';
-  import { useRouter } from 'vue-router'
-  import { ref  } from 'vue';
+    import headerVue from './components/header.vue'
+    import banner from './components/banner.vue';
+    import { useRouter } from 'vue-router'
+    import { ref } from 'vue';
 
-  const closeDisclaimer = ref(false)
+    const closeDisclaimer = ref(false)
 </script>
 
 <template>
-  <headerVue />
-  <banner />
-  <router-view></router-view>
+    <headerVue />
+    <banner />
+    <router-view></router-view>
     <!-- 隱私聲明 Modal -->
     <div v-if="!closeDisclaimer" id="disclaimer-modal"
-        style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;">
+        style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box;">
         <div
-            style="background:#fff;padding:2rem;border-radius:0.5rem;max-width:600px;box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+            style="background:#fff;padding:1.5rem;border-radius:0.5rem;width:100%;max-width:600px;max-height:90vh;box-shadow:0 4px 10px rgba(0,0,0,0.3);overflow-y:auto;">
             <h2 style="margin-top:0;">用戶須知與免責聲明</h2>
             <p>本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。</p>
             <ul style="padding-left: 1.2em;">
@@ -40,4 +40,5 @@
             </div>
         </div>
     </div>
+
 </template>
