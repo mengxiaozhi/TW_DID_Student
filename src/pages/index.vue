@@ -109,6 +109,8 @@
                             <input v-model="form.school_CN" required pattern="^[一-龥]+$"
                                 class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="請輸入學校名稱（中文）" />
+                                <p class="mt-1 text-xs text-slate-500">學校已自動從您的學校信箱取得，如果錯誤請手動修改。</p>
+                                <p class="mt-1 text-xs text-slate-500">學校資料錯誤或未知？填寫<a class="underline text-blue-600" target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a>完善系統幫助下一個同學</p>
                         </div>
                         <button type="submit"
                             class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">

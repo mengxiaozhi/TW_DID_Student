@@ -29,9 +29,9 @@
 
             <p style="font-size: 0.9em; margin-top:1.5em;">
                 詳情請參閱
-                <router-link class="underline blue-500" to="terms" target="_blank">使用條款</router-link>
+                <router-link class="underline text-blue-600" to="terms" target="_blank">使用條款</router-link>
                 與
-                <router-link class="underline" to="privacy" target="_blank">隱私政策</router-link>
+                <router-link class="underline text-blue-600" to="privacy" target="_blank">隱私政策</router-link>
             </p>
 
             <div style="text-align:right; margin-top:1.5em;">
