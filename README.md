@@ -1,6 +1,105 @@
-# Vue 3 + Vite
+# 📘TW_DID_Student 數位學生證
+本專案是一個基於 Vue 3 + Node.js 構建的全台大專院校通用數位學生證申請與驗證系統，整合 Email 驗證、數位憑證發行、以及錢包導入 QR Code 功能。
+本專案除了驗證學生身份的email外，完全不會儲存您的任何個人資料，所有資料都有您個人的數位皮夾自行託管。 本專案基於「數位發展部」開發之「數位憑證皮夾」沙盒環境，僅供學習及參考使用，非正式用途。 希望這項技術未來能普及，「數位憑證皮夾」透過 DID 技術可實現個人資料的去中心化存儲與自主管理。
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+---
 
-Learn more about IDE Support for Vue in the [Vue Docs Scaling up Guide](https://vuejs.org/guide/scaling-up/tooling.html#ide-support).
-# TW_DID_Student
+## 🚀 功能特色
+
+- ✅ 學生信箱驗證（支援所有 `.edu.tw` 結尾與常見子網域）
+- ✅ 自動識別學校中文名稱（如 `@.ntu.edu.tw` → 國立臺灣大學）
+- ✅ 自動填入學號與學校名稱
+- ✅ 產生 VC 數位學生證（姓名、學號、學校）
+- ✅ 提供 QR Code 與深層連結導入錢包
+- ✅ 支援學生證驗證與身份比對流程
+
+---
+
+## 🧱 技術架構
+
+### 前端
+- Vue 3（Composition API）
+- Tailwind CSS
+- Axios
+
+### 後端
+- Node.js + Express
+- MySQL（學生驗證記錄）
+- Nodemailer（寄送驗證信）
+- 自訂 VC API：發卡 / 授權 / 驗證
+
+---
+
+## 📦 安裝與啟動
+
+### 🔧 安裝依賴
+```bash
+npm install
+```
+### ▶️ 啟動前端開發伺服器
+```bash
+npm run dev
+```
+### ▶️啟動後端（假設你有 backend server）
+```bash
+node server.js
+```
+## 📮 API 說明（簡要）
+
+### POST `/verify-email`
+- 傳入：`{ email }`
+- 驗證信箱格式是否合法並寄出信件
+- 回傳：`{ success, message, school_name }`
+
+### GET `/check-verification`
+- 傳入：`email`
+- 查詢該 email 是否已完成驗證
+- 回傳：`{ verified: true/false, student_id, school_name }`
+
+### POST `/vc-item-data`
+- 發行數位學生證 VC
+
+### GET `/verify-qr` / `/verify-result`
+- 支援 QR 驗證身份流程
+
+---
+
+## 📄 數位學生證欄位格式
+
+| 欄位名稱 | 類型   | 英文代碼  | 規則說明                   |
+| -------- | ------ | --------- | -------------------------- |
+| 姓名     | BASIC  | name      | 中英文與 _ 組成            |
+| 學號     | CUSTOM | number    | 英文/數字組成              |
+| 學校     | CUSTOM | school_CN | 中文名稱，系統自動判別填入 |
+
+---
+
+## 👨‍💻 開發者資訊
+
+作者：Mengxiaozhi
+聯絡方式：me@xiaozhi.moe  
+
+---
+
+## 📢 貢獻與授權
+
+本專案採用MIT授權
+
+## ⚠️用戶須知與免責聲明
+本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。
+
+本系統所顯示之學校名稱係根據您提供之學術信箱網域自動推論，僅供技術驗證與識別用途，不具備任何法律效力。
+本系統未與任何學校資料庫或資訊系統連接，亦不模擬或破解任何學校登入機制。
+所產生之數位學生證為模擬性質，僅用於展示憑證技術格式與樣式，不得作為正式學生證使用。
+本平台不蒐集、處理或儲存除信箱驗證必要資訊外的個人資料，所有資料僅用於即時驗證與憑證產生，不另作他用。
+本平台所生成的學校名稱、憑證資訊，均為使用者自行提供，若造成任何誤解、冒用或第三方損害，本平台概不負責。
+若您為教育機構代表，有合作意願或欲提出下架通知，請聯繫本站開發者：me@xiaozhi.moe
+
+## 關於作者想說的話
+我叫劉訊志，開發這個的當下就讀於致理科技大學資訊管理系一年級。
+Email:me@xiaozhi.moe
+
+這是我對於未來證件的想像，我們可以僅授權單一部分來證明我們擁有學生身分而不必上傳證件照片或一直重複的驗證edu信箱。健保卡和身分證同理（理工男的浪漫吧）
+我真的覺得數位憑證皮夾是個應該要大力推廣的東西，我也正在努力開發著它的其他用途。
+原本這個東西只開放我自己的學校，然後被告知這樣違反本校的商標權所以我改成了開放全部學校然後卡面及資料全部重新設計……
+我只是想做技術演示而已，致理科技大學太扯了，所以後來我決定開放全部學校

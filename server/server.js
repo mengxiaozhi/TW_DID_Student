@@ -138,7 +138,10 @@ const knownDomains = {
     "hwu.edu.tw": "醒吾科技大學",
     "fy.edu.tw": "輔英科技大學",
     "tpcu.edu.tw": "臺北城市科技大學",
-    "mitust.edu.tw": "敏實科技大學"
+    "mitust.edu.tw": "敏實科技大學",
+    "pcsh.ntpc.edu.tw": "新北市立板橋高中",
+    "cyut.edu.tw": "朝陽科技大學",
+    "rhs.tn.edu.tw": "臺南市立永仁高級中學"
 }
 
 // 從完整子網域逐層向上尋找對應學校名稱
@@ -188,6 +191,23 @@ app.post('/verify-email', async (req, res) => {
                 <p>請點擊以下連結驗證您的學校信箱：</p>
                 <a href="${confirmUrl}">${confirmUrl}</a>
                 <p>系統識別您來自「<strong>${schoolName}</strong>」，如果有錯誤請至頁面主動修改。</p>
+                <br>
+                <p>本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。</p>
+                <ul>
+                    <li>本系統所顯示之學校名稱係根據您提供之學術信箱網域自動推論，僅供技術驗證與識別用途，不具備任何法律效力。</li>
+                    <li>本系統未與任何學校資料庫或資訊系統連接，亦不模擬或破解任何學校登入機制。</li>
+                    <li>所產生之數位學生證為模擬性質，僅用於展示憑證技術格式與樣式，不得作為正式學生證使用。</li>
+                    <li>本平台不蒐集、處理或儲存除信箱驗證必要資訊外的個人資料，所有資料僅用於即時驗證與憑證產生，不另作他用。</li>
+                    <li>本平台所生成的學校名稱、憑證資訊，均為使用者自行提供，若造成任何誤解、冒用或第三方損害，本平台概不負責。</li>
+                </ul>
+                <p>若您為教育機構代表，有合作意願或欲提出下架通知，請聯繫本站開發者：<a href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a></p>
+                <p style="font-size: 0.9em; margin-top:1.5em;">
+                詳情請參閱
+                <a href="https://did-edu.xiaozhi.moe/terms" target="_blank">使用條款</a>
+                與
+                <a href="https://did-edu.xiaozhi.moe/privacy" target="_blank">隱私政策</a>
+                </p>
+                <p>---</p>
                 <p>此為系統自動郵件，請勿回覆。</p>
             `
         })
