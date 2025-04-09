@@ -16,6 +16,19 @@
                         </svg>
                         生成學生證
                     </button>
+                    <!-- 匿名留言板 -->
+                    <router-link to="/broad" custom v-slot="{ navigate, isActive }">
+                        <button @click="navigate(); activeTab = 'broad'"
+                            class="px-6 py-2.5 rounded-full text-sm font-medium transition duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                            :class="(activeTab === 'broad' || isActive) ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1.5" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                            </svg>
+                            匿名留言板
+                        </button>
+                    </router-link>
                     <button
                         class="px-6 py-2.5 rounded-full text-sm font-medium transition duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
                         :class="activeTab === 'verify' ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
@@ -109,8 +122,9 @@
                             <input v-model="form.school_CN" required pattern="^[一-龥]+$"
                                 class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 placeholder="請輸入學校名稱（中文）" />
-                                <p class="mt-1 text-xs text-slate-500">學校已自動從您的學校信箱取得，如果錯誤請手動修改</p>
-                                <p class="mt-1 text-xs text-slate-500">學校資料錯誤或未知？填寫 <a class="underline text-blue-600" target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a> 完善系統幫助下一個同學</p>
+                            <p class="mt-1 text-xs text-slate-500">學校已自動從您的學校信箱取得，如果錯誤請手動修改</p>
+                            <p class="mt-1 text-xs text-slate-500">學校資料錯誤或未知？填寫 <a class="underline text-blue-600"
+                                    target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a> 完善系統幫助下一個同學</p>
                         </div>
                         <button type="submit"
                             class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">

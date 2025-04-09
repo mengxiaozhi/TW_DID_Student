@@ -331,4 +331,264 @@ app.get('/verify-result', async (req, res) => {
     }
 })
 
+// 投票功能
+
+// 投票：第一階段產生 QR code（身分驗證，領票）
+app.get('/vote-verify', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    ref: '00000000_did_edu_card_number',
+                    transaction_id
+                }
+            }
+        )
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr error' })
+    }
+})
+
+// 投票：查詢第一階段驗證結果（領票），並儲存避免重複領票
+app.get('/vote-verify-result', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    transaction_id
+                }
+            }
+        )
+
+        const claims = result.data?.data?.[0]?.claims || []
+        const numberClaim = claims.find(claim => claim.ename === 'number')
+
+        if (!numberClaim || !numberClaim.value) {
+            return res.status(400).json({ error: '找不到學號資訊' })
+        }
+
+        const studentNumber = numberClaim.value
+
+        const conn = await db.promise()
+        const [rows] = await conn.query('SELECT * FROM vote_records WHERE student_number = ?', [studentNumber])
+
+        if (rows.length > 0) {
+            return res.status(403).json({ error: '此學號已領過票，無法重複領票' })
+        }
+
+        await conn.query('INSERT INTO vote_records (student_number, transaction_id, verified_at) VALUES (?, ?, NOW())', [studentNumber, transaction_id])
+
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-verify-result error' })
+    }
+})
+
+// 投票：第二階段產生 QR code（匿名投票）
+app.get('/vote-qr', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    ref: '00000000_did_edu_card_school_cn',
+                    transaction_id
+                }
+            }
+        )
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr error' })
+    }
+})
+
+// 投票：查詢第二階段驗證結果（匿名投票）
+app.get('/vote-qr-result', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    transaction_id
+                }
+            }
+        )
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr-result error' })
+    }
+})
+
+// 投票：查詢第二階段，匿名投票提交
+app.post('/submit-vote', async (req, res) => {
+    const { transaction_id, school, option } = req.body
+
+    if (!transaction_id || !school || !option) {
+        return res.status(400).json({ error: '缺少必要欄位' })
+    }
+
+    try {
+        const conn = await db.promise()
+        await conn.query(
+            'INSERT INTO anonymous_votes (transaction_id, school, option_selected, voted_at) VALUES (?, ?, ?, NOW())',
+            [transaction_id, school, option]
+        )
+        res.json({ success: true, message: '投票成功' })
+    } catch (error) {
+        console.error('🗳️ 投票失敗：', error)
+        res.status(500).json({ error: '投票記錄失敗' })
+    }
+})
+
+
+// 匿名留言板
+
+// 匿名留言板：匿名驗證
+app.get('/broad-verify', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    ref: '00000000_did_edu_card_school_cn',
+                    transaction_id
+                }
+            }
+        )
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr error' })
+    }
+})
+
+// 匿名留言板：匿名查詢驗證結果
+app.get('/broad-qr-result', async (req, res) => {
+    const { transaction_id } = req.query
+    try {
+        const result = await axios.get(
+            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
+            {
+                headers: {
+                    'Access-Token': VERIFY_TOKEN
+                },
+                params: {
+                    transaction_id
+                }
+            }
+        )
+        res.json(result.data)
+    } catch (err) {
+        console.error(err.response?.data || err)
+        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr-result error' })
+    }
+})
+
+// 匿名留言板：發佈留言
+app.post('/board-message', async (req, res) => {
+    const { school, content, author_name } = req.body
+
+    if (!school || !content) {
+        return res.status(400).json({ error: '缺少必要欄位' })
+    }
+
+    try {
+        const conn = await db.promise()
+        await conn.query(
+            'INSERT INTO board_messages (school, content, author_name, created_at) VALUES (?, ?, ?, NOW())',
+            [school, content, author_name || null]
+        )
+        res.json({ success: true, message: '留言成功' })
+    } catch (err) {
+        console.error('留言錯誤:', err)
+        res.status(500).json({ error: '伺服器錯誤' })
+    }
+})
+
+// // 匿名留言板：所有留言＋回覆
+app.get('/board-with-replies', async (req, res) => {
+    try {
+        const conn = await db.promise()
+        const [messages] = await conn.query(
+            'SELECT id, school, content, author_name, created_at, likes FROM board_messages ORDER BY created_at DESC'
+        )
+        const [replies] = await conn.query(
+            'SELECT id, message_id, school, content, author_name, created_at FROM board_replies ORDER BY created_at ASC'
+        )
+
+        const messagesWithReplies = messages.map(msg => ({
+            ...msg,
+            replies: replies.filter(r => r.message_id === msg.id)
+        }))
+
+        res.json({ success: true, messages: messagesWithReplies })
+    } catch (err) {
+        console.error('取得留言錯誤:', err)
+        res.status(500).json({ error: '伺服器錯誤' })
+    }
+})
+
+// 匿名留言板：留言按讚
+app.post('/board-like', async (req, res) => {
+    const { message_id } = req.body
+    if (!message_id) return res.status(400).json({ error: '缺少 message_id' })
+
+    try {
+        const conn = await db.promise()
+        await conn.query('UPDATE board_messages SET likes = likes + 1 WHERE id = ?', [message_id])
+        res.json({ success: true })
+    } catch (err) {
+        console.error('按讚錯誤:', err)
+        res.status(500).json({ error: '伺服器錯誤' })
+    }
+})
+
+//匿名留言板：發送回覆
+app.post('/board-reply', async (req, res) => {
+    const { message_id, school, content, author_name } = req.body
+    if (!message_id || !school || !content) {
+        return res.status(400).json({ error: '缺少必要欄位' })
+    }
+
+    try {
+        const conn = await db.promise()
+        await conn.query(
+            'INSERT INTO board_replies (message_id, school, content, author_name) VALUES (?, ?, ?, ?)',
+            [message_id, school, content, author_name || null]
+        )
+        res.json({ success: true })
+    } catch (err) {
+        console.error('回覆錯誤:', err)
+        res.status(500).json({ error: '伺服器錯誤' })
+    }
+})
+
+
 app.listen(process.env.PORT, () => console.log('✅ 服務器運行在 http://localhost:' + process.env.PORT))
