@@ -215,7 +215,7 @@
 
         <!-- 驗證彈窗 -->
         <div v-if="showVerificationModal"
-            class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-20 p-4">
+            class="fixed inset-0 backdrop-blur-xl flex items-center justify-center z-20 p-4">
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
                 <button @click="showVerificationModal = false"
                     class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
