@@ -113,16 +113,15 @@
                text-sm placeholder-slate-400" />
                         </div>
 
-                        <button v-if="!searchTerm" @click="fetchMessages" class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm
+                        <button @click="fetchMessages" class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm
              hover:bg-indigo-700 flex items-center gap-1 transition">
                             搜尋
                         </button>
-                        <!-- 清除按鈕：只有在有輸入內容時才顯示 -->
-                        <button v-if="searchTerm" @click="clearSearch" class="text-sm text-indigo-600 underline mb-3">
-                            清除
-                        </button>
                     </div>
-
+                    <!-- 清除按鈕：只有在有輸入內容時才顯示 -->
+                    <button v-if="searchTerm" @click="clearSearch" class="text-sm text-indigo-600 underline mb-3">
+                        清除
+                    </button>
                     <br>
                     <div class="mb-4">
                         <label for="sortSelect" class="block text-sm font-medium text-slate-700 mb-2">
