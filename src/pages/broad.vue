@@ -320,10 +320,16 @@
     const page = ref(1)
     const pageSize = ref(10)
 
+    let verifyInterval = null
+    let verifyTimeout = null
+
     const startVerification = async () => {
         verifyFailed.value = false
         tid.value = crypto.randomUUID()
         verificationCountdown.value = 60
+        verifiedSchool.value = ''
+        verifiedName.value = ''
+        useRealName.value = false
 
         try {
             const endpoint = verifyMode.value === 'anonymous'
@@ -333,58 +339,67 @@
             const qrRes = await axios.get(endpoint, {
                 params: { transaction_id: tid.value }
             })
+
             qrCode.value = qrRes.data.qrcode_image
             authUri.value = qrRes.data.auth_uri
 
             if (countdownInterval.value) clearInterval(countdownInterval.value)
             countdownInterval.value = setInterval(() => {
                 verificationCountdown.value--
-                if (verificationCountdown.value <= 0) {
-                    clearInterval(countdownInterval.value)
-                    verifyFailed.value = true
-                }
             }, 1000)
 
-            const checkInterval = setInterval(async () => {
-                try {
-                    const result = await axios.get(`https://api.xiaozhi.moe/chihlee/broad-qr-result`, {
-                        params: { transaction_id: tid.value }
-                    })
-                    if (result.data.verify_result) {
-                        clearInterval(checkInterval)
-                        clearInterval(countdownInterval.value)
-                        const schoolClaim = result.data.data?.[0]?.claims?.find(c => c.ename === 'school_CN')
-                        verifiedSchool.value = schoolClaim?.value || '未知學校'
+            // 🔁 每 3 秒輪詢驗證結果
+            verifyInterval = setInterval(checkVerifyResult, 3000)
 
-                        if (verifyMode.value === 'realname') {
-                            const nameClaim = result.data.data?.[0]?.claims?.find(c => c.ename === 'name')
-                            verifiedName.value = nameClaim?.value || ''
-                            useRealName.value = !!verifiedName.value
-                        }
-
-                        showVerificationModal.value = false
-                        fetchMessages()
-                    } else if (result.data.verify_result === false) {
-                        clearInterval(checkInterval)
-                        clearInterval(countdownInterval.value)
-                        verifyFailed.value = true
-                    }
-                } catch (err) {
-                    if (err.response?.status !== 400) {
-                        clearInterval(checkInterval)
-                        clearInterval(countdownInterval.value)
-                        verifyFailed.value = true
-                    }
-                }
-            }, 3000)
-
-            setTimeout(() => {
-                clearInterval(checkInterval)
+            // ⏱️ 60 秒後自動停止驗證
+            verifyTimeout = setTimeout(() => {
+                clearInterval(verifyInterval)
                 clearInterval(countdownInterval.value)
-                if (!verifiedSchool.value) verifyFailed.value = true
-            }, 61000)
+                verifyFailed.value = true
+            }, 60000)
         } catch (e) {
             verifyFailed.value = true
+        }
+    }
+
+    const checkVerifyResult = async () => {
+        try {
+            const result = await axios.get(`https://api.xiaozhi.moe/chihlee/broad-qr-result`, {
+                params: { transaction_id: tid.value }
+            })
+
+            if (result.data.verify_result) {
+                clearInterval(verifyInterval)
+                clearTimeout(verifyTimeout)
+                clearInterval(countdownInterval.value)
+
+                const claims = result.data.data?.[0]?.claims || []
+                const schoolClaim = claims.find(c => c.ename === 'school_CN')
+                const nameClaim = claims.find(c => c.ename === 'name')
+
+                verifiedSchool.value = schoolClaim?.value || '未知學校'
+
+                if (verifyMode.value === 'realname') {
+                    verifiedName.value = nameClaim?.value || ''
+                    useRealName.value = !!verifiedName.value
+                }
+
+                showVerificationModal.value = false
+                fetchMessages()
+            } else if (result.data.verify_result === false) {
+                // 明確失敗
+                clearInterval(verifyInterval)
+                clearTimeout(verifyTimeout)
+                clearInterval(countdownInterval.value)
+                verifyFailed.value = true
+            }
+        } catch (err) {
+            if (err.response?.status !== 400) {
+                clearInterval(verifyInterval)
+                clearTimeout(verifyTimeout)
+                clearInterval(countdownInterval.value)
+                verifyFailed.value = true
+            }
         }
     }
 

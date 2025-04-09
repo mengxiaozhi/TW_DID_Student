@@ -141,7 +141,9 @@ const knownDomains = {
     "mitust.edu.tw": "敏實科技大學",
     "pcsh.ntpc.edu.tw": "新北市立板橋高中",
     "cyut.edu.tw": "朝陽科技大學",
-    "rhs.tn.edu.tw": "臺南市立永仁高級中學"
+    "rhs.tn.edu.tw": "臺南市立永仁高級中學",
+    "tsh.ntct.edu.tw.edu.tw": "國立南投高級中學",
+    "kjsh.ntpc.edu.tw": "新北市光仁高級中學"
 }
 
 // 從完整子網域逐層向上尋找對應學校名稱
