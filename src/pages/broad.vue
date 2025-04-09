@@ -147,9 +147,7 @@
                                 <p class="mt-2 text-slate-700 whitespace-pre-wrap break-words">{{ msg.content }}</p>
 
                                 <div class="mt-3 flex gap-4 text-xs text-slate-500">
-                                    <button
-                                        @click="likeMessage(msg.id) ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
-                                        class=" flex items-center gap-1
+                                    <button @click="handleLike(msg)" class=" flex items-center gap-1
                                         hover:text-indigo-600 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -478,6 +476,14 @@
         }
     }
 
+    const handleLike = async (msg) => {
+        if (!verifiedSchool.value) {
+            showVerificationModal.value = true
+            return
+        }
+
+        await likeMessage(msg.id)
+    }
 
     const submitReply = async (msg) => {
         const content = msg.replyContent?.trim()
