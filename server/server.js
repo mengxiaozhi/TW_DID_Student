@@ -534,23 +534,67 @@ app.post('/board-message', async (req, res) => {
     }
 })
 
-// // 匿名留言板：所有留言＋回覆
+
 app.get('/board-with-replies', async (req, res) => {
     try {
+        const { page = 1, pageSize = 10, search } = req.query
+        const pageNum = parseInt(page) || 1
+        const limit = parseInt(pageSize) || 10
+        const offset = (pageNum - 1) * limit
+
+        const conditions = []
+        const values = []
+
+        // 如果有 search => (school LIKE '%...%' OR content LIKE '%...%')
+        // 假設希望同時也能搜到 #標籤，就讓 content 也比對 %search%。
+        // 若使用者在前端輸入了 "#抱怨文"，DB 也能找到 content 內含 "#抱怨文" 的紀錄。
+        if (search) {
+            conditions.push("(school LIKE ? OR content LIKE ?)")
+            values.push(`%${search}%`, `%${search}%`)
+        }
+
+        let whereClause = ""
+        if (conditions.length > 0) {
+            whereClause = "WHERE " + conditions.join(" AND ")
+        }
+
         const conn = await db.promise()
         const [messages] = await conn.query(
-            'SELECT id, school, content, author_name, created_at, likes FROM board_messages ORDER BY created_at DESC'
+            `
+            SELECT id, school, content, author_name, created_at, likes
+            FROM board_messages
+            ${whereClause}
+            ORDER BY created_at DESC
+            LIMIT ? OFFSET ?
+            `,
+            [...values, limit, offset]
         )
-        const [replies] = await conn.query(
-            'SELECT id, message_id, school, content, author_name, created_at FROM board_replies ORDER BY created_at ASC'
-        )
+
+        // 再撈回覆
+        const messageIds = messages.map(m => m.id)
+        let replies = []
+        if (messageIds.length > 0) {
+            const [repliesRows] = await conn.query(
+                `
+                SELECT id, message_id, school, content, author_name, created_at
+                FROM board_replies
+                WHERE message_id IN (${messageIds.map(() => '?').join(',')})
+                ORDER BY created_at ASC
+                `,
+                messageIds
+            )
+            replies = repliesRows
+        }
 
         const messagesWithReplies = messages.map(msg => ({
             ...msg,
             replies: replies.filter(r => r.message_id === msg.id)
         }))
 
-        res.json({ success: true, messages: messagesWithReplies })
+        res.json({
+            success: true,
+            messages: messagesWithReplies
+        })
     } catch (err) {
         console.error('取得留言錯誤:', err)
         res.status(500).json({ error: '伺服器錯誤' })

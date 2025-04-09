@@ -22,6 +22,15 @@
                             class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                             實名 - {{ verifiedName }}
                         </span>
+                        <button @click="fetchMessages"
+                            class="bg-white text-indigo-600 border border-indigo-300 rounded-full px-3 py-1 text-sm hover:bg-indigo-50 transition flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v6h6M20 20v-6h-6" />
+                            </svg>
+                            重新載入留言
+                        </button>
                         <button v-if="verifiedSchool" @click="logout"
                             class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
                             登出
@@ -29,68 +38,100 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 發佈留言區 -->
-            <div class="bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-6">
-                <div v-if="!verifiedSchool"
-                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg mb-2">
-                    <p class="text-sm text-slate-600">請先驗證學校身份以發佈留言</p>
-                    <button @click="showVerificationModal = true"
-                        class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                        立即驗證
-                    </button>
-                </div>
-                <form @submit.prevent="submitMessage">
-                    <div
-                        class="border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-indigo-400 focus-within:border-indigo-400 transition">
-                        <textarea v-model="newMessage" rows="3"
-                            class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none max-h-48 overflow-auto"
-                            placeholder="分享你的想法..." :disabled="!verifiedSchool"></textarea>
-                        <div
-                            class="bg-slate-50 px-3 py-2 rounded-b-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                            <div class="text-xs text-slate-500">
-                                <div v-if="verifiedSchool" class="flex items-center gap-2 flex-wrap">
-                                    <span v-if="!verifiedName || !useRealName">
-                                        {{ verifiedSchool }}以匿名身份發布
-                                    </span>
-                                    <span v-else class="text-blue-600 font-medium flex items-center gap-1">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                        以實名 {{ verifiedName }}｜{{ verifiedSchool }}發布
-                                    </span>
-                                    <label v-if="verifiedName" class="flex items-center gap-1 cursor-pointer text-sm">
-                                        <input type="checkbox" v-model="useRealName"
-                                            class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
-                                        <span class="text-xs text-slate-600">使用實名</span>
-                                    </label>
-                                </div>
-                                <span v-else>驗證後即可發佈</span>
-                            </div>
-                            <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
-                                class="bg-indigo-600 text-white rounded-full px-4 py-2 text-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
-                                <span v-if="submitting">發送中...</span>
-                                <span v-else-if="!verifiedSchool"
-                                    @click.prevent="showVerificationModal = true">需要驗證</span>
-                                <span v-else>發佈</span>
-                                <svg v-if="!submitting && verifiedSchool" xmlns="http://www.w3.org/2000/svg"
-                                    class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                                </svg>
-                            </button>
-                        </div>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <!-- 發佈留言區 -->
+                <div class="w-full sm:w-[60%] bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-6">
+                    <div v-if="!verifiedSchool"
+                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg mb-2">
+                        <p class="text-sm text-slate-600">請先驗證學校身份以發佈留言</p>
+                        <button @click="showVerificationModal = true"
+                            class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            立即驗證
+                        </button>
                     </div>
-                </form>
-            </div>
+                    <form @submit.prevent="submitMessage">
+                        <div
+                            class="border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-indigo-400 focus-within:border-indigo-400 transition">
+                            <textarea v-model="newMessage" rows="3"
+                                class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none max-h-48 overflow-auto"
+                                placeholder="分享你的想法..." :disabled="!verifiedSchool"></textarea>
+                            <div
+                                class="bg-slate-50 px-3 py-2 rounded-b-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                                <div class="text-xs text-slate-500">
+                                    <div v-if="verifiedSchool" class="flex items-center gap-2 flex-wrap">
+                                        <span v-if="!verifiedName || !useRealName">
+                                            {{ verifiedSchool }}以匿名身份發布
+                                        </span>
+                                        <span v-else class="text-blue-600 font-medium flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            以實名 {{ verifiedName }}｜{{ verifiedSchool }}發布
+                                        </span>
+                                        <label v-if="verifiedName"
+                                            class="flex items-center gap-1 cursor-pointer text-sm">
+                                            <input type="checkbox" v-model="useRealName"
+                                                class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+                                            <span class="text-xs text-slate-600">使用實名</span>
+                                        </label>
+                                    </div>
+                                    <span v-else>驗證後即可發佈</span>
+                                </div>
+                                <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
+                                    class="bg-indigo-600 text-white rounded-full px-4 py-2 text-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
+                                    <span v-if="submitting">發送中...</span>
+                                    <span v-else-if="!verifiedSchool"
+                                        @click.prevent="showVerificationModal = true">需要驗證</span>
+                                    <span v-else>發佈</span>
+                                    <svg v-if="!submitting && verifiedSchool" xmlns="http://www.w3.org/2000/svg"
+                                        class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
 
+                <!-- 右側搜尋區塊 (40%) -->
+                <div class="w-full sm:w-[40%] bg-white shadow-md rounded-lg sm:rounded-xl p-4 mb-6">
+                    <h3 class="text-base font-semibold text-indigo-700 mb-3">搜尋</h3>
+
+                    <!-- 輸入框 + 搜尋按鈕 -->
+                    <div class="flex items-center gap-2 mb-2">
+                        <div class="relative flex-1">
+                            <input v-model="searchTerm" placeholder="搜尋學校" class="w-full rounded-md border border-slate-300 py-2 pr-3 pl-9
+               focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+               text-sm placeholder-slate-400" />
+                        </div>
+
+                        <button v-if="!searchTerm" @click="fetchMessages" class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm
+             hover:bg-indigo-700 flex items-center gap-1 transition">
+                            搜尋
+                        </button>
+                        <!-- 清除按鈕：只有在有輸入內容時才顯示 -->
+                        <button v-if="searchTerm" @click="clearSearch" class="text-sm text-indigo-600 underline mb-3">
+                            清除
+                        </button>
+                    </div>
+
+                    <!-- 最新標籤區塊 -->
+                    <div class="mt-2">
+                        <p class="text-sm font-medium text-slate-500 mb-1">小提示</p>
+                        <!-- 兩個標籤按鈕（用 v-for 也行） -->
+                        <p>支持搜索：學校、#Tag、文章</p>
+                    </div>
+                </div>
+
+            </div>
             <!-- 留言瀑布流 -->
             <div class="mt-4">
                 <div v-if="loading" class="flex justify-center items-center py-12">
@@ -106,9 +147,10 @@
                     <p class="text-slate-500">目前尚無留言。成為第一個發言的人！</p>
                 </div>
 
-                <div v-else class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- 這裡改成 columns 實現瀑布流 -->
+                <div v-else class="columns-1 sm:columns-2 gap-4">
                     <div v-for="msg in messages" :key="msg.id"
-                        class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer">
+                        class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer mb-4 break-inside-avoid">
                         <div class="flex items-start gap-2">
                             <div v-if="msg.author_name"
                                 class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
@@ -144,11 +186,13 @@
                                     </span>
                                     <span class="text-xs text-slate-400">{{ formatTime(msg.created_at) }}</span>
                                 </div>
-                                <p class="mt-2 text-slate-700 whitespace-pre-wrap break-words">{{ msg.content }}</p>
+
+                                <p class="mt-2 text-slate-700 whitespace-pre-wrap break-words"
+                                    v-html="parseContent(msg.content)" @click="onContentClick($event)"></p>
 
                                 <div class="mt-3 flex gap-4 text-xs text-slate-500">
-                                    <button @click="handleLike(msg)" class=" flex items-center gap-1
-                                        hover:text-indigo-600 transition">
+                                    <button @click="handleLike(msg)"
+                                        class="flex items-center gap-1 hover:text-indigo-600 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -167,17 +211,9 @@
                                         </svg>
                                         回覆
                                     </button>
-                                    <!--
-                                    <button class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                        </svg>
-                                        分享
-                                    </button>
-                                    -->
                                 </div>
+
+                                <!-- 回覆輸入框 -->
                                 <div v-if="msg.showReplyBox" class="mt-2 space-y-2">
                                     <textarea v-model="msg.replyContent" rows="2"
                                         class="w-full p-2 border rounded text-sm" placeholder="輸入回覆內容..."></textarea>
@@ -191,8 +227,9 @@
                                 <div v-if="msg.replies && msg.replies.length"
                                     class="mt-2 pl-4 border-l-2 border-slate-200 space-y-1 text-sm">
                                     <div v-for="r in msg.replies" :key="r.id">
-                                        <div class="text-slate-700">{{ r.author_name || '匿名用戶｜' + r.school }}：{{
-                                            r.content }}</div>
+                                        <div class="text-slate-700">
+                                            {{ r.author_name || '匿名用戶｜' + r.school }}：{{ r.content }}
+                                        </div>
                                         <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
                                     </div>
                                 </div>
@@ -253,8 +290,10 @@
                 </p>
 
                 <div v-if="qrCode" class="flex flex-col items-center">
-                    <p class="text-sm text-slate-500 mb-3 font-medium">驗證碼：<span
-                            class="font-mono bg-slate-100 px-2 py-0.5 rounded">{{ tid }}</span></p>
+                    <p class="text-sm text-slate-500 mb-3 font-medium">
+                        驗證碼：
+                        <span class="font-mono bg-slate-100 px-2 py-0.5 rounded">{{ tid }}</span>
+                    </p>
                     <img :src="qrCode" alt="QR Code" class="w-48 h-48 mx-auto rounded shadow-md mb-4" />
 
                     <div class="w-full space-y-3">
@@ -272,8 +311,11 @@
 
                         <div class="flex items-center gap-2 justify-center">
                             <div class="h-1.5 w-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
-                            <p class="text-sm text-slate-500">請在 <span class="font-semibold text-indigo-600">{{
-                                verificationCountdown }}</span> 秒內完成掃描</p>
+                            <p class="text-sm text-slate-500">
+                                請在
+                                <span class="font-semibold text-indigo-600">{{ verificationCountdown }}</span>
+                                秒內完成掃描
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -319,6 +361,7 @@
     const loadingMore = ref(false)
     const page = ref(1)
     const pageSize = ref(10)
+    const searchTerm = ref('')
 
     let verifyInterval = null
     let verifyTimeout = null
@@ -402,12 +445,20 @@
             }
         }
     }
-
     const fetchMessages = async () => {
         loading.value = true
         try {
+            const queryParams = {
+                page: 1,
+                pageSize: pageSize.value
+            }
+            // 如果使用者輸入了搜尋
+            if (searchTerm.value) {
+                queryParams.search = searchTerm.value
+            }
+
             const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {
-                params: { page: 1, pageSize: pageSize.value }
+                params: queryParams
             })
 
             const newList = res.data.messages?.map(m => ({
@@ -415,17 +466,6 @@
                 showReplyBox: false,
                 replyContent: '',
             })) || []
-
-            // merge 本地狀態
-            newList.forEach(newMsg => {
-                const existing = messages.value.find(m => m.id === newMsg.id)
-                if (existing) {
-                    newMsg.likes = existing.likes
-                    newMsg.showReplyBox = existing.showReplyBox
-                    newMsg.replyContent = existing.replyContent
-                    newMsg.replies = existing.replies // 或者保留現有回覆
-                }
-            })
 
             messages.value = newList
             page.value = 1
@@ -436,22 +476,26 @@
         }
     }
 
-
     const loadMoreMessages = async () => {
         if (loadingMore.value) return
         loadingMore.value = true
         try {
             const nextPage = page.value + 1
-            const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {
-                params: { page: nextPage, pageSize: pageSize.value }
-            })
-            const newMessages = res.data.messages?.map(m => ({ ...m, showReplyBox: false, replyContent: '' })) || []
-            if (newMessages.length) {
-                messages.value = [...messages.value, ...newMessages]
-                page.value = nextPage
+            const queryParams = {
+                page: nextPage,
+                pageSize: pageSize.value
             }
+            if (searchTerm.value) {
+                queryParams.search = searchTerm.value
+            }
+
+            const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {
+                params: queryParams
+            })
+
+            // ...後續邏輯
         } catch (e) {
-            console.error('載入更多留言失敗', e)
+            // ...
         } finally {
             loadingMore.value = false
         }
@@ -536,11 +580,75 @@
         location.reload()
     }
 
+
+    function highlightHashtags(text) {
+        if (!text) return ''
+        // 找到任何 #開頭的標籤
+        return text.replace(/#[^\s#]+/g, (match) => {
+            // 取出「去掉#」後的標籤文字
+            const justTag = match.slice(1)
+            // 加上自訂 class="hashtag-span" 和 data-hashtag
+            // 方便在點擊時，能取得該標籤的值
+            return `<span
+      class="text-indigo-600 font-medium hashtag-span"
+      data-hashtag="${justTag}"
+    >${match}</span>`
+        })
+    }
+
+    function onContentClick(e) {
+        // 找到最近的 .hashtag-span
+        const span = e.target.closest('.hashtag-span')
+        if (!span) return
+
+        // 拿到 data-hashtag
+        const tag = span.getAttribute('data-hashtag')
+        if (!tag) return
+
+        // 這裡你想做什麼？例如設置 searchTerm，然後觸發搜尋
+        // 假設你已經有一個 searchTerm
+        searchTerm.value = `#${tag}` // 或者直接用 tag
+        // 重新取得/篩選
+        fetchMessages()
+    }
+
+    function parseContent(text) {
+        if (!text) return ''
+
+        let output = text
+
+        // 1) 先偵測圖片連結
+        //    - 簡易做法：只要是 http(s):// 之後, 最後檔名以 .png/.jpg/.jpeg/.gif/.webp 結尾, 就視為圖片
+        //    - 在替換時，用 <img> 包起來
+        //    - 可以加上 class，讓圖片不至於超出版面（如 .max-w-full）
+        const imageRegex = /(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif|webp))/gi
+        output = output.replace(imageRegex, (match) => {
+            return `<img
+      src="${match}"
+      alt="image"
+      class="my-2 max-w-full h-auto rounded shadow hashtag-image"
+    />`
+        })
+
+        // 2) 再偵測 #標籤
+        //    - 類似你原本 highlightHashtags 的做法
+        //    - 加上 data-hashtag 用於點擊事件代理
+        const hashtagRegex = /#[^\s#]+/g
+        output = output.replace(hashtagRegex, (match) => {
+            const justTag = match.slice(1) // 去掉 '#'
+            return `<span
+      class="text-indigo-600 font-medium hashtag-span"
+      data-hashtag="${justTag}"
+    >${match}</span>`
+        })
+
+        return output
+    }
+
     let refreshInterval = null
 
     onMounted(() => {
         fetchMessages()
-        refreshInterval = setInterval(fetchMessages, 30000) // 每 30 秒更新
     })
 
     onUnmounted(() => {
@@ -555,4 +663,9 @@
     watch(showVerificationModal, (newVal) => {
         if (newVal) startVerification()
     })
+
+    function clearSearch() {
+        searchTerm.value = ''
+        fetchMessages()
+    }
 </script>
