@@ -417,8 +417,8 @@
                 verificationCountdown.value--
             }, 1000)
 
-            // 🔁 每 3 秒輪詢驗證結果
-            verifyInterval = setInterval(checkVerifyResult, 3000)
+            // 🔁 每 5 秒輪詢驗證結果
+            verifyInterval = setInterval(checkVerifyResult, 5000)
 
             // ⏱️ 60 秒後自動停止驗證
             verifyTimeout = setTimeout(() => {
@@ -471,6 +471,7 @@
             }
         }
     }
+
     const fetchMessages = async () => {
         loading.value = true
         try {
@@ -609,22 +610,6 @@
 
     const logout = () => {
         location.reload()
-    }
-
-
-    function highlightHashtags(text) {
-        if (!text) return ''
-        // 找到任何 #開頭的標籤
-        return text.replace(/#[^\s#]+/g, (match) => {
-            // 取出「去掉#」後的標籤文字
-            const justTag = match.slice(1)
-            // 加上自訂 class="hashtag-span" 和 data-hashtag
-            // 方便在點擊時，能取得該標籤的值
-            return `<span
-      class="text-indigo-600 font-medium hashtag-span"
-      data-hashtag="${justTag}"
-    >${match}</span>`
-        })
     }
 
     function onContentClick(e) {
