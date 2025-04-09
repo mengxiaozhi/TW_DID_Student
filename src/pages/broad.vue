@@ -147,7 +147,9 @@
                                 <p class="mt-2 text-slate-700 whitespace-pre-wrap break-words">{{ msg.content }}</p>
 
                                 <div class="mt-3 flex gap-4 text-xs text-slate-500">
-                                    <button @click="likeMessage(msg.id)" class=" flex items-center gap-1
+                                    <button
+                                        @click="likeMessage(msg.id) ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
+                                        class=" flex items-center gap-1
                                         hover:text-indigo-600 transition">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -409,7 +411,25 @@
             const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {
                 params: { page: 1, pageSize: pageSize.value }
             })
-            messages.value = res.data.messages?.map(m => ({ ...m, showReplyBox: false, replyContent: '' })) || []
+
+            const newList = res.data.messages?.map(m => ({
+                ...m,
+                showReplyBox: false,
+                replyContent: '',
+            })) || []
+
+            // merge 本地狀態
+            newList.forEach(newMsg => {
+                const existing = messages.value.find(m => m.id === newMsg.id)
+                if (existing) {
+                    newMsg.likes = existing.likes
+                    newMsg.showReplyBox = existing.showReplyBox
+                    newMsg.replyContent = existing.replyContent
+                    newMsg.replies = existing.replies // 或者保留現有回覆
+                }
+            })
+
+            messages.value = newList
             page.value = 1
         } catch (e) {
             console.error('取得留言失敗', e)
@@ -417,6 +437,7 @@
             loading.value = false
         }
     }
+
 
     const loadMoreMessages = async () => {
         if (loadingMore.value) return
@@ -440,12 +461,23 @@
 
     const likeMessage = async (id) => {
         try {
-            await axios.post(`https://api.xiaozhi.moe/chihlee/board-like`, { message_id: id })
-            fetchMessages()
+            const res = await axios.post(`https://api.xiaozhi.moe/chihlee/board-like`, { message_id: id })
+
+            const target = messages.value.find(m => m.id === id)
+            if (target) {
+                // 優先使用後端回傳值
+                if (res.data?.likes !== undefined) {
+                    target.likes = res.data.likes
+                } else {
+                    // 或前端自行加一
+                    target.likes = (target.likes || 0) + 1
+                }
+            }
         } catch (e) {
             console.error('按讚失敗', e)
         }
     }
+
 
     const submitReply = async (msg) => {
         const content = msg.replyContent?.trim()
@@ -498,14 +530,16 @@
         location.reload()
     }
 
+    let refreshInterval = null
+
     onMounted(() => {
         fetchMessages()
+        refreshInterval = setInterval(fetchMessages, 30000) // 每 30 秒更新
     })
 
     onUnmounted(() => {
-        if (countdownInterval.value) {
-            clearInterval(countdownInterval.value)
-        }
+        if (refreshInterval) clearInterval(refreshInterval)
+        if (countdownInterval.value) clearInterval(countdownInterval.value)
     })
 
     watch(verifyMode, () => {
