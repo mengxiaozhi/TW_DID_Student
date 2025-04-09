@@ -108,7 +108,7 @@
                     <!-- 輸入框 + 搜尋按鈕 -->
                     <div class="flex items-center gap-2 mb-2">
                         <div class="relative flex-1">
-                            <input v-model="searchTerm" placeholder="搜尋學校" class="w-full rounded-md border border-slate-300 py-2 pr-3 pl-9
+                            <input v-model="searchTerm" placeholder="搜尋" class="w-full rounded-md border border-slate-300 py-2 pr-3 pl-9
                focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
                text-sm placeholder-slate-400" />
                         </div>
@@ -123,11 +123,30 @@
                         </button>
                     </div>
 
-                    <!-- 最新標籤區塊 -->
-                    <div class="mt-2">
-                        <p class="text-sm font-medium text-slate-500 mb-1">小提示</p>
-                        <!-- 兩個標籤按鈕（用 v-for 也行） -->
-                        <p>支持搜索：學校、#Tag、文章</p>
+                    <br>
+                    <div class="mb-4">
+                        <label for="sortSelect" class="block text-sm font-medium text-slate-700 mb-2">
+                            排序方式
+                        </label>
+                        <div class="relative">
+                            <select id="sortSelect" v-model="sortBy" @change="onSortChange" class="block w-full appearance-none border border-slate-300 rounded-md py-2 px-3 pr-8
+             text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+             bg-white text-slate-700">
+                                <option value="time_desc">最新優先</option>
+                                <option value="time_asc">最舊優先</option>
+                                <option value="likes_desc">讚數由高到低</option>
+                                <option value="likes_asc">讚數由低到高</option>
+                            </select>
+
+                            <!-- 下拉箭頭圖示 -->
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -362,6 +381,14 @@
     const page = ref(1)
     const pageSize = ref(10)
     const searchTerm = ref('')
+    // 排序方式，預設最新
+    const sortBy = ref('time_desc')
+
+    // 監聽下拉選單改變
+    function onSortChange() {
+        // 一旦改變就重抓列表
+        fetchMessages()
+    }
 
     let verifyInterval = null
     let verifyTimeout = null
@@ -455,6 +482,11 @@
             // 如果使用者輸入了搜尋
             if (searchTerm.value) {
                 queryParams.search = searchTerm.value
+            }
+
+            // 帶上排序
+            if (sortBy.value) {
+                queryParams.sort = sortBy.value
             }
 
             const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {

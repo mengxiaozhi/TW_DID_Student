@@ -537,17 +537,17 @@ app.post('/board-message', async (req, res) => {
 
 app.get('/board-with-replies', async (req, res) => {
     try {
-        const { page = 1, pageSize = 10, search } = req.query
+        const { page = 1, pageSize = 10, search, sort } = req.query
         const pageNum = parseInt(page) || 1
         const limit = parseInt(pageSize) || 10
         const offset = (pageNum - 1) * limit
 
+        // 組裝查詢條件
         const conditions = []
         const values = []
 
-        // 如果有 search => (school LIKE '%...%' OR content LIKE '%...%')
-        // 假設希望同時也能搜到 #標籤，就讓 content 也比對 %search%。
-        // 若使用者在前端輸入了 "#抱怨文"，DB 也能找到 content 內含 "#抱怨文" 的紀錄。
+        // 若有 search => (school LIKE '%xxx%' OR content LIKE '%xxx%')
+        // 讓 content 也比對 %search% (可搜尋 #標籤)
         if (search) {
             conditions.push("(school LIKE ? OR content LIKE ?)")
             values.push(`%${search}%`, `%${search}%`)
@@ -558,19 +558,33 @@ app.get('/board-with-replies', async (req, res) => {
             whereClause = "WHERE " + conditions.join(" AND ")
         }
 
+        // 根據 sort 參數決定排序方式
+        let orderBy = "created_at DESC" // 預設：時間由新到舊
+        if (sort === 'time_asc') {
+            orderBy = "created_at ASC"
+        } else if (sort === 'time_desc') {
+            orderBy = "created_at DESC"
+        } else if (sort === 'likes_desc') {
+            orderBy = "likes DESC"
+        } else if (sort === 'likes_asc') {
+            orderBy = "likes ASC"
+        }
+
         const conn = await db.promise()
+
+        // 1) 查詢符合條件的留言，依照 sort 決定 ORDER BY
         const [messages] = await conn.query(
             `
             SELECT id, school, content, author_name, created_at, likes
             FROM board_messages
             ${whereClause}
-            ORDER BY created_at DESC
+            ORDER BY ${orderBy}
             LIMIT ? OFFSET ?
             `,
             [...values, limit, offset]
         )
 
-        // 再撈回覆
+        // 2) 撈出這些留言對應的回覆
         const messageIds = messages.map(m => m.id)
         let replies = []
         if (messageIds.length > 0) {
@@ -586,11 +600,13 @@ app.get('/board-with-replies', async (req, res) => {
             replies = repliesRows
         }
 
+        // 3) 合併：將每則留言對應的回覆整合起來
         const messagesWithReplies = messages.map(msg => ({
             ...msg,
             replies: replies.filter(r => r.message_id === msg.id)
         }))
 
+        // 回傳
         res.json({
             success: true,
             messages: messagesWithReplies
