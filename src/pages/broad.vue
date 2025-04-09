@@ -1,10 +1,10 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-r from-indigo-50 to-purple-50 p-4 md:p-6">
+    <div class="min-h-screen bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 md:p-6">
         <div class="max-w-4xl mx-auto">
             <!-- 頁面標題 -->
-            <div class="bg-white shadow-md rounded-xl p-4 mb-4">
-                <div class="flex items-center justify-between">
-                    <h2 class="text-lg font-bold text-indigo-800 flex items-center gap-2">
+            <div class="bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-4">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                    <h2 class="text-base sm:text-lg font-bold text-indigo-800 flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -12,7 +12,7 @@
                         </svg>
                         匿名留言板
                     </h2>
-                    <div class="flex items-center gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                         <span v-if="verifiedSchool"
                             class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                             <span class="h-2 w-2 bg-green-500 rounded-full"></span>
@@ -31,8 +31,9 @@
             </div>
 
             <!-- 發佈留言區 -->
-            <div class="bg-white shadow-md rounded-xl p-4 mb-6">
-                <div v-if="!verifiedSchool" class="flex items-center justify-between p-3 bg-slate-50 rounded-lg mb-2">
+            <div class="bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-6">
+                <div v-if="!verifiedSchool"
+                    class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg mb-2">
                     <p class="text-sm text-slate-600">請先驗證學校身份以發佈留言</p>
                     <button @click="showVerificationModal = true"
                         class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
@@ -48,11 +49,12 @@
                     <div
                         class="border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-indigo-400 focus-within:border-indigo-400 transition">
                         <textarea v-model="newMessage" rows="3"
-                            class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none"
+                            class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none max-h-48 overflow-auto"
                             placeholder="分享你的想法..." :disabled="!verifiedSchool"></textarea>
-                        <div class="bg-slate-50 px-3 py-2 rounded-b-lg flex justify-between items-center">
+                        <div
+                            class="bg-slate-50 px-3 py-2 rounded-b-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                             <div class="text-xs text-slate-500">
-                                <div v-if="verifiedSchool" class="flex items-center gap-2">
+                                <div v-if="verifiedSchool" class="flex items-center gap-2 flex-wrap">
                                     <span v-if="!verifiedName || !useRealName">
                                         {{ verifiedSchool }}以匿名身份發布
                                     </span>
@@ -64,17 +66,16 @@
                                         </svg>
                                         以實名 {{ verifiedName }}｜{{ verifiedSchool }}發布
                                     </span>
-
-                                    <label v-if="verifiedName" class="flex items-center gap-1 cursor-pointer">
+                                    <label v-if="verifiedName" class="flex items-center gap-1 cursor-pointer text-sm">
                                         <input type="checkbox" v-model="useRealName"
-                                            class="rounded text-indigo-600 focus:ring-indigo-500 h-3 w-3" />
+                                            class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
                                         <span class="text-xs text-slate-600">使用實名</span>
                                     </label>
                                 </div>
                                 <span v-else>驗證後即可發佈</span>
                             </div>
                             <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
-                                class="bg-indigo-600 text-white rounded-full px-4 py-1.5 text-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition">
+                                class="bg-indigo-600 text-white rounded-full px-4 py-2 text-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
                                 <span v-if="submitting">發送中...</span>
                                 <span v-else-if="!verifiedSchool"
                                     @click.prevent="showVerificationModal = true">需要驗證</span>
