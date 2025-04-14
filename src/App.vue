@@ -1,11 +1,23 @@
 <script setup>
     import headerVue from './components/header.vue'
     import banner from './components/banner.vue';
-    import { ref } from 'vue'
+    import { ref, onMounted, watch } from 'vue'
     import { useRoute } from 'vue-router'
 
     const route = useRoute()
     const closeDisclaimer = ref(false)
+
+    const updateTitle = () => {
+        document.title = `${route.name} - 數位憑證皮夾｜學生證`;
+    };
+
+    onMounted(() => {
+        updateTitle();
+    });
+
+    watch(() => route.name, (newName) => {
+        document.title = `${route.name} - 數位憑證皮夾｜學生證`;
+    }, { immediate: true });
 </script>
 
 <template>
@@ -13,7 +25,8 @@
     <banner />
     <router-view></router-view>
     <!-- 隱私聲明 Modal -->
-    <div v-if="!closeDisclaimer && route.path !== '/terms' && route.path !== '/privacy' && route.path !== '/confirm'" id="disclaimer-modal"
+    <div v-if="!closeDisclaimer && route.path !== '/terms' && route.path !== '/privacy' && route.path !== '/confirm'"
+        id="disclaimer-modal"
         style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box;">
         <div
             style="background:#fff;padding:1.5rem;border-radius:0.5rem;width:100%;max-width:600px;max-height:90vh;box-shadow:0 4px 10px rgba(0,0,0,0.3);overflow-y:auto;">
