@@ -167,7 +167,7 @@
 
                 <!-- 這裡改成 columns 實現瀑布流 -->
                 <div v-else class="columns-1 sm:columns-2 gap-4">
-                    <div v-for="msg in messages" :key="msg.id"
+                    <div @click="openPreview(msg)" v-for="msg in messages" :key="msg.id"
                         class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer mb-4 break-inside-avoid">
                         <div class="flex items-start gap-2">
                             <div v-if="msg.author_name"
@@ -255,6 +255,33 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 預覽留言 Modal -->
+                <div v-if="showPreviewModal"
+                    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+                    <div class="bg-white max-w-xl w-full rounded-xl shadow-xl p-6 relative">
+                        <button @click="closePreview"
+                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <div>
+                            <div class="mb-2 text-sm text-slate-500">
+                                {{ previewMessage?.author_name || '匿名用戶' }}・
+                                {{ previewMessage?.school || '' }}・
+                                {{ formatTime(previewMessage?.created_at) }}
+                            </div>
+                            <div class="text-slate-800 whitespace-pre-line leading-relaxed break-words text-base"
+                                v-html="parseContent(previewMessage?.content)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
 
                 <!-- 載入更多按鈕 -->
                 <div v-if="messages.length >= 10" class="flex justify-center mt-6">
@@ -382,6 +409,17 @@
     const searchTerm = ref('')
     // 排序方式，預設最新
     const sortBy = ref('time_desc')
+    const previewMessage = ref(null)
+    const showPreviewModal = ref(false)
+
+    function openPreview(msg) {
+        previewMessage.value = msg
+        showPreviewModal.value = true
+    }
+
+    function closePreview() {
+        showPreviewModal.value = false
+    }
 
     // 監聽下拉選單改變
     function onSortChange() {
@@ -521,17 +559,31 @@
                 queryParams.search = searchTerm.value
             }
 
+            if (sortBy.value) {
+                queryParams.sort = sortBy.value
+            }
+
             const res = await axios.get(`https://api.xiaozhi.moe/chihlee/board-with-replies`, {
                 params: queryParams
             })
 
-            // ...後續邏輯
+            const newList = res.data.messages?.map(m => ({
+                ...m,
+                showReplyBox: false,
+                replyContent: '',
+            })) || []
+
+            if (newList.length) {
+                messages.value = [...messages.value, ...newList]
+                page.value = nextPage
+            }
         } catch (e) {
-            // ...
+            console.error('載入更多留言失敗', e)
         } finally {
             loadingMore.value = false
         }
     }
+
 
     const likeMessage = async (id) => {
         try {
@@ -633,25 +685,24 @@
 
         let output = text
 
-        // 1) 先偵測圖片連結
-        //    - 簡易做法：只要是 http(s):// 之後, 最後檔名以 .png/.jpg/.jpeg/.gif/.webp 結尾, 就視為圖片
-        //    - 在替換時，用 <img> 包起來
-        //    - 可以加上 class，讓圖片不至於超出版面（如 .max-w-full）
-        const imageRegex = /(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif|webp))/gi
-        output = output.replace(imageRegex, (match) => {
-            return `<img
-      src="${match}"
-      alt="image"
-      class="my-2 max-w-full h-auto rounded shadow hashtag-image"
-    />`
+        // 1) 先把所有網址變 <a>
+        const urlRegex = /(https?:\/\/[^\s]+)/gi
+        output = output.replace(urlRegex, (match) => {
+            return `<a href="${match}" target="_blank" rel="noopener noreferrer"
+      class="text-purple-600 underline break-all"
+    >${match}</a>`
         })
 
-        // 2) 再偵測 #標籤
-        //    - 類似你原本 highlightHashtags 的做法
-        //    - 加上 data-hashtag 用於點擊事件代理
+        // 2) 再把 a 裡面是圖片網址的 換成 <img>
+        const imgInLinkRegex = /<a[^>]*?>(https?:\/\/[^\s]+?\.(?:png|jpg|jpeg|gif|webp))<\/a>/gi
+        output = output.replace(imgInLinkRegex, (match, p1) => {
+            return `<img src="${p1}" alt="image" class="my-2 max-w-full h-auto rounded shadow hashtag-image"/>`
+        })
+
+        // 3) 再處理 hashtag
         const hashtagRegex = /#[^\s#]+/g
         output = output.replace(hashtagRegex, (match) => {
-            const justTag = match.slice(1) // 去掉 '#'
+            const justTag = match.slice(1)
             return `<span
       class="text-indigo-600 font-medium hashtag-span"
       data-hashtag="${justTag}"
@@ -660,6 +711,8 @@
 
         return output
     }
+
+
 
     let refreshInterval = null
 

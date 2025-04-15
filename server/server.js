@@ -193,6 +193,7 @@ app.post('/verify-email', async (req, res) => {
                 <p>請點擊以下連結驗證您的學校信箱：</p>
                 <a href="${confirmUrl}">${confirmUrl}</a>
                 <p>系統識別您來自「<strong>${schoolName}</strong>」，如果有錯誤請至頁面主動修改。</p>
+                <p>學校資料錯誤或未知？填寫 <a target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a> 完善系統幫助下一個同學</p>
                 <br>
                 <p>本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。</p>
                 <ul>
@@ -210,7 +211,9 @@ app.post('/verify-email', async (req, res) => {
                 <a href="https://did-edu.xiaozhi.moe/privacy" target="_blank">隱私政策</a>
                 </p>
                 <p>---</p>
-                <p>此為系統自動郵件，請勿回覆。</p>
+                <p>此為系統自動郵件，請勿回覆。<br>
+                This email is automatically sent by the system, please do not reply.
+                </p>
             `
         })
 
