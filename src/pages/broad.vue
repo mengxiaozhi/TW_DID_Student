@@ -167,7 +167,7 @@
 
                 <!-- 這裡改成 columns 實現瀑布流 -->
                 <div v-else class="columns-1 sm:columns-2 gap-4">
-                    <div @click="openPreview(msg)" v-for="msg in messages" :key="msg.id"
+                    <div v-for="msg in messages" :key="msg.id" @click="(e) => onMessageCardClick(e, msg)"
                         class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer mb-4 break-inside-avoid">
                         <div class="flex items-start gap-2">
                             <div v-if="msg.author_name"
@@ -244,12 +244,16 @@
                                 <!-- 回覆列表 -->
                                 <div v-if="msg.replies && msg.replies.length"
                                     class="mt-2 pl-4 border-l-2 border-slate-200 space-y-1 text-sm">
-                                    <div v-for="r in msg.replies" :key="r.id">
+                                    <div v-for="(r, index) in msg.replies.slice(0, 3)" :key="r.id">
                                         <div class="text-slate-700">
                                             {{ r.author_name || '匿名用戶｜' + r.school }}：{{ r.content }}
                                         </div>
                                         <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
                                     </div>
+                                    <button v-if="msg.replies.length > 3" @click.stop="openPreview(msg)"
+                                        class="text-xs text-indigo-600 mt-1 hover:underline">
+                                        查看全部 {{ msg.replies.length }} 則回覆
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -269,18 +273,75 @@
                             </svg>
                         </button>
 
-                        <div>
-                            <div class="mb-2 text-sm text-slate-500">
-                                {{ previewMessage?.author_name || '匿名用戶' }}・
-                                {{ previewMessage?.school || '' }}・
-                                {{ formatTime(previewMessage?.created_at) }}
+                        <!-- 頭像與名稱 -->
+                        <div class="flex items-start gap-3 mb-4">
+                            <div v-if="previewMessage?.author_name"
+                                class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
                             </div>
-                            <div class="text-slate-800 whitespace-pre-line leading-relaxed break-words text-base"
-                                v-html="parseContent(previewMessage?.content)">
+                            <div v-else class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="text-sm font-semibold text-slate-700">
+                                    {{ previewMessage?.author_name || '匿名用戶' }}・{{ previewMessage?.school || '' }}
+                                </div>
+                                <div class="text-xs text-slate-400">{{ formatTime(previewMessage?.created_at) }}</div>
+                            </div>
+                        </div>
+
+                        <!-- 內容 -->
+                        <div class="text-slate-800 whitespace-pre-line leading-relaxed break-words text-base mb-4"
+                            v-html="parseContent(previewMessage?.content)" @click="onContentClick($event)">
+                        </div>
+
+                        <!-- 功能列 -->
+                        <div class="flex gap-4 text-xs text-slate-500 mb-4">
+                            <button @click="handleLike(previewMessage)"
+                                class="flex items-center gap-1 hover:text-indigo-600 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                </svg>
+                                讚同
+                                <span class="text-indigo-500 font-medium">({{ previewMessage.likes || 0 }})</span>
+                            </button>
+                        </div>
+
+                        <!-- 回覆欄位 -->
+                        <div v-if="verifiedSchool" class="mt-4 space-y-2">
+                            <textarea v-model="previewMessage.replyContent" rows="2"
+                                class="w-full p-2 border rounded text-sm" placeholder="輸入回覆內容..."></textarea>
+                            <button @click="submitReply(previewMessage)"
+                                class="text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
+                                發佈回覆
+                            </button>
+                        </div>
+
+                        <br>
+
+                        <!-- 回覆列表 -->
+                        <div v-if="previewMessage?.replies && previewMessage.replies.length"
+                            class="pl-4 border-l-2 border-slate-200 space-y-1 text-sm">
+                            <div v-for="r in previewMessage.replies" :key="r.id">
+                                <div class="text-slate-700">
+                                    {{ r.author_name || '匿名用戶｜' + r.school }}：{{ r.content }}
+                                </div>
+                                <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
                             </div>
                         </div>
                     </div>
                 </div>
+
 
 
                 <!-- 載入更多按鈕 -->
@@ -297,7 +358,7 @@
 
         <!-- 驗證彈窗 -->
         <div v-if="showVerificationModal"
-            class="fixed inset-0 backdrop-blur-xl flex items-center justify-center z-20 p-4">
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-20 p-4">
             <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
                 <button @click="showVerificationModal = false"
                     class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
@@ -425,6 +486,12 @@
     function onSortChange() {
         // 一旦改變就重抓列表
         fetchMessages()
+    }
+
+    function onMessageCardClick(e, msg) {
+        const ignoreClickInside = ['A', 'IMG', 'SPAN', 'BUTTON', 'TEXTAREA']
+        if (ignoreClickInside.includes(e.target.tagName)) return
+        openPreview(msg)
     }
 
     let verifyInterval = null
