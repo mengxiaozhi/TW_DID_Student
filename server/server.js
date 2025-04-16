@@ -32,6 +32,8 @@ const transporter = nodemailer.createTransport({
     }
 })
 
+//環境檢查
+
 // 驗證 Gmail 應用程式
 transporter.verify((error, success) => {
     if (error) {
@@ -50,115 +52,35 @@ db.getConnection((err, connection) => {
     }
 });
 
-// edu.tw 學校網域對應
-const knownDomains = {
-    'gm.chihlee.edu.tw': '致理科技大學',
-    'mail.chihlee.edu.tw': '致理科技大學',
-    'chihlee.edu.tw': '致理科技大學',
-    'ntu.edu.tw': '國立臺灣大學',
-    'nthu.edu.tw': '國立清華大學',
-    'ncku.edu.tw': '國立成功大學',
-    'nctu.edu.tw': '國立交通大學',
-    'nsysu.edu.tw': '國立中山大學',
-    'nchu.edu.tw': '國立中興大學',
-    'nccu.edu.tw': '國立政治大學',
-    'ntnu.edu.tw': '國立臺灣師範大學',
-    'ncu.edu.tw': '國立中央大學',
-    'ccu.edu.tw': '國立中正大學',
-    'ntust.edu.tw': '國立臺灣科技大學',
-    'ntut.edu.tw': '國立臺北科技大學',
-    'nkust.edu.tw': '國立高雄科技大學',
-    'ntua.edu.tw': '國立臺灣藝術大學',
-    'tnnua.edu.tw': '國立臺南藝術大學',
-    'nycu.edu.tw': '國立陽明交通大學',
-    'ntou.edu.tw': '國立臺灣海洋大學',
-    'niu.edu.tw': '國立宜蘭大學',
-    'ntcu.edu.tw': '國立臺中教育大學',
-    'ncue.edu.tw': '國立彰化師範大學',
-    'yuntech.edu.tw': '國立雲林科技大學',
-    'ncyu.edu.tw': '國立嘉義大學',
-    'npust.edu.tw': '國立屏東科技大學',
-    'nttu.edu.tw': '國立臺東大學',
-    'nknu.edu.tw': '國立高雄師範大學',
-    'ndhu.edu.tw': '國立東華大學',
-    'ncnu.edu.tw': '國立暨南國際大學',
-    'ntpu.edu.tw': '國立臺北大學',
-    'ntus.edu.tw': '國立臺灣體育運動大學',
-    'ntunhs.edu.tw': '國立臺北護理健康大學',
-    'nfu.edu.tw': '國立虎尾科技大學',
-    'nkuht.edu.tw': '國立高雄餐旅大學',
-    'tcpa.edu.tw': '國立臺灣戲曲學院',
-    'nou.edu.tw': '國立空中大學',
-    'ncut.edu.tw': '國立勤益科技大學',
-    'ntub.edu.tw': '國立臺北商業大學',
-    'nutc.edu.tw': '國立臺中科技大學',
-    'nkfust.edu.tw': '國立高雄第一科技大學',
-    'kuas.edu.tw': '國立高雄應用科技大學',
-    'ntcpe.edu.tw': '國立臺灣體育學院',
-    'ntue.edu.tw': '國立臺北教育大學',
-    'nptu.edu.tw': '國立屏東大學',
-    'ntc.edu.tw': '國立臺東專科學校',
-    'ntin.edu.tw': '國立臺南護理專科學校',
-    "scu.edu.tw": "東吳大學",
-    "fju.edu.tw": "輔仁大學",
-    "thu.edu.tw": "東海大學",
-    "tku.edu.tw": "淡江大學",
-    "fcu.edu.tw": "逢甲大學",
-    "cycu.edu.tw": "中原大學",
-    "cmu.edu.tw": "中國醫藥大學",
-    "tmu.edu.tw": "臺北醫學大學",
-    "mcu.edu.tw": "銘傳大學",
-    "shu.edu.tw": "世新大學",
-    "usc.edu.tw": "實踐大學",
-    "ttu.edu.tw": "大同大學",
-    "pccu.edu.tw": "中國文化大學",
-    "pu.edu.tw": "靜宜大學",
-    "cgu.edu.tw": "長庚大學",
-    "yzu.edu.tw": "元智大學",
-    "kmu.edu.tw": "高雄醫學大學",
-    "isu.edu.tw": "義守大學",
-    "cju.edu.tw": "長榮大學",
-    "csmu.edu.tw": "中山醫學大學",
-    "huafan.edu.tw": "華梵大學",
-    "chu.edu.tw": "中華大學",
-    "dyu.edu.tw": "大葉大學",
-    "au.edu.tw": "真理大學",
-    "tcu.edu.tw": "慈濟大學",
-    "nhu.edu.tw": "南華大學",
-    "hcu.edu.tw": "玄奘大學",
-    "fgu.edu.tw": "佛光大學",
-    "ukn.edu.tw": "康寧大學",
-    "asia.edu.tw": "亞洲大學",
-    "knu.edu.tw": "開南大學",
-    "mmc.edu.tw": "馬偕醫學院",
-    "dila.edu.tw": "法鼓文理學院",
-    "ctbc.edu.tw": "中信金融管理學院",
-    "mcut.edu.tw": "明志科技大學",
-    "csu.edu.tw": "正修科技大學",
-    "hwu.edu.tw": "醒吾科技大學",
-    "fy.edu.tw": "輔英科技大學",
-    "tpcu.edu.tw": "臺北城市科技大學",
-    "mitust.edu.tw": "敏實科技大學",
-    "pcsh.ntpc.edu.tw": "新北市立板橋高中",
-    "cyut.edu.tw": "朝陽科技大學",
-    "rhs.tn.edu.tw": "臺南市立永仁高級中學",
-    "tsh.ntct.edu.tw.edu.tw": "國立南投高級中學",
-    "kjsh.ntpc.edu.tw": "新北市光仁高級中學"
-}
+
+//郵件功能
 
 // 從完整子網域逐層向上尋找對應學校名稱
-function matchSchoolName(domain) {
-    const parts = domain.split('.')
+async function matchSchoolName(domain) {
+    const parts = domain.split('.');
+
+    const conn = await db.promise();
+
     while (parts.length >= 2) {
-        const current = parts.join('.')
-        if (knownDomains[current]) return knownDomains[current]
-        parts.shift()
+        const current = parts.join('.');
+
+        const [rows] = await conn.query(
+            'SELECT name FROM school_domains WHERE domain = ? LIMIT 1',
+            [current]
+        );
+
+        if (rows.length > 0) {
+            return rows[0].name;
+        }
+
+        parts.shift(); // 繼續往上層查找
     }
-    return '未知學校'
+
+    return '未知學校';
 }
-const eduEmailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.edu\.tw)$/
 
 // 驗證學生 email 並發送確認信
+const eduEmailRegex = /^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.edu\.tw)$/
 app.post('/verify-email', async (req, res) => {
     const { email } = req.body
     const match = email.match(eduEmailRegex)
@@ -172,7 +94,7 @@ app.post('/verify-email', async (req, res) => {
 
     const studentId = match[1]
     const domain = match[2].toLowerCase()
-    const schoolName = matchSchoolName(domain)
+    const schoolName = await matchSchoolName(domain)
     const token = crypto.randomBytes(20).toString('hex')
     const tokenExpiry = Date.now() + 3 * 24 * 60 * 60 * 1000 // 三天有效
 
@@ -231,7 +153,6 @@ app.post('/verify-email', async (req, res) => {
     }
 })
 
-
 // 驗證 token 並啟用資格
 app.get('/confirm-email', async (req, res) => {
     const { token } = req.query
@@ -269,6 +190,9 @@ app.get('/check-verification', async (req, res) => {
         res.status(500).json({ error: '查詢驗證狀態失敗' })
     }
 })
+
+
+//發卡及驗證功能
 
 // 發卡：建立 VC 卡片資料
 app.post('/vc-item-data', async (req, res) => {
@@ -335,6 +259,7 @@ app.get('/verify-result', async (req, res) => {
         res.status(err.response?.status || 500).json(err.response?.data || { error: 'verify-result error' })
     }
 })
+
 
 // 投票功能
 
@@ -537,7 +462,7 @@ app.post('/board-message', async (req, res) => {
     }
 })
 
-
+// 匿名留言板：取得留言及回覆
 app.get('/board-with-replies', async (req, res) => {
     try {
         const { page = 1, pageSize = 10, search, sort } = req.query

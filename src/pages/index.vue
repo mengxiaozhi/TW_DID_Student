@@ -152,8 +152,10 @@
                                                 d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                         </svg>
                                     </div>
-                                    <input v-model="form.number" readonly
+                                    <input v-if="email === 'did-test@xiaozhi.moe'" v-model="form.number" readonly
                                         class="w-full pl-10 border border-gray-200 p-3 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed" />
+                                    <input v-else v-model="form.number"
+                                        class="w-full pl-10 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
                                 </div>
                                 <p class="mt-1 text-xs text-gray-500">學號已自動從您的學校信箱取得</p>
                             </div>
@@ -259,7 +261,8 @@
                                     </svg>
                                 </div>
                                 <div class="ml-3">
-                                    <p class="text-sm text-blue-700">請使用數位憑證皮夾 App 掃描以下 QR Code 進行驗證。驗證過程將保護您的隱私，資料不會傷害你。</p>
+                                    <p class="text-sm text-blue-700">請使用數位憑證皮夾 App 掃描以下 QR Code
+                                        進行驗證。驗證過程將保護您的隱私，資料不會傷害你。</p>
                                 </div>
                             </div>
                         </div>
