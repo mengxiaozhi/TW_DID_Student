@@ -342,8 +342,6 @@
                     </div>
                 </div>
 
-
-
                 <!-- 載入更多按鈕 -->
                 <div v-if="messages.length >= 10" class="flex justify-center mt-6">
                     <button @click="loadMoreMessages"

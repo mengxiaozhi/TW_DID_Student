@@ -119,9 +119,31 @@
                         <!-- 學校 -->
                         <div>
                             <label class="block mb-2 text-sm font-medium text-slate-700">學校</label>
-                            <input v-model="form.school_CN" required pattern="^[一-龥]+$"
-                                class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            <div v-if="email === 'did-test@xiaozhi.moe'" class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                    </svg>
+                                </div>
+                                <input v-model="form.school_CN" required
+                                    pattern="^[一-龥]+$"
+                                    class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
+                                    placeholder="請輸入學校名稱（中文）" readonly />
+                            </div>
+                            <div v-else class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                    </svg>
+                                </div>
+                                <input v-model="form.school_CN" required pattern="^[一-龥]+$"
+                                class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
                                 placeholder="請輸入學校名稱（中文）" />
+                            </div>
                             <p class="mt-1 text-xs text-slate-500">學校已自動從您的學校信箱取得，如果錯誤請手動修改</p>
                             <p class="mt-1 text-xs text-slate-500">學校資料錯誤或未知？填寫 <a class="underline text-blue-600"
                                     target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a> 完善系統幫助下一個同學</p>
@@ -375,7 +397,7 @@
             verified.value = true;
             emailSent.value = true;
             verifyPending.value = false;
-            form.value.school_CN = '國立台灣大學'
+            form.value.school_CN = '國立台灣没考上大學'
             form.value.number = '00000000';
             form.value.name = '張三';
             registrationDateStartRaw.value = '2020-03-15';
