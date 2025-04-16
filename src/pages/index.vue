@@ -4,160 +4,226 @@
         <main class="py-8 px-4 md:px-8">
             <div
                 class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 space-y-8 border border-slate-200 transition-all duration-300 hover:shadow-xl">
-                <div class="flex justify-center space-x-4">
+                <!-- Tab Navigation -->
+                <div class="flex border-b border-gray-200">
                     <button
-                        class="px-6 py-2.5 rounded-full text-sm font-medium transition duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        :class="activeTab === 'generate' ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                        class="flex-1 py-4 px-6 font-medium text-center relative overflow-hidden transition-all hover:bg-gray-50 focus:outline-none group"
+                        :class="activeTab === 'generate' ? 'text-blue-600' : 'text-gray-600'"
                         @click="activeTab = 'generate'">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1.5" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                        生成學生證
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                            </svg>
+                            生成學生證
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
+                            :class="activeTab === 'generate' ? 'scale-x-100' : 'scale-x-0'"></div>
                     </button>
-                    <!-- 匿名留言板 -->
+
                     <router-link to="/broad" custom v-slot="{ navigate, isActive }">
                         <button @click="navigate(); activeTab = 'broad'"
-                            class="px-6 py-2.5 rounded-full text-sm font-medium transition duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                            :class="(activeTab === 'broad' || isActive) ? 'bg-blue-500 text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1.5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                            </svg>
-                            匿名留言板
+                            class="flex-1 py-4 px-6 font-medium text-center relative overflow-hidden transition-all hover:bg-gray-50 focus:outline-none group"
+                            :class="activeTab === 'broad' || isActive ? 'text-blue-600' : 'text-gray-600'">
+                            <div class="flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+                                </svg>
+                                匿名留言板
+                            </div>
+                            <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
+                                :class="activeTab === 'broad' ? 'scale-x-100' : 'scale-x-0'"></div>
                         </button>
                     </router-link>
+
                     <button
-                        class="px-6 py-2.5 rounded-full text-sm font-medium transition duration-200 ease-in-out hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
-                        :class="activeTab === 'verify' ? 'bg-emerald-500 text-white shadow-md' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'"
+                        class="flex-1 py-4 px-6 font-medium text-center relative overflow-hidden transition-all hover:bg-gray-50 focus:outline-none group"
+                        :class="activeTab === 'verify' ? 'text-blue-600' : 'text-gray-600'"
                         @click="activeTab = 'verify'; generateUUID()">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block mr-1.5" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                        驗證學生證
+                        <div class="flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            驗證學生證
+                        </div>
+                        <div class="absolute bottom-0 left-0 w-full h-0.5 bg-blue-600 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"
+                            :class="activeTab === 'verify' ? 'scale-x-100' : 'scale-x-0'"></div>
                     </button>
                 </div>
 
-                <!-- 信箱驗證區塊 -->
-                <div v-if="activeTab === 'generate'" class="transition-all">
-                    <form @submit.prevent="sendVerificationEmail" class="space-y-5">
-                        <div>
-                            <label class="block mb-1.5 text-sm font-medium text-slate-700">學校信箱</label>
-                            <div class="relative">
-                                <input v-model="email" type="email"
-                                    class="w-full pl-10 border border-slate-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                                    required placeholder="@xxx.edu.tw" />
+                <!-- Generate Student ID Content -->
+                <div v-if="activeTab === 'generate'" class="space-y-6">
+                    <template v-if="!emailSent">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-4">第一步：驗證您的學生身分</h3>
+
+                        <form @submit.prevent="sendVerificationEmail" class="space-y-5">
+                            <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 mb-6">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600"
+                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-blue-700">我們將向您的學校信箱發送驗證碼，請確保您能夠訪問此信箱。</p>
+                                    </div>
+                                </div>
                             </div>
-                            <p class="mt-1 text-xs text-slate-500">僅限 @xxx.edu.tw 申請</p>
-                        </div>
-                        <button v-if="!emailSent" type="submit"
-                            class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg hover:shadow-md transition duration-200 ease-in-out flex justify-center items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                            寄送驗證信
-                        </button>
-                        <div v-if="verifyPending && !verified"
-                            class="flex items-center justify-center py-2 text-sm text-slate-500">
-                            <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-blue-500"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+
+                            <div>
+                                <label class="block mb-2 font-medium text-gray-700">學校信箱</label>
+                                <div class="relative">
+                                    <input v-model="email" type="email" required placeholder="您的學校信箱地址"
+                                        class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+                                </div>
+                                <p class="mt-2 text-xs text-gray-500">僅限 edu.tw 信箱可申請數位學生證</p>
+                            </div>
+
+                            <button type="submit"
+                                class="w-full py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm hover:shadow transition duration-200 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                                寄送驗證碼
+                            </button>
+                        </form>
+                    </template>
+
+                    <div v-if="verifyPending && !verified" class="py-8 text-center">
+                        <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+                            <svg class="animate-spin h-10 w-10 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
                                     stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor"
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                 </path>
                             </svg>
-                            請前往您的郵箱進行驗證，正在等待驗證中...
                         </div>
-                    </form>
+                        <h3 class="text-lg font-medium text-gray-800 mb-2">驗證進行中</h3>
+                        <p class="text-gray-600">請前往您的郵箱查收驗證郵件並點擊驗證連結</p>
+                        <!--
+                        <p class="text-sm text-gray-500 mt-4">沒有收到郵件？<button
+                                class="text-blue-600 hover:underline">重新發送</button></p>
+                        -->
+                    </div>
 
-                    <!-- 生成學生證頁面 -->
-                    <form v-if="verified && !cardGenerated" @submit.prevent="generateCard" class="space-y-6 pt-6">
-                        <!-- Success message on verification -->
-                        <div
-                            class="bg-emerald-50 border border-emerald-200 p-4 rounded-lg text-sm text-emerald-700 flex items-center mb-6">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-emerald-500 flex-shrink-0"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <!-- Student ID Information Form -->
+                    <form v-if="verified && !cardGenerated" @submit.prevent="generateCard" class="space-y-6">
+                        <div class="bg-green-50 border border-green-100 rounded-lg p-4 flex items-start">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="h-5 w-5 text-green-500 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    d="M5 13l4 4L19 7" />
                             </svg>
-                            <span>驗證成功，請填寫以下學生證資訊</span>
+                            <div>
+                                <h4 class="font-medium text-green-800">驗證成功</h4>
+                                <p class="text-sm text-green-700 mt-1">請填寫以下信息完成學生證生成</p>
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                            <!-- 姓名 -->
+                        <h3 class="text-lg font-semibold text-gray-800 mt-4">第二步：填寫學生證資訊</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label class="block mb-2 text-sm font-medium text-slate-700">姓名</label>
+                                <label class="block mb-2 font-medium text-gray-700">姓名</label>
                                 <input v-model="form.name" required pattern="^[一-龥_a-zA-Z0-9]+$"
-                                    class="w-full border border-slate-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                    placeholder="請輸入姓名" />
+                                    class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="請輸入您的姓名" />
                             </div>
-                            <!-- Student ID field (read-only) -->
-                            <div class="md:col-span-1">
-                                <label class="block mb-2 text-sm font-medium text-slate-700">學號</label>
+
+                            <div>
+                                <label class="block mb-2 font-medium text-gray-700">學號</label>
                                 <div class="relative">
                                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
                                         </svg>
                                     </div>
-                                    <input v-model="form.number"
-                                        class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
-                                        readonly />
+                                    <input v-model="form.number" readonly
+                                        class="w-full pl-10 border border-gray-200 p-3 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed" />
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500">學號已自動從您的學校信箱取得</p>
+                                <p class="mt-1 text-xs text-gray-500">學號已自動從您的學校信箱取得</p>
                             </div>
                         </div>
-                        <!-- 學校 -->
+
                         <div>
-                            <label class="block mb-2 text-sm font-medium text-slate-700">學校</label>
-                            <div v-if="email === 'did-test@xiaozhi.moe'" class="relative">
+                            <label class="block mb-2 font-medium text-gray-700">學校</label>
+                            <div class="relative">
                                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6h16M4 10h16M4 14h16M4 18h16" />
+                                            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                     </svg>
                                 </div>
-                                <input v-model="form.school_CN" required
-                                    pattern="^[一-龥]+$"
-                                    class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
-                                    placeholder="請輸入學校名稱（中文）" readonly />
+                                <input v-if="email === 'did-test@xiaozhi.moe'" v-model="form.school_CN" required
+                                    pattern="^[一-龥]+$" readonly
+                                    class="w-full pl-10 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-gray-50 text-gray-600 cursor-not-allowed"
+                                    placeholder="請輸入學校名稱（中文）" />
+                                <input v-else v-model="form.school_CN" required pattern="^[一-龥]+$"
+                                    class="w-full pl-10 border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    placeholder="請輸入學校名稱（中文）" />
                             </div>
-                            <div v-else class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M4 6h16M4 10h16M4 14h16M4 18h16" />
-                                    </svg>
-                                </div>
-                                <input v-model="form.school_CN" required pattern="^[一-龥]+$"
-                                class="w-full pl-10 border border-slate-200 p-3 rounded-lg bg-slate-50 text-slate-500 cursor-not-allowed"
-                                placeholder="請輸入學校名稱（中文）" />
+                            <div class="flex items-start mt-2">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                <p class="ml-2 text-xs text-gray-500">學校資料錯誤或未知？<a class="text-blue-600 hover:underline"
+                                        href="https://forms.gle/6oCmMdNBK8gSMCveA" target="_blank">填寫表單</a> 完善系統幫助下一個同學
+                                </p>
                             </div>
-                            <p class="mt-1 text-xs text-slate-500">學校已自動從您的學校信箱取得，如果錯誤請手動修改</p>
-                            <p class="mt-1 text-xs text-slate-500">學校資料錯誤或未知？填寫 <a class="underline text-blue-600"
-                                    target="_blank" href="https://forms.gle/6oCmMdNBK8gSMCveA">表單</a> 完善系統幫助下一個同學</p>
                         </div>
+
                         <button type="submit"
-                            class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition duration-200">
-                            提交生成
+                            class="w-full py-3.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm hover:shadow transition duration-200 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            生成我的數位學生證
                         </button>
                     </form>
 
-                    <div v-if="qrCode" class="mt-8 text-center">
-                        <a :href="deepLink">
+                    <!-- QR Code Display -->
+                    <div v-if="qrCode" class="py-6 text-center">
+                        <div class="mb-8">
+                            <div
+                                class="w-16 h-16 bg-green-100 rounded-full mx-auto flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-800">學生證生成成功！</h3>
+                            <p class="text-gray-600 mt-2">請使用數位憑證皮夾 App 掃描下方 QR Code</p>
+                        </div>
+
+                        <div class="bg-gray-50 p-6 rounded-xl inline-block mb-8">
+                            <img :src="qrCode" alt="QRCode"
+                                class="mx-auto w-52 h-52 rounded-lg shadow hover:shadow-md transition duration-300" />
+                        </div>
+
+                        <a :href="deepLink" class="block">
                             <button
-                                class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition duration-200 ease-in-out flex justify-center items-center">
+                                class="w-full py-3.5 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 shadow-sm hover:shadow transition duration-200 flex items-center justify-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round">
@@ -168,75 +234,70 @@
                                 導入至數位憑證皮夾
                             </button>
                         </a>
-                        <br>
-                        <h2 class="text-lg font-medium mb-4 text-slate-800">掃描 QR Code 領取數位學生證：</h2>
-                        <div class="bg-slate-50 p-6 rounded-xl inline-block">
-                            <img :src="qrCode" alt="QRCode"
-                                class="mx-auto w-48 h-48 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 hover:scale-105" />
+                        <!--
+                        <div class="mt-6 text-center">
+                            <p class="text-sm text-gray-500">遇到問題？<a href="#"
+                                    class="text-blue-600 hover:underline">查看常見問題</a> 或 <a href="#"
+                                    class="text-blue-600 hover:underline">聯繫客服</a></p>
                         </div>
-                        <p class="mt-4 text-sm text-slate-500">請使用數位憑證皮夾 App 掃描此 QR Code</p>
+                        -->
                     </div>
                 </div>
 
-                <!-- 驗證頁面 -->
-                <div v-else class="transition-all">
-                    <template v-if="verifiedData.length">
-                        <div class="mt-6 space-y-4">
-                            <div class="flex items-center justify-center mb-4">
-                                <div class="bg-emerald-100 p-2 rounded-full">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-emerald-500"
-                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <!-- Verify Student ID Content -->
+                <div v-if="activeTab === 'verify'" class="space-y-6">
+                    <template v-if="!verifiedData.length">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-6">驗證數位學生證</h3>
+
+                        <div class="bg-blue-50 rounded-lg p-4 border border-blue-100 mb-6">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
-                            </div>
-                            <h2 class="text-xl font-medium text-center text-slate-800">驗證成功，個人資料如下：</h2>
-                            <div class="bg-slate-50 rounded-xl p-4 mt-4">
-                                <div v-for="item in verifiedData" :key="item.ename"
-                                    class="border-b border-slate-200 last:border-b-0 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1">
-                                    <span class="font-medium text-slate-700">{{ item.cname }}：</span>
-                                    <span class="text-slate-900 break-all">{{ item.value }}</span>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700">請使用數位憑證皮夾 App 掃描以下 QR Code 進行驗證。驗證過程將保護您的隱私，資料不會傷害你。</p>
                                 </div>
                             </div>
                         </div>
-                        <div class="pt-6">
-                            <button @click="generateUUID"
-                                class="w-full py-3 bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-lg hover:shadow-md transition duration-200 ease-in-out flex justify-center items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                </svg>
-                                重新驗證
-                            </button>
-                        </div>
-                    </template>
 
-                    <template v-else>
-                        <form @submit.prevent="verifyCard" class="space-y-5">
-                            <div>
-                                <label class="block mb-1.5 text-sm font-medium text-slate-700">Transaction ID</label>
-                                <div class="relative">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
-                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                                        </svg>
-                                    </div>
-                                    <input v-model="verifyTid"
-                                        class="w-full pl-10 border border-slate-300 p-3 rounded-lg bg-slate-50 text-slate-500 font-mono tracking-wide"
-                                        readonly />
+                        <div class="mb-6">
+                            <label class="block mb-2 font-medium text-gray-700">驗證碼</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
                                 </div>
-                                <p class="mt-1 text-xs text-slate-500">這是您的唯一驗證碼，用於確認驗證請求</p>
+                                <input v-model="verifyTid" readonly
+                                    class="w-full pl-10 border border-gray-300 p-3 rounded-lg bg-gray-50 text-gray-700 font-mono tracking-wide" />
                             </div>
-                        </form>
+                            <p class="mt-1 text-xs text-gray-500">這是您的唯一驗證碼，用於確認驗證請求的有效性</p>
+                        </div>
 
-                        <div v-if="verifyQrCode" class="mt-8 text-center">
-                            <a :href="auth_uri">
+                        <!-- QR Code for Verification -->
+                        <div v-if="verifyQrCode" class="py-8 text-center">
+                            <div
+                                class="bg-gradient-to-r from-gray-50 to-gray-100 p-8 rounded-xl inline-block mb-6 border border-gray-200">
+                                <img :src="verifyQrCode" alt="VerifyQRCode"
+                                    class="mx-auto w-56 h-56 rounded-lg shadow-sm" />
+                            </div>
+
+                            <div class="mb-6">
+                                <div class="inline-flex items-center px-4 py-2 bg-blue-50 rounded-full text-blue-700">
+                                    <div class="animate-pulse mr-2 h-2 w-2 bg-blue-600 rounded-full"></div>
+                                    <span class="text-sm font-medium">請在 60 秒內完成掃描</span>
+                                </div>
+                            </div>
+
+                            <a :href="auth_uri" class="block mb-6">
                                 <button
-                                    class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition duration-200 ease-in-out flex justify-center items-center">
+                                    class="w-full py-3.5 bg-emerald-600 text-white font-medium rounded-lg hover:bg-emerald-700 shadow-sm hover:shadow transition duration-200 flex items-center justify-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round">
@@ -246,30 +307,71 @@
                                     前往App進行身分驗證
                                 </button>
                             </a>
-                            <br>
-                            <h2 class="text-lg font-medium mb-4 text-slate-800">請用錢包 App 掃描以下 QR Code 驗證身份</h2>
-                            <div class="bg-slate-50 p-6 rounded-xl inline-block">
-                                <img :src="verifyQrCode" alt="VerifyQRCode"
-                                    class="mx-auto w-48 h-48 rounded-lg shadow-md hover:shadow-lg transition-transform duration-300 hover:scale-105" />
-                            </div>
-                            <p class="mt-4 text-sm text-slate-500">請在 60 秒內完成掃描</p>
-                            <div class="mt-4 flex items-center justify-center">
-                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-                                <span class="ml-3 text-sm text-slate-500">等待驗證中...</span>
+
+                            <div class="flex items-center justify-center text-gray-500">
+                                <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-600"></div>
+                                <span class="ml-3 text-sm">等待驗證中...</span>
                             </div>
                         </div>
 
-                        <div v-if="verifyFailed"
-                            class="mt-6 text-center p-4 bg-red-50 rounded-lg border border-red-200">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mx-auto text-red-500 mb-2"
-                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p class="text-red-600 font-medium">驗證超時，請重新驗證。</p>
+                        <!-- Verification Failed Message -->
+                        <div v-if="verifyFailed" class="text-center py-6">
+                            <div
+                                class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-red-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-xl font-medium text-gray-800 mb-2">驗證超時</h3>
+                            <p class="text-gray-600 mb-6">驗證請求已過期，請重新開始驗證流程</p>
                             <button @click="generateUUID(); verifyCard()"
-                                class="mt-3 px-4 py-2 bg-red-100 hover:bg-red-200 text-red-600 font-medium rounded-lg transition duration-200 ease-in-out text-sm">
-                                重新開始
+                                class="px-6 py-2.5 bg-red-100 hover:bg-red-200 text-red-700 font-medium rounded-lg transition duration-200">
+                                重新開始驗證
+                            </button>
+                        </div>
+                    </template>
+
+                    <!-- Verification Success Result -->
+                    <template v-else>
+                        <div class="text-center py-6">
+                            <div
+                                class="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mb-6">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-semibold text-gray-800 mb-2">驗證成功</h3>
+                            <p class="text-gray-600 mb-8">此數位學生證是有效的，以下是持證人資料</p>
+
+                            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden mb-6">
+                                <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-4">
+                                    <h4 class="text-white font-medium text-center">學生資料</h4>
+                                </div>
+                                <div class="divide-y divide-gray-200">
+                                    <div v-for="item in verifiedData" :key="item.ename"
+                                        class="px-4 py-3 flex justify-between items-center group hover:bg-gray-50">
+                                        <span class="text-gray-700 font-medium">{{ item.cname }}：</span>
+                                        <span class="text-gray-800">{{ item.value }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-4 bg-blue-50 rounded-lg border border-blue-100 mb-6">
+                                <p class="text-sm text-blue-700">驗證通過確認該學生身份資料與數位學生證資訊一致，且證件未被篡改。</p>
+                            </div>
+
+                            <button @click="generateUUID"
+                                class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg shadow-sm hover:shadow transition duration-200 flex items-center justify-center mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1.5" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                驗證新證件
                             </button>
                         </div>
                     </template>
