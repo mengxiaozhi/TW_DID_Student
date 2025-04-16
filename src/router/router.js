@@ -3,7 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
     { name: '首頁', path: '/', component: () => import('../pages/index.vue') },
     { name: '投票', path: '/vote', component: () => import('../pages/vote.vue') },
-    { name: '留言板', path: '/broad', component: () => import('../pages/broad.vue') },
+    { name: '留言板', path: '/broad/:id?', component: () => import('../pages/broad.vue') },
     { name: '確認電子郵件', path: '/confirm', component: () => import('../pages/confirm.vue') },
     { name: '關於', path: '/about', component: () => import('../pages/about.vue') },
     { name: '使用條款', path: '/terms', component: () => import('../pages/terms.vue') },

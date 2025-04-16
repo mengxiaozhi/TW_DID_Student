@@ -229,6 +229,15 @@
                                         </svg>
                                         回覆
                                     </button>
+                                    <button @click="shareMessage(msg.id)" class=" flex items-center gap-1
+                                        hover:text-indigo-600 transition">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                        </svg>
+                                        分享
+                                    </button>
                                 </div>
 
                                 <!-- 回覆輸入框 -->
@@ -314,6 +323,15 @@
                                 </svg>
                                 讚同
                                 <span class="text-indigo-500 font-medium">({{ previewMessage.likes || 0 }})</span>
+                            </button>
+                            <button @click="shareMessage(previewMessage.id)"
+                                class="flex items-center gap-1 hover:text-indigo-600 transition">
+                                <svg xmlns=" http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                                分享
                             </button>
                         </div>
 
@@ -471,6 +489,11 @@
     const previewMessage = ref(null)
     const showPreviewModal = ref(false)
 
+    import { useRoute, useRouter } from 'vue-router'
+
+    const route = useRoute()
+    const router = useRouter()
+
     function openPreview(msg) {
         previewMessage.value = msg
         showPreviewModal.value = true
@@ -478,6 +501,10 @@
 
     function closePreview() {
         showPreviewModal.value = false
+        previewMessage.value = null
+        if (route.params.id) {
+            router.replace({ name: 'Board' })
+        }
     }
 
     // 監聽下拉選單改變
@@ -490,6 +517,15 @@
         const ignoreClickInside = ['A', 'IMG', 'SPAN', 'BUTTON', 'TEXTAREA']
         if (ignoreClickInside.includes(e.target.tagName)) return
         openPreview(msg)
+    }
+
+    function shareMessage(id) {
+        const url = `https://did-edu.xiaozhi.moe/board/${id}`
+        navigator.clipboard.writeText(url).then(() => {
+            alert('已複製連結到剪貼簿')
+        }).catch(() => {
+            alert('複製失敗，請手動複製')
+        })
     }
 
     let verifyInterval = null
@@ -604,6 +640,18 @@
 
             messages.value = newList
             page.value = 1
+
+            // ✅ 改為讀取 params.id
+            const idParam = parseInt(route.params.id)
+            if (idParam && !isNaN(idParam)) {
+                const match = newList.find(m => m.id === idParam)
+                if (match) {
+                    previewMessage.value = match
+                    showPreviewModal.value = true
+                } else {
+                    router.replace({ name: 'Board' }) // 回到 /board
+                }
+            }
         } catch (e) {
             console.error('取得留言失敗', e)
         } finally {
