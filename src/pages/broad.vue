@@ -503,7 +503,7 @@
         showPreviewModal.value = false
         previewMessage.value = null
         if (route.params.id) {
-            router.replace({ name: 'Board' })
+            router.replace({ name: 'Broad' })
         }
     }
 
@@ -520,7 +520,7 @@
     }
 
     function shareMessage(id) {
-        const url = `https://did-edu.xiaozhi.moe/board/${id}`
+        const url = `https://did-edu.xiaozhi.moe/broad/${id}`
         navigator.clipboard.writeText(url).then(() => {
             alert('已複製連結到剪貼簿')
         }).catch(() => {
