@@ -1,5 +1,5 @@
 <template>
-    <main>
+    <main class="py-8 px-4 md:px-8">
         <div
             class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl">
             <div class="flex items-center justify-center mb-6">
@@ -67,8 +67,8 @@
                     </p>
                     <br>
                     <p class="text-xs text-slate-500 md:text-sm ">© 版權所有
-                        <a href="https://xiaozhi.moe" target="_blank" class="underline text-blue-600">Mengxiaozhi</a>
-                        ｜聯絡：<a class="underline text-blue-600" href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a>
+                        <a href="https://xiaozhi.moe" target="_blank" class="underline text-primary">Mengxiaozhi</a>
+                        ｜聯絡：<a class="underline text-primary" href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a>
                     </p>
                 </div>
             </div>

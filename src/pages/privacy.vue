@@ -1,133 +1,155 @@
-<style>
-    td {
-        width: 200px;
-    }
-</style>
 <template>
-    <main class="pt-3">
-        <div
-            class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl">
-            <div class="flex items-center justify-center mb-6"></div>
-            <h1>隱私政策</h1>
-            <p><strong>最後更新日期：</strong>2025 年 4 月 8 日</p>
-            <p>本文件針對平台：<code>did-edu.xiaozhi.moe</code></p>
-
-            <h2>一、資料控管者（Data Controller）</h2>
-            <p>本平台由個人開發者 Mengxiaozhi（以下稱「我們」）運營。</p>
-            <ul>
-                <li>Email：me@xiaozhi.moe</li>
-                <li>聯絡請以電子郵件為主</li>
-            </ul>
-
-            <h2>二、資料蒐集項目與用途</h2>
-            <h3>📌 憑證生成功能</h3>
-            <div class="py-3 px-3 my-6 w-full border-2 rounded-xl">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>資料項目</th>
-                            <th>蒐集方式</th>
-                            <th>使用目的</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Email 信箱</td>
-                            <td>使用者主動輸入</td>
-                            <td>用於驗證學術身份、自動辨識學校名稱，生成憑證後由本網站紀錄留存。</td>
-                        </tr>
-                        <tr>
-                            <td>學生學號</td>
-                            <td>系統自動匹配Email 信箱取得</td>
-                            <td>用於驗證學術身份、自動辨識學校名稱，生成憑證後由個人數位皮夾託管。</td>
-                        </tr>
-                        <tr>
-                            <td>學生姓名</td>
-                            <td>使用者主動輸入</td>
-                            <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
-                        </tr>
-                        <tr>
-                            <td>學生學校</td>
-                            <td>使用者主動輸入或系統自動匹配Email 信箱取得</td>
-                            <td>展示於憑證頁面，供個人識別之用，生成憑證後由個人數位皮夾託管。</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <main class="py-8 px-4 md:px-8 bg-slate-50 min-h-screen">
+        <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200">
+            <div class="text-center mb-6">
+                <h1 class="text-2xl font-bold text-secondary">隱私政策</h1>
+                <p class="text-sm text-slate-500 mt-1">最後更新日期：2025 年 4 月 8 日</p>
+                <p class="text-sm text-slate-500">本文件針對平台：<code
+                        class="font-mono text-primary">did-edu.xiaozhi.moe</code></p>
             </div>
 
-            <h3>💬 留言板功能</h3>
-            <div class="py-3 px-3 my-6 w-full border-2 rounded-xl">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>資料項目</th>
-                            <th>蒐集方式</th>
-                            <th>使用目的</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>留言內容</td>
-                            <td>使用者主動輸入</td>
-                            <td>顯示於公開留言板，供用戶互動與參考。</td>
-                        </tr>
-                        <tr>
-                            <td>學校名稱</td>
-                            <td>通過 VC 驗證取得</td>
-                            <td>作為驗證身分後所附加的基本識別資訊，提升留言可信度。</td>
-                        </tr>
-                        <tr>
-                            <td>姓名（選填）</td>
-                            <td>通過 VC 實名驗證</td>
-                            <td>若使用者選擇使用實名，則會附於留言以表明作者身分。</td>
-                        </tr>
-                        <tr>
-                            <td>按讚記錄（非識別化）</td>
-                            <td>用戶點擊按鈕後送出</td>
-                            <td>用於統計與改善互動功能，並不會綁定身份或追蹤個人。</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <p><strong>我們不會蒐集以下類型資訊：</strong>Cookies、IP、裝置資料、個人照片、住址等敏感個資。</p>
+            <section class="text-slate-700 text-[15px] leading-relaxed space-y-8">
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">一、資料控管者（Data Controller）</h2>
+                    <p>本平台由個人開發者 Mengxiaozhi（以下稱「我們」）運營。</p>
+                    <ul class="list-disc list-inside mt-2 space-y-1">
+                        <li>Email：me@xiaozhi.moe</li>
+                        <li>聯絡請以電子郵件為主</li>
+                    </ul>
+                </div>
 
-            <h2>三、合法性依據（Legal Basis）</h2>
-            <ol>
-                <li>使用者明示同意（GDPR 第 6(1)(a) 條）</li>
-                <li>合法權益（第 6(1)(f) 條）以教育展示為目的</li>
-            </ol>
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">二、資料蒐集項目與用途</h2>
 
-            <h2>四、資料儲存與保留期限</h2>
-            <ul>
-                <li>本系統不會永久儲存任何個資，除驗證信箱外處理後即時銷毀</li>
-                <li>所有資料僅用於該次憑證或留言生成，除驗證信箱外不建立資料庫留存</li>
-            </ul>
+                    <h3 class="text-base font-medium mt-4 mb-2">📌 憑證生成功能</h3>
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full text-sm border border-slate-300 rounded-lg overflow-hidden">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold">
+                                <tr>
+                                    <th class="border px-3 py-2">資料項目</th>
+                                    <th class="border px-3 py-2">蒐集方式</th>
+                                    <th class="border px-3 py-2">使用目的</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-700">
+                                <tr>
+                                    <td class="border px-3 py-2">Email 信箱</td>
+                                    <td class="border px-3 py-2">使用者主動輸入</td>
+                                    <td class="border px-3 py-2">用於驗證學術身份、自動辨識學校名稱，生成憑證後由本網站紀錄留存。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">學生學號</td>
+                                    <td class="border px-3 py-2">系統自動匹配 Email 信箱取得</td>
+                                    <td class="border px-3 py-2">生成憑證後由個人數位皮夾託管。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">學生姓名</td>
+                                    <td class="border px-3 py-2">使用者主動輸入</td>
+                                    <td class="border px-3 py-2">展示於憑證頁面，供個人識別之用。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">學生學校</td>
+                                    <td class="border px-3 py-2">主動輸入或系統匹配</td>
+                                    <td class="border px-3 py-2">展示於憑證頁面，供個人識別之用。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            <h2>五、資料接收對象</h2>
-            <p>本平台不會向第三方揭露或出售任何使用者資料。</p>
+                    <h3 class="text-base font-medium mt-6 mb-2">💬 留言板功能</h3>
+                    <div class="overflow-x-auto">
+                        <table class="table-auto w-full text-sm border border-slate-300 rounded-lg overflow-hidden">
+                            <thead class="bg-slate-100 text-slate-700 font-semibold">
+                                <tr>
+                                    <th class="border px-3 py-2">資料項目</th>
+                                    <th class="border px-3 py-2">蒐集方式</th>
+                                    <th class="border px-3 py-2">使用目的</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-slate-700">
+                                <tr>
+                                    <td class="border px-3 py-2">留言內容</td>
+                                    <td class="border px-3 py-2">使用者主動輸入</td>
+                                    <td class="border px-3 py-2">顯示於公開留言板。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">學校名稱</td>
+                                    <td class="border px-3 py-2">通過 VC 驗證取得</td>
+                                    <td class="border px-3 py-2">用於提升留言可信度。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">姓名（選填）</td>
+                                    <td class="border px-3 py-2">通過 VC 實名驗證</td>
+                                    <td class="border px-3 py-2">附於留言以表明身分（若使用）。</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-3 py-2">按讚紀錄（非識別化）</td>
+                                    <td class="border px-3 py-2">點擊按鈕送出</td>
+                                    <td class="border px-3 py-2">用於統計與排序，不綁定身分。</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
-            <h2>六、使用者權利（依 GDPR 第 15-21 條）</h2>
-            <ul>
-                <li>查閱、更正、刪除、限制處理您的資料</li>
-                <li>提出資料攜出請求（可提供 JSON 格式）</li>
-                <li>撤回同意、不影響撤回前處理合法性</li>
-                <li>向資料保護主管機關申訴</li>
-            </ul>
+                    <p class="mt-4 text-sm text-slate-600"><strong>我們不會蒐集以下類型資訊：</strong>Cookies、IP、裝置資料、個人照片、住址等敏感個資。
+                    </p>
+                </div>
 
-            <h2>七、資料跨境傳輸</h2>
-            <p>本平台伺服器位於新加坡，涉及資料跨境傳輸。</p>
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">三、合法性依據（Legal Basis）</h2>
+                    <ol class="list-decimal list-inside space-y-1">
+                        <li>使用者明示同意（GDPR 第 6(1)(a) 條）</li>
+                        <li>合法權益（第 6(1)(f) 條）以教育展示為目的</li>
+                    </ol>
+                </div>
 
-            <h2>八、兒童個資聲明</h2>
-            <p>若您未滿 16 歲，請在監護人或教師協助下使用本系統。</p>
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">四、資料儲存與保留期限</h2>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>系統不會永久儲存任何個資，除驗證信箱外處理後即時銷毀</li>
+                        <li>資料僅用於該次生成流程，不建立長期留存</li>
+                    </ul>
+                </div>
 
-            <h2>九、政策變更</h2>
-            <p>若有更新，我們將於本頁公布最新版本，請隨時查閱。</p>
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">五、資料接收對象</h2>
+                    <p>我們不會向任何第三方揭露或出售使用者資料。</p>
+                </div>
 
-            <h2>十、聯絡我們</h2>
-            <p>對資料保護如有疑問或請求，歡迎聯繫：</p>
-            <ul>
-                <li>Email：me@xiaozhi.moe</li>
-            </ul>
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">六、使用者權利（GDPR 第 15-21 條）</h2>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li>查閱、更正、刪除、限制處理個人資料</li>
+                        <li>請求資料攜出（提供 JSON 格式）</li>
+                        <li>撤回同意（不影響過去處理合法性）</li>
+                        <li>向資料保護主管機關提出申訴</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">七、資料跨境傳輸</h2>
+                    <p>本平台伺服器位於新加坡，涉及資料跨境處理。</p>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">八、兒童個資聲明</h2>
+                    <p>若您未滿 16 歲，請在監護人或教師協助下使用本系統。</p>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">九、政策變更</h2>
+                    <p>本政策如有更新，將於本頁公布最新版本，請定期查閱。</p>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-semibold text-primary mb-2">十、聯絡我們</h2>
+                    <p>如有任何資料相關問題，請透過以下方式聯繫：</p>
+                    <ul class="list-disc list-inside mt-1">
+                        <li>Email：<a href="mailto:me@xiaozhi.moe"
+                                class="text-primary underline hover:opacity-80">me@xiaozhi.moe</a></li>
+                    </ul>
+                </div>
+            </section>
         </div>
     </main>
 </template>

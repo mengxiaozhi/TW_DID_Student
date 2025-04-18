@@ -3,15 +3,15 @@
     <header class="w-full bg-white shadow-sm py-7 px-4 md:px-8 border-b border-slate-200">
         <div class="max-w-5xl mx-auto flex flex-col md:flex-row md:justify-between items-center space-y-3 md:space-y-0">
             <!-- Logo and Title -->
-            <router-link class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center gap-2 group" to="/">
-                <img src="/logo.png" alt="logo" class="h-7 w-7 object-contain" />
-                <span class="group-hover:text-blue-600 transition-colors">數位憑證皮夾｜學生證</span>
+            <router-link class="text-lg md:text-xl font-bold text-slate-800 text-center flex items-center gap-4 group" to="/">
+                <img src="/logo.png" alt="logo" class="h-12 w-12 object-contain" />
+                <span class="text-secondary group-hover:text-primary transition-colors">數位憑證皮夾｜學生證</span>
             </router-link>
 
             <!-- Navigation -->
             <nav class="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6 text-sm">
                 <a href="https://github.com/mengxiaozhi/TW_DID_Student" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
+                    class="text-slate-600 hover:text-primary transition flex items-center font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor"
                         viewBox="0 0 24 24">
                         <path
@@ -20,7 +20,7 @@
                     GitHub
                 </a>
                 <a href="https://youtu.be/9Jn47KhUwtc" target="_blank" rel="noopener noreferrer"
-                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
+                    class="text-slate-600 hover:text-primary transition flex items-center font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="currentColor"
                         viewBox="0 0 24 24">
                         <path
@@ -29,7 +29,7 @@
                     演示影片
                 </a>
                 <router-link to="/about"
-                    class="text-slate-600 hover:text-blue-600 transition flex items-center font-medium">
+                    class="text-slate-600 hover:text-primary transition flex items-center font-medium">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

@@ -41,7 +41,7 @@
                         </div>
 
                         <button @click="startSecondPhase"
-                            class="mt-6 w-full py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            class="mt-6 w-full py-3 bg-primary text-white rounded-lg hover:bg-secondary">
                             進行第二階段匿名投票驗證
                         </button>
 

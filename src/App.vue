@@ -1,56 +1,75 @@
 <script setup>
     import headerVue from './components/header.vue'
-    import banner from './components/banner.vue';
     import { ref, onMounted, watch } from 'vue'
     import { useRoute } from 'vue-router'
+    import Cookies from 'js-cookie'
 
     const route = useRoute()
     const closeDisclaimer = ref(false)
 
     const updateTitle = () => {
-        document.title = `${route.name} - 數位憑證皮夾｜學生證`;
-    };
+        document.title = `${route.name} - 數位憑證皮夾｜學生證`
+    }
 
     onMounted(() => {
-        updateTitle();
-    });
+        updateTitle()
 
-    watch(() => route.name, (newName) => {
-        document.title = `${route.name} - 數位憑證皮夾｜學生證`;
-    }, { immediate: true });
+        // 讀取 cookie 是否已同意
+        const agreed = Cookies.get('disclaimer_accepted')
+        if (!agreed) {
+            closeDisclaimer.value = false
+        } else {
+            closeDisclaimer.value = true
+        }
+    })
+
+    watch(
+        () => route.name,
+        (newName) => {
+            document.title = `${route.name} - 數位憑證皮夾｜學生證`
+        },
+        { immediate: true }
+    )
+
+    const acceptDisclaimer = () => {
+        Cookies.set('disclaimer_accepted', 'true', { expires: 365 }) // 一年內不再提醒
+        closeDisclaimer.value = true
+    }
 </script>
+
 
 <template>
     <headerVue />
-    <banner />
+    <!--<banner />-->
     <router-view></router-view>
-    <!-- 隱私聲明 Modal -->
     <div v-if="!closeDisclaimer && route.path !== '/terms' && route.path !== '/privacy' && route.path !== '/confirm'"
-        id="disclaimer-modal"
-        style="position:fixed;top:0;left:0;width:100%;height:100%;background-color:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;box-sizing:border-box;">
-        <div
-            style="background:#fff;padding:1.5rem;border-radius:0.5rem;width:100%;max-width:600px;max-height:90vh;box-shadow:0 4px 10px rgba(0,0,0,0.3);overflow-y:auto;">
-            <h2 style="margin-top:0;">用戶須知與免責聲明</h2>
-            <p>本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。</p>
-            <ul style="padding-left: 1.2em;">
-                <li>本系統所顯示之學校名稱係根據您提供之學術信箱網域自動推論，僅供技術驗證與識別用途，不具備任何法律效力。</li>
-                <li>本系統未與任何學校資料庫或資訊系統連接，亦不模擬或破解任何學校登入機制。</li>
-                <li>所產生之數位學生證為模擬性質，僅用於展示憑證技術格式與樣式，不得作為正式學生證使用。</li>
-                <li>本平台不蒐集、處理或儲存除信箱驗證必要資訊外的個人資料，所有資料僅用於即時驗證與憑證產生，不另作他用。</li>
-                <li>本平台所生成的學校名稱、憑證資訊，均為使用者自行提供，若造成任何誤解、冒用或第三方損害，本平台概不負責。</li>
-            </ul>
-            <p>若您為教育機構代表，有合作意願或欲提出下架通知，請聯繫本站開發者：<a href="mailto:me@xiaozhi.moe">me@xiaozhi.moe</a></p>
-
-            <p style="font-size: 0.9em; margin-top:1.5em;">
-                詳情請參閱
-                <router-link class="underline text-blue-600" to="terms" target="_blank">使用條款</router-link>
-                與
-                <router-link class="underline text-blue-600" to="privacy" target="_blank">隱私政策</router-link>
+        class="fixed inset-0 z-[9999] bg-black/50 flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto shadow-xl">
+            <h2 class="text-xl font-semibold mb-4">用戶須知與免責聲明</h2>
+            <p class="mb-3">
+                本平台「數位學生證」為學生自主開發之技術展示專案，目的在於探索分散式身份識別技術（DID）於教育領域的應用，並無任何學校或教育機構之官方授權或背書。
             </p>
-
-            <div style="text-align:right; margin-top:1.5em;">
-                <button @click="closeDisclaimer = true"
-                    style="padding:0.6em 1.2em;font-size:1em;background:#3182ce;color:white;border:none;border-radius:4px;cursor:pointer;">我已閱讀並同意</button>
+            <ul class="list-disc pl-6 space-y-1 text-sm text-slate-700">
+                <li>本系統所顯示之學校名稱係根據您提供之學術信箱網域自動推論，僅供技術驗證與識別用途。</li>
+                <li>不連接任何學校資料庫或登入機制。</li>
+                <li>數位學生證為模擬用途，不具法律效力。</li>
+                <li>平台僅使用必要資訊進行即時驗證，不做其他用途。</li>
+                <li>所有內容由使用者提供，平台不負責其真實性。</li>
+            </ul>
+            <p class="text-sm mt-4">
+                教育機構如需合作或下架請聯繫：
+                <a href="mailto:me@xiaozhi.moe" class="text-primary underline">me@xiaozhi.moe</a>
+            </p>
+            <p class="text-sm mt-2">
+                詳情請參閱
+                <router-link to="/terms" class="underline text-primary" target="_blank">使用條款</router-link> 與
+                <router-link to="/privacy" class="underline text-primary" target="_blank">隱私政策</router-link>
+            </p>
+            <div class="text-right mt-6">
+                <button @click="acceptDisclaimer"
+                    class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition">
+                    我已閱讀並同意
+                </button>
             </div>
         </div>
     </div>

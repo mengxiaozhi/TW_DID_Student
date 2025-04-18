@@ -1,11 +1,11 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-r from-indigo-50 to-purple-50 p-3 sm:p-4 md:p-6">
+    <div class="min-h-screen p-3 sm:p-4 md:p-6">
         <div class="max-w-4xl mx-auto">
             <!-- 頁面標題 -->
             <div class="bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-4">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                    <h2 class="text-base sm:text-lg font-bold text-indigo-800 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none"
+                    <h2 class="text-base sm:text-lg font-bold text-secondary flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
@@ -13,6 +13,7 @@
                         匿名留言板
                     </h2>
                     <div class="flex items-center gap-2 flex-wrap">
+                        <!--
                         <span v-if="verifiedSchool"
                             class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                             <span class="h-2 w-2 bg-green-500 rounded-full"></span>
@@ -22,8 +23,18 @@
                             class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
                             實名 - {{ verifiedName }}
                         </span>
+                        -->
+                        <button @click="showMobileSearch = true"
+                            class="sm:hidden text-primary border border-primary/30 rounded-full px-3 py-1 text-sm hover:bg-indigo-50 transition flex items-center gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            搜尋
+                        </button>
                         <button @click="fetchMessages"
-                            class="bg-white text-indigo-600 border border-indigo-300 rounded-full px-3 py-1 text-sm hover:bg-indigo-50 transition flex items-center gap-1">
+                            class="bg-white text-primary border border-primary/30 rounded-full px-3 py-1 text-sm hover:bg-indigo-50 transition flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -32,7 +43,7 @@
                             重新載入留言
                         </button>
                         <button v-if="verifiedSchool" @click="logout"
-                            class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
+                            class="bg-primary text-white rounded-full px-3 py-1 text-sm hover:bg-primary/90 transition flex items-center gap-1">
                             登出
                         </button>
                     </div>
@@ -45,7 +56,7 @@
                         class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg mb-2">
                         <p class="text-sm text-slate-600">請先驗證學校身份以發佈留言</p>
                         <button @click="showVerificationModal = true"
-                            class="bg-indigo-600 text-white rounded-full px-3 py-1 text-sm hover:bg-indigo-700 transition flex items-center gap-1">
+                            class="bg-primary text-white rounded-full px-3 py-1 text-sm hover:bg-primary/90 transition flex items-center gap-1">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -54,9 +65,21 @@
                             立即驗證
                         </button>
                     </div>
+                    <div v-if="verifiedSchool"
+                        class="flex sm:flex-row items-start sm:items-center gap-2 p-3 bg-slate-50 rounded-lg mb-2">
+                        <span v-if="verifiedSchool"
+                            class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                            <span class="h-2 w-2 bg-green-500 rounded-full"></span>
+                            已驗證 - {{ verifiedSchool }}
+                        </span>
+                        <span v-if="verifiedName"
+                            class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                            實名 - {{ verifiedName }}
+                        </span>
+                    </div>
                     <form @submit.prevent="submitMessage">
-                        <div
-                            class="border border-slate-200 rounded-lg focus-within:ring-2 focus-within:ring-indigo-400 focus-within:border-indigo-400 transition">
+                        <div class="w-full rounded-lg border border-slate-300
+               focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all">
                             <textarea v-model="newMessage" rows="3"
                                 class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none max-h-48 overflow-auto"
                                 placeholder="分享你的想法..." :disabled="!verifiedSchool"></textarea>
@@ -67,7 +90,7 @@
                                         <span v-if="!verifiedName || !useRealName">
                                             {{ verifiedSchool }}以匿名身份發布
                                         </span>
-                                        <span v-else class="text-blue-600 font-medium flex items-center gap-1">
+                                        <span v-else class="text-primary font-medium flex items-center gap-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -78,14 +101,14 @@
                                         <label v-if="verifiedName"
                                             class="flex items-center gap-1 cursor-pointer text-sm">
                                             <input type="checkbox" v-model="useRealName"
-                                                class="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4" />
+                                                class="rounded text-primary focus:ring-indigo-500 h-4 w-4" />
                                             <span class="text-xs text-slate-600">使用實名</span>
                                         </label>
                                     </div>
                                     <span v-else>驗證後即可發佈</span>
                                 </div>
                                 <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
-                                    class="bg-indigo-600 text-white rounded-full px-4 py-2 text-sm hover:bg-indigo-700 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
+                                    class="bg-primary text-white rounded-full px-4 py-2 text-sm hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
                                     <span v-if="submitting">發送中...</span>
                                     <span v-else-if="!verifiedSchool"
                                         @click.prevent="showVerificationModal = true">需要驗證</span>
@@ -101,25 +124,98 @@
                     </form>
                 </div>
 
+                <!-- 手機版搜尋浮層 -->
+                <div v-if="showMobileSearch"
+                    class="fixed inset-0  bg-black/40 backdrop-blur-sm z-50 flex justify-center items-center p-4 sm:hidden">
+                    <div class="bg-white w-full max-w-md rounded-lg shadow-xl p-4 relative">
+                        <button @click="showMobileSearch = false"
+                            class="absolute top-2 right-2 text-slate-400 hover:text-slate-600">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+
+                        <h3 class="text-base font-semibold text-secondary mb-3">搜尋</h3>
+
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="relative flex-1">
+                                <input v-model="searchTerm" placeholder="搜尋" class="w-full rounded-md border border-slate-300 py-2 pr-3 pl-9
+            focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50
+            text-sm placeholder-slate-400 transition-all" />
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <button @click="fetchMessages"
+                                class="bg-primary text-white px-3 py-2 rounded-md text-sm hover:bg-primary/90 flex items-center gap-1 transition">
+                                搜尋
+                            </button>
+                        </div>
+
+                        <button v-if="searchTerm" @click="clearSearch" class="text-sm text-primary underline">
+                            清除
+                        </button>
+
+                        <div class="mb-4">
+                            <label for="sortSelect" class="block text-sm font-medium text-slate-700 mb-2">
+                                排序方式
+                            </label>
+                            <div class="relative">
+                                <select id="sortSelect" v-model="sortBy" @change="onSortChange" class="block w-full appearance-none border border-slate-300 rounded-md py-2 px-3 pr-8
+             text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all
+             bg-white text-slate-700">
+                                    <option value="time_desc">最新優先</option>
+                                    <option value="time_asc">最舊優先</option>
+                                    <option value="likes_desc">讚數由高到低</option>
+                                    <option value="likes_asc">讚數由低到高</option>
+                                </select>
+
+                                <!-- 下拉箭頭圖示 -->
+                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 9l-7 7-7-7" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- 右側搜尋區塊 (40%) -->
-                <div class="w-full sm:w-[40%] bg-white shadow-md rounded-lg sm:rounded-xl p-4 mb-6">
-                    <h3 class="text-base font-semibold text-indigo-700 mb-3">搜尋</h3>
+                <div class="hidden sm:block w-full sm:w-[40%] bg-white shadow-md rounded-lg sm:rounded-xl p-4 mb-6">
+                    <h3 class="text-base font-semibold text-secondary mb-3">搜尋</h3>
 
                     <!-- 輸入框 + 搜尋按鈕 -->
                     <div class="flex items-center gap-2 mb-2">
                         <div class="relative flex-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
                             <input v-model="searchTerm" placeholder="搜尋" class="w-full rounded-md border border-slate-300 py-2 pr-3 pl-9
-               focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
-               text-sm placeholder-slate-400" />
+               focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50
+               text-sm placeholder-slate-400 transition-all" />
                         </div>
 
-                        <button @click="fetchMessages" class="bg-indigo-600 text-white px-3 py-2 rounded-md text-sm
-             hover:bg-indigo-700 flex items-center gap-1 transition">
+                        <button @click="fetchMessages" class="bg-primary text-white px-3 py-2 rounded-md text-sm
+             hover:bg-primary/90 flex items-center gap-1 transition">
                             搜尋
                         </button>
                     </div>
                     <!-- 清除按鈕：只有在有輸入內容時才顯示 -->
-                    <button v-if="searchTerm" @click="clearSearch" class="text-sm text-indigo-600 underline mb-3">
+                    <button v-if="searchTerm" @click="clearSearch" class="text-sm text-primary underline mb-3">
                         清除
                     </button>
                     <br>
@@ -129,7 +225,7 @@
                         </label>
                         <div class="relative">
                             <select id="sortSelect" v-model="sortBy" @change="onSortChange" class="block w-full appearance-none border border-slate-300 rounded-md py-2 px-3 pr-8
-             text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400
+             text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all
              bg-white text-slate-700">
                                 <option value="time_desc">最新優先</option>
                                 <option value="time_asc">最舊優先</option>
@@ -151,36 +247,43 @@
 
             </div>
             <!-- 留言瀑布流 -->
-            <div class="mt-4">
-                <div v-if="loading" class="flex justify-center items-center py-12">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-700"></div>
+            <div class="mt-8">
+                <!-- 載入中狀態 -->
+                <div v-if="loading" class="flex justify-center items-center py-16">
+                    <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
                 </div>
 
-                <div v-else-if="messages.length === 0" class="text-center bg-white rounded-xl shadow-md p-12">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-300 mb-3" fill="none"
-                        viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                    </svg>
-                    <p class="text-slate-500">目前尚無留言。成為第一個發言的人！</p>
+                <!-- 無留言狀態 -->
+                <div v-else-if="messages.length === 0"
+                    class="text-center bg-white rounded-2xl shadow-lg p-12 transition">
+                    <div class="bg-slate-50 p-6 rounded-full w-24 h-24 mx-auto mb-4 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-slate-700 font-medium text-lg mb-2">尚無留言</h3>
+                    <p class="text-slate-500">成為第一個發言的人，分享你的想法！</p>
                 </div>
 
-                <!-- 這裡改成 columns 實現瀑布流 -->
-                <div v-else class="columns-1 sm:columns-2 gap-4">
+                <!-- 留言瀑布流 -->
+                <div v-else class="columns-1 sm:columns-2 gap-6">
                     <div v-for="msg in messages" :key="msg.id" @click="(e) => onMessageCardClick(e, msg)"
-                        class="bg-white rounded-xl shadow-md p-4 hover:shadow-lg hover:scale-[1.01] transition cursor-pointer mb-4 break-inside-avoid">
-                        <div class="flex items-start gap-2">
+                        class="bg-white rounded-xl shadow-md hover:shadow-xl p-5 transition duration-300 transform hover:translate-y-[-4px] cursor-pointer mb-6 break-inside-avoid">
+                        <!-- 用戶資訊區 -->
+                        <div class="flex items-start gap-3">
                             <div v-if="msg.author_name"
-                                class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-600" fill="none"
+                                class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </div>
                             <div v-else
-                                class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none"
+                                class="h-10 w-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -188,80 +291,106 @@
                             </div>
                             <div class="flex-1">
                                 <div class="flex justify-between items-start">
-                                    <span class="text-sm font-medium flex items-center gap-1">
-                                        <span v-if="msg.author_name" class="text-blue-700 flex items-center gap-1">
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <span v-if="msg.author_name"
+                                            class="text-sm font-medium text-secondary flex items-center gap-1">
                                             {{ msg.author_name }}
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-blue-500"
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary"
                                                 fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                             </svg>
                                         </span>
-                                        <span v-else>匿名用戶</span>
+                                        <span v-else class="text-sm font-medium text-slate-600">匿名用戶</span>
                                         <span
-                                            class="bg-indigo-100 text-indigo-800 text-xs px-1.5 py-0.5 rounded-full">{{
-                                                msg.school }}</span>
-                                    </span>
+                                            class="bg-primary/10 text-secondary text-xs px-2.5 py-0.5 rounded-full font-medium">
+                                            {{ msg.school }}
+                                        </span>
+                                    </div>
                                     <span class="text-xs text-slate-400">{{ formatTime(msg.created_at) }}</span>
                                 </div>
 
-                                <p class="mt-2 text-slate-700 whitespace-pre-wrap break-words"
+                                <!-- 留言內容 -->
+                                <p class="mt-3 text-slate-700 whitespace-pre-wrap break-words leading-relaxed"
                                     v-html="parseContent(msg.content)" @click="onContentClick($event)"></p>
 
-                                <div class="mt-3 flex gap-4 text-xs text-slate-500">
-                                    <button @click="handleLike(msg)"
-                                        class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                        </svg>
-                                        讚同
-                                        <span class="text-indigo-500 font-medium">({{ msg.likes || 0 }})</span>
-                                    </button>
-                                    <button
-                                        @click="verifiedSchool ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
-                                        class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                                        </svg>
-                                        回覆
-                                    </button>
-                                    <button @click="shareMessage(msg.id)" class=" flex items-center gap-1
-                                        hover:text-indigo-600 transition">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                        </svg>
-                                        分享
-                                    </button>
+                                <!-- 互動按鈕 -->
+                                <div class="mt-4 flex justify-between">
+                                    <div class="flex gap-5 text-xs text-slate-500">
+                                        <button @click="handleLike(msg)"
+                                            class="flex items-center gap-1.5 hover:text-primary transition group">
+                                            <div
+                                                class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                                </svg>
+                                            </div>
+                                            <span class="hidden md:block">讚同</span>
+                                            <span class="text-secondary font-medium">({{ msg.likes || 0 }})</span>
+                                        </button>
+                                        <button
+                                            @click="verifiedSchool ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
+                                            class="flex items-center gap-1.5 hover:text-primary transition group">
+                                            <div
+                                                class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                            </div>
+                                            <span class="hidden md:block">回覆</span>
+                                        </button>
+                                        <button @click="shareMessage(msg.id)"
+                                            class="flex items-center gap-1.5 hover:text-primary transition group">
+                                            <div
+                                                class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                                </svg>
+                                            </div>
+                                            <span class="hidden md:block">分享</span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <!-- 回覆輸入框 -->
-                                <div v-if="msg.showReplyBox" class="mt-2 space-y-2">
+                                <div v-if="msg.showReplyBox" class="mt-4 space-y-2">
                                     <textarea v-model="msg.replyContent" rows="2"
-                                        class="w-full p-2 border rounded text-sm" placeholder="輸入回覆內容..."></textarea>
+                                        class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition"
+                                        placeholder="輸入回覆內容..."></textarea>
                                     <button @click="submitReply(msg)"
-                                        class="text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
+                                        class="text-sm bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition shadow-sm">
                                         發佈回覆
                                     </button>
                                 </div>
 
                                 <!-- 回覆列表 -->
                                 <div v-if="msg.replies && msg.replies.length"
-                                    class="mt-2 pl-4 border-l-2 border-slate-200 space-y-1 text-sm">
-                                    <div v-for="(r, index) in msg.replies.slice(0, 3)" :key="r.id">
-                                        <div class="text-slate-700">
-                                            {{ r.author_name || '匿名用戶｜' + r.school }}：{{ r.content }}
+                                    class="mt-4 pl-4 border-l-2 border-slate-200 space-y-3 text-sm">
+                                    <div v-for="(r, index) in msg.replies.slice(0, 3)" :key="r.id"
+                                        class="hover:bg-slate-50 rounded-lg p-2 -ml-2">
+                                        <div class="text-slate-700 font-medium">
+                                            {{ r.author_name || '匿名用戶｜' + r.school }}
                                         </div>
-                                        <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
+                                        <div class="text-slate-600 mt-1">{{ r.content }}</div>
+                                        <div class="text-xs text-slate-400 mt-1">{{ formatTime(r.created_at) }}</div>
                                     </div>
                                     <button v-if="msg.replies.length > 3" @click.stop="openPreview(msg)"
-                                        class="text-xs text-indigo-600 mt-1 hover:underline">
-                                        查看全部 {{ msg.replies.length }} 則回覆
+                                        class="text-xs text-primary hover:underline flex items-center gap-1">
+                                        <span>查看全部 {{ msg.replies.length }} 則回覆</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 5l7 7-7 7" />
+                                        </svg>
                                     </button>
                                 </div>
                             </div>
@@ -271,11 +400,11 @@
 
                 <!-- 預覽留言 Modal -->
                 <div v-if="showPreviewModal"
-                    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-                    <div class="bg-white max-w-xl w-full rounded-xl shadow-xl p-6 relative">
+                    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4">
+                    <div class="bg-white max-w-3xl w-full rounded-2xl shadow-xl p-6 relative animate-fadeIn">
                         <button @click="closePreview"
-                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                            class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M6 18L18 6M6 6l12 12" />
@@ -283,89 +412,125 @@
                         </button>
 
                         <!-- 頭像與名稱 -->
-                        <div class="flex items-start gap-3 mb-4">
+                        <div class="flex items-start gap-4 mb-6">
                             <div v-if="previewMessage?.author_name"
-                                class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none"
+                                class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-primary" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </div>
-                            <div v-else class="h-10 w-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-600" fill="none"
+                            <div v-else
+                                class="h-12 w-12 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-slate-400" fill="none"
                                     viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                             </div>
                             <div>
-                                <div class="text-sm font-semibold text-slate-700">
-                                    {{ previewMessage?.author_name || '匿名用戶' }}・{{ previewMessage?.school || '' }}
+                                <div class="flex items-center gap-2">
+                                    <div class="text-base font-semibold text-slate-800">
+                                        {{ previewMessage?.author_name || '匿名用戶' }}
+                                    </div>
+                                    <span
+                                        class="bg-primary/10 text-secondary text-xs px-2.5 py-0.5 rounded-full font-medium">
+                                        {{ previewMessage?.school || '' }}
+                                    </span>
                                 </div>
-                                <div class="text-xs text-slate-400">{{ formatTime(previewMessage?.created_at) }}</div>
+                                <div class="text-xs text-slate-400 mt-1">{{ formatTime(previewMessage?.created_at) }}
+                                </div>
                             </div>
                         </div>
 
                         <!-- 內容 -->
-                        <div class="text-slate-800 whitespace-pre-line leading-relaxed break-words text-base mb-4"
+                        <div class="text-slate-800 whitespace-pre-line leading-relaxed break-words text-base mb-6 bg-slate-50 p-4 rounded-xl"
                             v-html="parseContent(previewMessage?.content)" @click="onContentClick($event)">
                         </div>
 
                         <!-- 功能列 -->
-                        <div class="flex gap-4 text-xs text-slate-500 mb-4">
+                        <div class="flex gap-6 text-sm text-slate-500 mb-6 border-b border-slate-100 pb-6">
                             <button @click="handleLike(previewMessage)"
-                                class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                </svg>
+                                class="flex items-center gap-2 hover:text-primary transition group">
+                                <div class="p-2 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                    </svg>
+                                </div>
                                 讚同
-                                <span class="text-indigo-500 font-medium">({{ previewMessage.likes || 0 }})</span>
+                                <span class="text-secondary font-medium">({{ previewMessage.likes || 0 }})</span>
                             </button>
                             <button @click="shareMessage(previewMessage.id)"
-                                class="flex items-center gap-1 hover:text-indigo-600 transition">
-                                <svg xmlns=" http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                </svg>
+                                class="flex items-center gap-2 hover:text-primary transition group">
+                                <div class="p-2 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    </svg>
+                                </div>
                                 分享
                             </button>
                         </div>
 
+                        <!-- 回覆區標題 -->
+                        <h3 class="text-slate-700 font-medium mb-4 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            回覆內容
+                        </h3>
+
                         <!-- 回覆欄位 -->
-                        <div v-if="verifiedSchool" class="mt-4 space-y-2">
+                        <div v-if="verifiedSchool" class="mb-6">
                             <textarea v-model="previewMessage.replyContent" rows="2"
-                                class="w-full p-2 border rounded text-sm" placeholder="輸入回覆內容..."></textarea>
+                                class="w-full p-4 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition mb-2"
+                                placeholder="輸入回覆內容..."></textarea>
                             <button @click="submitReply(previewMessage)"
-                                class="text-sm bg-indigo-600 text-white px-3 py-1 rounded hover:bg-indigo-700">
+                                class="bg-primary text-white px-5 py-2 rounded-lg hover:bg-primary/90 transition shadow-sm font-medium">
                                 發佈回覆
                             </button>
                         </div>
 
-                        <br>
-
                         <!-- 回覆列表 -->
                         <div v-if="previewMessage?.replies && previewMessage.replies.length"
-                            class="pl-4 border-l-2 border-slate-200 space-y-1 text-sm">
-                            <div v-for="r in previewMessage.replies" :key="r.id">
-                                <div class="text-slate-700">
-                                    {{ r.author_name || '匿名用戶｜' + r.school }}：{{ r.content }}
+                            class="space-y-1 text-sm max-h-60 overflow-y-auto pr-2">
+                            <div v-for="r in previewMessage.replies" :key="r.id"
+                                class="p-3 border border-slate-100 hover:border-slate-200 rounded-xl mb-3 transition hover:bg-slate-50">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="font-medium text-slate-700 flex items-center gap-2">
+                                        {{ r.author_name || '匿名用戶' }}
+                                        <span class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full">
+                                            {{ r.school }}
+                                        </span>
+                                    </div>
+                                    <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
                                 </div>
-                                <div class="text-xs text-slate-400">{{ formatTime(r.created_at) }}</div>
+                                <div class="text-slate-600">{{ r.content }}</div>
                             </div>
+                        </div>
+                        <div v-else class="text-center py-8 text-slate-400 bg-slate-50 rounded-xl">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-slate-300"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                            </svg>
+                            暫無回覆，成為第一個回覆的人！
                         </div>
                     </div>
                 </div>
 
                 <!-- 載入更多按鈕 -->
-                <div v-if="messages.length >= 10" class="flex justify-center mt-6">
+                <div v-if="messages.length >= 10" class="flex justify-center mt-8">
                     <button @click="loadMoreMessages"
-                        class="bg-white text-indigo-600 border border-indigo-200 rounded-full px-4 py-2 text-sm hover:bg-indigo-50 transition flex items-center gap-2">
+                        class="bg-white text-primary border border-primary/20 rounded-full px-6 py-2.5 text-sm hover:bg-indigo-50 transition flex items-center gap-2 shadow-sm font-medium">
                         <span v-if="loadingMore"
-                            class="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-700"></span>
+                            class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary/50"></span>
                         <span v-else>載入更多留言</span>
                     </button>
                 </div>
@@ -385,23 +550,23 @@
                     </svg>
                 </button>
 
-                <h2 class="text-xl font-bold text-center text-indigo-800 mb-4">學校驗證</h2>
+                <h2 class="text-xl font-bold text-center text-secondary mb-4">學校驗證</h2>
 
                 <!-- 驗證選項切換 -->
                 <div class="flex border border-indigo-100 rounded-lg overflow-hidden mb-4">
                     <button @click="verifyMode = 'anonymous'" :class="[
                         'flex-1 py-2 text-sm font-medium transition',
                         verifyMode === 'anonymous'
-                            ? 'bg-indigo-500 text-white'
-                            : 'bg-white text-slate-600 hover:bg-indigo-50'
+                            ? 'bg-primary text-white'
+                            : 'bg-white text-slate-600 hover:bg-primary/10'
                     ]">
                         匿名驗證
                     </button>
                     <button @click="verifyMode = 'realname'" :class="[
                         'flex-1 py-2 text-sm font-medium transition',
                         verifyMode === 'realname'
-                            ? 'bg-indigo-500 text-white'
-                            : 'bg-white text-slate-600 hover:bg-indigo-50'
+                            ? 'bg-primary text-white'
+                            : 'bg-white text-slate-600 hover:bg-primary/10'
                     ]">
                         實名驗證
                     </button>
@@ -421,24 +586,32 @@
                     <div class="w-full space-y-3">
                         <a :href="authUri">
                             <button
-                                class="w-full py-3 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2">
+                                class="w-full py-3 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary/90 transition flex items-center justify-center gap-2">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
                                 </svg>
-                                前往 App 進行{{ verifyMode === 'realname' ? '實名' : '' }}驗證
+                                前往App進行驗證
                             </button>
                         </a>
 
-                        <div class="flex items-center gap-2 justify-center">
-                            <div class="h-1.5 w-1.5 bg-indigo-500 rounded-full animate-pulse"></div>
+                        <div class="flex items-center gap-2 justify-center pt-3">
+                            <div class="inline-flex items-center px-4 py-2 bg-primary/10 rounded-full text-primary">
+                                <div class="animate-pulse mr-2 h-2 w-2 bg-primary rounded-full"></div>
+                                <span class="text-sm font-medium">請在{{ verificationCountdown }}秒內完成掃描</span>
+                            </div>
+                        </div>
+                        <!--
+                        <div class="flex items-center gap-2 justify-center pt-3">
+                            <div class="h-1.5 w-1.5 bg-primary rounded-full animate-pulse"></div>
                             <p class="text-sm text-slate-500">
                                 請在
-                                <span class="font-semibold text-indigo-600">{{ verificationCountdown }}</span>
+                                <span class="font-semibold text-primary">{{ verificationCountdown }}</span>
                                 秒內完成掃描
                             </p>
                         </div>
+                        -->
                     </div>
                 </div>
 
@@ -450,14 +623,19 @@
                             d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     驗證失敗或超時，請重新嘗試
-                    <button @click="startVerification"
-                        class="ml-auto text-indigo-600 hover:text-indigo-800 font-medium">
+                    <button @click="startVerification" class="ml-auto text-red-600 hover:text-red-600/50 font-medium">
                         重試
                     </button>
                 </div>
             </div>
         </div>
     </div>
+    <button v-show="showBackToTop" @click="scrollToTop"
+        class="fixed bottom-4 right-4 z-50 bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary/50 transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
+        </svg>
+    </button>
 </template>
 
 <script setup>
@@ -484,10 +662,33 @@
     const page = ref(1)
     const pageSize = ref(10)
     const searchTerm = ref('')
+    const showMobileSearch = ref(false)
+
     // 排序方式，預設最新
     const sortBy = ref('time_desc')
     const previewMessage = ref(null)
     const showPreviewModal = ref(false)
+
+    const showBackToTop = ref(false)
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
+    function handleScroll() {
+        showBackToTop.value = window.scrollY > 300
+    }
+
+    onMounted(() => {
+        fetchMessages()
+        window.addEventListener('scroll', handleScroll)
+    })
+
+    onUnmounted(() => {
+        window.removeEventListener('scroll', handleScroll)
+        if (refreshInterval) clearInterval(refreshInterval)
+        if (countdownInterval.value) clearInterval(countdownInterval.value)
+    })
 
     import { useRoute, useRouter } from 'vue-router'
 
@@ -802,7 +1003,7 @@
         const urlRegex = /(https?:\/\/[^\s]+)/gi
         output = output.replace(urlRegex, (match) => {
             return `<a href="${match}" target="_blank" rel="noopener noreferrer"
-      class="text-purple-600 underline break-all"
+      class="text-primary underline break-all"
     >${match}</a>`
         })
 
@@ -817,7 +1018,7 @@
         output = output.replace(hashtagRegex, (match) => {
             const justTag = match.slice(1)
             return `<span
-      class="text-indigo-600 font-medium hashtag-span"
+      class="text-primary font-medium hashtag-span"
       data-hashtag="${justTag}"
     >${match}</span>`
         })
