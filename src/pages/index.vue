@@ -182,10 +182,6 @@
                                     pattern="^[一-龥]+$" readonly
                                     class="w-full pl-10 border border-gray-300 p-3 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                                     placeholder="請輸入學校名稱（中文）" />
-                                <input v-else-if="form.school_CN !== '未知學校'" v-model="form.school_CN" required
-                                    pattern="^[一-龥]+$"
-                                    class="w-full pl-10 border border-gray-300 p-3 rounded-lg bg-gray-50 text-gray-600 cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
-                                    placeholder="請輸入學校名稱（中文）" readonly />
                                 <input v-else v-model="form.school_CN" required pattern="^[一-龥]+$" class="w-full rounded-lg border border-slate-300 py-2 pr-3 pl-9
                focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
                                     placeholder="請輸入學校名稱（中文）" />
