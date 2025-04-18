@@ -52,11 +52,21 @@
             <div class="flex flex-col sm:flex-row gap-4">
                 <!-- 發佈留言區 -->
                 <div class="w-full sm:w-[60%] bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-6">
+                    <!-- 未驗證狀態 -->
                     <div v-if="!verifiedSchool"
-                        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 p-3 bg-slate-50 rounded-lg mb-2">
-                        <p class="text-sm text-slate-600">請先驗證學校身份以發佈留言</p>
+                        class="flex flex-col sm:flex-row items-center justify-between gap-3 p-4 bg-slate-50 rounded-xl mb-4 border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="bg-amber-100 p-2 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <p class="text-sm text-slate-700 font-medium">請先驗證學校身份以發佈留言</p>
+                        </div>
                         <button @click="showVerificationModal = true"
-                            class="bg-primary text-white rounded-full px-3 py-1 text-sm hover:bg-primary/90 transition flex items-center gap-1">
+                            class="bg-gradient-to-r from-primary to-primary/90 text-white rounded-full px-4 py-2 text-sm hover:shadow-md hover:from-primary/90 hover:to-primary transition flex items-center gap-2 font-medium">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -65,60 +75,111 @@
                             立即驗證
                         </button>
                     </div>
+
+                    <!-- 已驗證狀態 -->
                     <div v-if="verifiedSchool"
-                        class="flex sm:flex-row items-start sm:items-center gap-2 p-3 bg-slate-50 rounded-lg mb-2">
-                        <span v-if="verifiedSchool"
-                            class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                            <span class="h-2 w-2 bg-green-500 rounded-full"></span>
-                            已驗證 - {{ verifiedSchool }}
-                        </span>
-                        <span v-if="verifiedName"
-                            class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                            實名 - {{ verifiedName }}
-                        </span>
+                        class="flex flex-wrap items-center gap-3 p-4 bg-gradient-to-r from-slate-50 to-indigo-50/30 rounded-xl mb-4 border border-slate-100">
+                        <div class="flex items-center gap-2">
+                            <span v-if="verifiedSchool"
+                                class="bg-gradient-to-r from-green-100 to-green-50 text-green-700 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium shadow-sm">
+                                <span class="h-2 w-2 bg-green-500 rounded-full animate-pulse"></span>
+                                已驗證 - {{ verifiedSchool }}
+                            </span>
+                            <span v-if="verifiedName"
+                                class="bg-gradient-to-r from-blue-100 to-blue-50 text-blue-700 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                </svg>
+                                實名 - {{ verifiedName }}
+                            </span>
+                        </div>
                     </div>
-                    <form @submit.prevent="submitMessage">
-                        <div class="w-full rounded-lg border border-slate-300
-               focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all">
-                            <textarea v-model="newMessage" rows="3"
-                                class="w-full rounded-t-lg p-3 focus:outline-none text-sm resize-none max-h-48 overflow-auto"
+
+                    <!-- 留言表單 -->
+                    <form @submit.prevent="submitMessage" class="relative">
+                        <div
+                            class="w-full rounded-xl border border-slate-200 shadow-sm hover:shadow transition-all overflow-hidden">
+                            <textarea v-model="newMessage" rows="4"
+                                class="w-full rounded-t-xl p-4 focus:outline-none text-sm resize-none max-h-60 overflow-auto"
                                 placeholder="分享你的想法..." :disabled="!verifiedSchool"></textarea>
+
                             <div
-                                class="bg-slate-50 px-3 py-2 rounded-b-lg flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-                                <div class="text-xs text-slate-500">
-                                    <div v-if="verifiedSchool" class="flex items-center gap-2 flex-wrap">
-                                        <span v-if="!verifiedName || !useRealName">
-                                            {{ verifiedSchool }}以匿名身份發布
+                                class="bg-gradient-to-r from-slate-50 to-indigo-50/30 px-4 py-3 rounded-b-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                                <div class="text-xs text-slate-600">
+                                    <div v-if="verifiedSchool" class="flex items-center gap-3 flex-wrap">
+                                        <span v-if="!verifiedName || !useRealName" class="flex items-center gap-1.5">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            <span class="font-medium">{{ verifiedSchool }} | 匿名發布</span>
                                         </span>
-                                        <span v-else class="text-primary font-medium flex items-center gap-1">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                        <span v-else class="flex items-center gap-1.5 text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
-                                            以實名 {{ verifiedName }}｜{{ verifiedSchool }}發布
+                                            <span class="font-medium">{{ verifiedName }}｜{{ verifiedSchool }} |
+                                                實名發布</span>
                                         </span>
                                         <label v-if="verifiedName"
-                                            class="flex items-center gap-1 cursor-pointer text-sm">
+                                            class="flex items-center gap-1.5 cursor-pointer bg-slate-100 hover:bg-slate-200 px-2.5 py-1 rounded-full transition">
                                             <input type="checkbox" v-model="useRealName"
-                                                class="rounded text-primary focus:ring-indigo-500 h-4 w-4" />
-                                            <span class="text-xs text-slate-600">使用實名</span>
+                                                class="rounded text-primary focus:ring-indigo-500 h-3.5 w-3.5" />
+                                            <span class="text-xs text-slate-700 font-medium">使用實名</span>
                                         </label>
                                     </div>
-                                    <span v-else>驗證後即可發佈</span>
+                                    <span v-else class="flex items-center gap-1.5 text-slate-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                        驗證後即可發佈
+                                    </span>
                                 </div>
+
                                 <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
-                                    class="bg-primary text-white rounded-full px-4 py-2 text-sm hover:bg-primary/90 disabled:opacity-50 flex items-center gap-1 transition min-h-[44px]">
-                                    <span v-if="submitting">發送中...</span>
+                                    class="bg-gradient-to-r from-primary to-primary/90 text-white rounded-full px-5 py-2 text-sm hover:shadow-md disabled:opacity-50 disabled:hover:shadow-none flex items-center gap-2 transition min-h-[44px] font-medium">
+                                    <span v-if="submitting" class="flex items-center gap-2">
+                                        <svg class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor"
+                                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                            </path>
+                                        </svg>
+                                        發送中...
+                                    </span>
                                     <span v-else-if="!verifiedSchool"
                                         @click.prevent="showVerificationModal = true">需要驗證</span>
-                                    <span v-else>發佈</span>
+                                    <span v-else>發佈留言</span>
                                     <svg v-if="!submitting && verifiedSchool" xmlns="http://www.w3.org/2000/svg"
                                         class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                                     </svg>
                                 </button>
+                            </div>
+                        </div>
+
+                        <!-- 動畫效果：未驗證狀態下，在表單上方顯示半透明遮罩 -->
+                        <div v-if="!verifiedSchool"
+                            class="absolute inset-0 bg-white/60 backdrop-blur-[1px] rounded-xl flex items-center justify-center cursor-not-allowed"
+                            @click="showVerificationModal = true">
+                            <div
+                                class="bg-white/80 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg flex items-center gap-2 text-sm text-slate-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                點擊以驗證身份
                             </div>
                         </div>
                     </form>
@@ -400,8 +461,9 @@
 
                 <!-- 預覽留言 Modal -->
                 <div v-if="showPreviewModal"
-                    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4">
-                    <div class="bg-white max-w-3xl w-full rounded-2xl shadow-xl p-6 relative animate-fadeIn">
+                    class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 overflow-y-auto">
+                    <div
+                        class="bg-white max-w-3xl w-full rounded-2xl shadow-xl p-6 relative animate-fadeIn max-h-[90vh] overflow-y-auto">
                         <button @click="closePreview"
                             class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -499,7 +561,7 @@
 
                         <!-- 回覆列表 -->
                         <div v-if="previewMessage?.replies && previewMessage.replies.length"
-                            class="space-y-1 text-sm max-h-60 overflow-y-auto pr-2">
+                            class="space-y-1 text-sm max-h-full overflow-y-auto pr-2">
                             <div v-for="r in previewMessage.replies" :key="r.id"
                                 class="p-3 border border-slate-100 hover:border-slate-200 rounded-xl mb-3 transition hover:bg-slate-50">
                                 <div class="flex justify-between items-center mb-2">
