@@ -20,16 +20,26 @@
 
                 <div>
                     <h2 class="text-lg font-semibold text-primary mb-2">二、資料蒐集項目與用途</h2>
-                    <p class="text-sm text-slate-600 mb-3">依據《個人資料保護法施行細則》第 8 條第 1 項第 2 款規定，我們特此說明以下事項，並於使用功能前明確告知使用者：
-                    </p>
-                    <ul class="list-disc list-inside mb-4 text-sm">
-                        <li><strong>特定目的：</strong> 用於學術憑證產出、留言互動、公眾識別與系統優化</li>
-                        <li><strong>個資類別：</strong> Email、姓名、學號、學校名稱、留言與互動紀錄</li>
-                        <li><strong>利用期間：</strong> 除 Email 長期保留，其餘皆於使用後即時銷毀</li>
-                        <li><strong>利用對象與方式：</strong> 僅限平台內部自動化流程使用，不提供第三方</li>
-                        <li><strong>權益影響：</strong> 使用者可不提供姓名與學校仍可匿名互動，不影響核心功能使用</li>
-                    </ul>
                     <h3 class="text-base font-medium mt-4 mb-2">📌 憑證生成功能</h3>
+                    <div>
+                        <p class="text-sm text-slate-600 mb-3">依據《個人資料保護法施行細則》第 8 條第 1 項第 2
+                            款規定，我們特此說明以下事項，並於使用功能前明確告知使用者：
+                        </p>
+                        <ul class="text-sm text-slate-600 mb-3">
+                            <li><strong>蒐集之目的：</strong>用於學術憑證產出與系統優化</li>
+                            <li><strong>蒐集之類別：</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>Email</li>
+                                    <li>姓名</li>
+                                    <li>學號</li>
+                                    <li>學校名稱</li>
+                                </ul>
+                            </li>
+                            <li><strong>使用方式：</strong>僅限平台內部自動化流程使用，不進行行銷、再利用或提供予第三方。</li>
+                            <li><strong>保存期限：</strong>除 Email 長期保留，其餘皆於使用後即時銷毀。</li>
+                            <li><strong>影響權益：</strong>使用者可不提供姓名與學校仍可使用測試信箱生成憑證，不影響核心功能使用。</li>
+                        </ul>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="table-auto w-full text-sm border border-slate-300 rounded-lg overflow-hidden">
                             <thead class="bg-slate-100 text-slate-700 font-semibold">
@@ -65,6 +75,24 @@
                         </table>
                     </div>
                     <h3 class="text-base font-medium mt-6 mb-2">💬 留言板功能</h3>
+                    <div>
+                        <p class="text-sm text-slate-600 mb-3">依據《個人資料保護法施行細則》第 8 條第 1 項第 2
+                            款規定，我們特此說明以下事項，並於使用功能前明確告知使用者：
+                        </p>
+                        <ul class="text-sm text-slate-600 mb-3">
+                            <li><strong>蒐集之目的：</strong>供公開留言展示與平台互動統計使用</li>
+                            <li><strong>蒐集之類別：</strong>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li>文字內容（留言文字）</li>
+                                    <li>可選擇提供之姓名資訊（經 VC 實名驗證）</li>
+                                    <li>經 VC 驗證之學校資訊</li>
+                                </ul>
+                            </li>
+                            <li><strong>使用方式：</strong>僅用於本網站留言板公開展示，不進行行銷、再利用或提供予第三方。</li>
+                            <li><strong>保存期限：</strong>留言將長期公開顯示，惟可依用戶請求刪除。</li>
+                            <li><strong>影響權益：</strong>您可選擇不填寫姓名等個資；若不願意留下個資內容，建議避免在留言中輸入個人可識別資訊。</li>
+                        </ul>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="table-auto w-full text-sm border border-slate-300 rounded-lg overflow-hidden">
                             <thead class="bg-slate-100 text-slate-700 font-semibold">
