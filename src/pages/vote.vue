@@ -1,12 +1,13 @@
 <template>
     <div class="min-h-screen flex flex-col bg-gradient-to-br from-slate-50 to-slate-100">
         <main class="py-8 px-4 md:px-8">
-            <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 space-y-8 border border-slate-200">
+            <div
+                class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 space-y-8 border border-slate-200 fade-in">
                 <!-- 投票驗證流程 -->
                 <div>
                     <div v-if="!voteVerifiedData.length">
                         <p class="text-sm text-slate-500 mb-2">驗證碼：{{ voteTid }}</p>
-                        <div v-if="voteQrCode">
+                        <div v-if="voteQrCode" class="slide-up">
                             <a :href="voteAuthUri">
                                 <button
                                     class="w-full py-3 bg-purple-600 text-white rounded-lg mb-4 hover:bg-purple-700">
@@ -21,10 +22,10 @@
                             </div>
                         </div>
                         <div v-if="voteFailed"
-                            class="mt-4 bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 text-sm text-center">
-                            驗證失敗、超時或已領票，請重新驗證。
+                            class="mt-4 bg-red-100 text-red-700 p-3 rounded-lg border border-red-300 text-sm text-center space-y-2">
+                            <p>{{ voteFailureMessage || '驗證失敗、超時或已領票，請重新驗證。' }}</p>
                             <button @click="generateVoteUUID(); startVoteVerification()"
-                                class="mt-2 w-full py-2 bg-red-200 text-red-800 rounded-md">重新驗證</button>
+                                class="w-full py-2 bg-red-200 text-red-800 rounded-md">重新驗證</button>
                         </div>
                     </div>
 
@@ -45,7 +46,7 @@
                             進行第二階段匿名投票驗證
                         </button>
 
-                        <div v-if="secondPhaseQrCode" class="mt-8 text-center">
+                        <div v-if="secondPhaseQrCode" class="mt-8 text-center slide-up">
                             <a :href="secondPhaseAuthUri">
                                 <button
                                     class="w-full py-3 bg-indigo-600 text-white rounded-lg mb-4 hover:bg-indigo-700">
@@ -60,7 +61,7 @@
                             </div>
                         </div>
 
-                        <div v-if="votedSchool && selectedOption">
+                        <div v-if="votedSchool && selectedOption" class="fade-in">
                             <h3 class="text-lg font-semibold mt-6 text-center text-emerald-700">請選擇您的投票選項：</h3>
                             <div class="grid grid-cols-1 gap-4 mt-4">
                                 <button v-for="option in voteOptions" :key="option" @click="selectedOption = option"
@@ -93,6 +94,7 @@ const voteQrCode = ref('')
 const voteVerifiedData = ref([])
 const voteTid = ref('')
 const voteFailed = ref(false)
+const voteFailureMessage = ref('')
 const voteAuthUri = ref('')
 
 const secondPhaseQrCode = ref('')
@@ -102,6 +104,7 @@ const secondPhaseTid = ref('')
 const selectedOption = ref('')
 const voteOptions = ['贊成', '反對', '中立']
 const votedSchool = ref('')
+const ballotToken = ref('')
 
 let voteInterval = null
 let voteTimeout = null
@@ -112,7 +115,11 @@ const generateVoteUUID = () => {
     voteTid.value = crypto.randomUUID()
     voteVerifiedData.value = []
     voteFailed.value = false
+    voteFailureMessage.value = ''
     voteQrCode.value = ''
+    ballotToken.value = ''
+    votedSchool.value = ''
+    selectedOption.value = ''
 }
 
 const startVoteVerification = async () => {
@@ -141,16 +148,27 @@ const fetchVoteResult = async () => {
         })
         if (resultRes.data.verify_result) {
             voteVerifiedData.value = resultRes.data.data[0]?.claims || []
+            ballotToken.value = resultRes.data.ballot_token || ''
+            voteFailureMessage.value = ''
+            voteFailed.value = false
             clearInterval(voteInterval)
             clearTimeout(voteTimeout)
         }
     } catch (e) {
         console.warn('查詢中...', e)
-        if (e.response?.status === 403) voteFailed.value = true
+        if (e.response?.status === 403) {
+            voteFailed.value = true
+            voteFailureMessage.value = e.response?.data?.error || '此學號已領過票，無法重複領票'
+            ballotToken.value = ''
+        }
     }
 }
 
 const startSecondPhase = async () => {
+    if (!ballotToken.value) {
+        alert('請先完成身分驗證並領票')
+        return
+    }
     secondPhaseTid.value = crypto.randomUUID()
     try {
         const qrRes = await axios.get(`https://api.xiaozhi.moe/chihlee/vote-qr`, {
@@ -179,7 +197,7 @@ const fetchSecondPhaseResult = async () => {
             clearTimeout(secondPhaseTimeout)
 
             const claims = resultRes.data.data?.[0]?.claims || []
-            const schoolClaim = claims.find(claim => claim.ename === 'school_cn')
+            const schoolClaim = claims.find(claim => claim.ename === 'school_cn' || claim.ename === 'school_CN')
             votedSchool.value = schoolClaim?.value || '未知學校'
         }
     } catch (e) {
@@ -188,6 +206,10 @@ const fetchSecondPhaseResult = async () => {
 }
 
 const submitVote = async () => {
+    if (!ballotToken.value) {
+        alert('請先完成第一階段驗證取得投票資格')
+        return
+    }
     if (!selectedOption.value || !votedSchool.value || !secondPhaseTid.value) {
         alert('請完成匿名驗證並選擇選項')
         return
@@ -196,12 +218,21 @@ const submitVote = async () => {
         await axios.post('https://api.xiaozhi.moe/chihlee/submit-vote', {
             transaction_id: secondPhaseTid.value,
             school: votedSchool.value,
-            option: selectedOption.value
+            option: selectedOption.value,
+            ballot_token: ballotToken.value
         })
         alert(`🎉 投票成功！您選擇了「${selectedOption.value}」`)
+        ballotToken.value = ''
+        selectedOption.value = ''
     } catch (err) {
         console.error('提交投票失敗', err)
-        alert('提交投票失敗，請稍後重試')
+        if (err.response?.status === 409) {
+            alert('此票已完成投票，無法重複投票')
+        } else if (err.response?.status === 403) {
+            alert('尚未取得投票資格或驗證已過期')
+        } else {
+            alert('提交投票失敗，請稍後重試')
+        }
     }
 }
 

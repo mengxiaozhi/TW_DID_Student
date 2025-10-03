@@ -16,6 +16,51 @@ app.use(express.json())
 
 const ISSUE_TOKEN = process.env.ISSUE_TOKEN
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN
+const TEST_BYPASS_EMAIL = process.env.TEST_EMAIL || 'did-test@xiaozhi.moe'
+
+const SESSION_TTL = 15 * 60 * 1000 // 15 minutes
+const verifiedSessions = new Map() // email -> { token, expires }
+
+const issueSessionToken = (email) => {
+    const token = crypto.randomBytes(24).toString('hex')
+    verifiedSessions.set(email, {
+        token,
+        expires: Date.now() + SESSION_TTL
+    })
+    return token
+}
+
+const validateSessionToken = (email, token) => {
+    if (!email || !token) return false
+    const session = verifiedSessions.get(email)
+    if (!session) return false
+    if (session.token !== token) return false
+    if (Date.now() > session.expires) {
+        verifiedSessions.delete(email)
+        return false
+    }
+    return true
+}
+
+const clearSessionToken = (email) => {
+    if (email) verifiedSessions.delete(email)
+}
+
+const normalizeVerifyResponse = (payload) => {
+    if (!payload || typeof payload !== 'object') return payload
+
+    const verifyResult = payload.verify_result ?? payload.verifyResult
+
+    if (verifyResult !== undefined) {
+        return {
+            ...payload,
+            verify_result: verifyResult,
+            verifyResult
+        }
+    }
+
+    return payload
+}
 
 const db = mysql.createPool({
     host: process.env.DB_HOST,
@@ -184,7 +229,15 @@ app.get('/check-verification', async (req, res) => {
         const conn = await db.promise()
         const [rows] = await conn.query('SELECT verified, student_id FROM student_verifications WHERE email = ?', [email])
         if (!rows.length) return res.json({ verified: false })
-        res.json({ verified: !!rows[0].verified, student_id: rows[0].student_id })
+
+        const isVerified = !!rows[0].verified
+        const response = { verified: isVerified, student_id: rows[0].student_id }
+
+        if (isVerified) {
+            response.session_token = issueSessionToken(email)
+        }
+
+        res.json(response)
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: '查詢驗證狀態失敗' })
@@ -196,10 +249,21 @@ app.get('/check-verification', async (req, res) => {
 
 // 發卡：建立 VC 卡片資料
 app.post('/vc-item-data', async (req, res) => {
+    const { email, sessionToken, vcId, vcCid, fields } = req.body || {}
+
+    if (!email || !sessionToken) {
+        return res.status(400).json({ error: '缺少必要驗證資訊' })
+    }
+
+    if (email !== TEST_BYPASS_EMAIL && !validateSessionToken(email, sessionToken)) {
+        return res.status(403).json({ error: '尚未通過信箱驗證或驗證已過期' })
+    }
+
     try {
+        const payload = { vcId, vcCid, fields }
         const result = await axios.post(
             'https://issuer-sandbox.wallet.gov.tw/api/vc-item-data',
-            req.body,
+            payload,
             {
                 headers: {
                     'Access-Token': ISSUE_TOKEN,
@@ -207,6 +271,12 @@ app.post('/vc-item-data', async (req, res) => {
                 }
             }
         )
+
+        // 單次使用後清除 session token，避免重複濫用
+        if (email !== TEST_BYPASS_EMAIL) {
+            clearSessionToken(email)
+        }
+
         res.json(result.data)
     } catch (err) {
         console.error(err.response?.data || err)
@@ -216,7 +286,11 @@ app.post('/vc-item-data', async (req, res) => {
 
 // 驗證：產生驗證 QR code
 app.get('/verify-qr', async (req, res) => {
-    const { transaction_id } = req.query
+    const { transactionId, transaction_id } = req.query
+    const tid = transaction_id || transactionId
+    if (!tid) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
     try {
         const result = await axios.get(
             `https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code`,
@@ -225,8 +299,9 @@ app.get('/verify-qr', async (req, res) => {
                     'Access-Token': VERIFY_TOKEN
                 },
                 params: {
-                    ref: '00000000_did_edu_card_full',
-                    transaction_id
+                    ref: '00000000_did_edu_card_full_v2',
+                    transaction_id: tid,
+                    transactionId: tid
                 }
             }
         )
@@ -239,160 +314,56 @@ app.get('/verify-qr', async (req, res) => {
 
 // 驗證：查詢驗證結果
 app.get('/verify-result', async (req, res) => {
-    const { transaction_id } = req.query
+    const { transactionId, transaction_id } = req.query
+    const tid = transaction_id || transactionId
+    if (!tid) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
     try {
-        const result = await axios.get(
+        const payload = {
+            transactionId: tid,
+            transaction_id: tid
+        }
+        const result = await axios.post(
             `https://verifier-sandbox.wallet.gov.tw/api/oidvp/result`,
+            payload,
             {
                 headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    transaction_id,
-                    response_code: ' '
+                    'Access-Token': VERIFY_TOKEN,
+                    'Content-Type': 'application/json'
                 }
             }
         )
-        res.json(result.data)
+        res.json(normalizeVerifyResponse(result.data))
     } catch (err) {
+        const apiError = err.response?.data
+        const rawParams = apiError?.params
+        let parsedParams
+
+        if (typeof rawParams === 'string') {
+            try {
+                parsedParams = JSON.parse(rawParams)
+            } catch {
+                parsedParams = undefined
+            }
+        } else if (rawParams && typeof rawParams === 'object') {
+            parsedParams = rawParams
+        }
+
+        if (parsedParams?.code === 4002) {
+            return res.json(
+                normalizeVerifyResponse({
+                    verify_result: false,
+                    pending: true,
+                    message: parsedParams?.message || 'verify result not found'
+                })
+            )
+        }
+
         console.error(err.response?.data || err)
         res.status(err.response?.status || 500).json(err.response?.data || { error: 'verify-result error' })
     }
 })
-
-
-// 投票功能
-
-// 投票：第一階段產生 QR code（身分驗證，領票）
-app.get('/vote-verify', async (req, res) => {
-    const { transaction_id } = req.query
-    try {
-        const result = await axios.get(
-            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code',
-            {
-                headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    ref: '00000000_did_edu_card_number',
-                    transaction_id
-                }
-            }
-        )
-        res.json(result.data)
-    } catch (err) {
-        console.error(err.response?.data || err)
-        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr error' })
-    }
-})
-
-// 投票：查詢第一階段驗證結果（領票），並儲存避免重複領票
-app.get('/vote-verify-result', async (req, res) => {
-    const { transaction_id } = req.query
-    try {
-        const result = await axios.get(
-            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
-            {
-                headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    transaction_id
-                }
-            }
-        )
-
-        const claims = result.data?.data?.[0]?.claims || []
-        const numberClaim = claims.find(claim => claim.ename === 'number')
-
-        if (!numberClaim || !numberClaim.value) {
-            return res.status(400).json({ error: '找不到學號資訊' })
-        }
-
-        const studentNumber = numberClaim.value
-
-        const conn = await db.promise()
-        const [rows] = await conn.query('SELECT * FROM vote_records WHERE student_number = ?', [studentNumber])
-
-        if (rows.length > 0) {
-            return res.status(403).json({ error: '此學號已領過票，無法重複領票' })
-        }
-
-        await conn.query('INSERT INTO vote_records (student_number, transaction_id, verified_at) VALUES (?, ?, NOW())', [studentNumber, transaction_id])
-
-        res.json(result.data)
-    } catch (err) {
-        console.error(err.response?.data || err)
-        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-verify-result error' })
-    }
-})
-
-// 投票：第二階段產生 QR code（匿名投票）
-app.get('/vote-qr', async (req, res) => {
-    const { transaction_id } = req.query
-    try {
-        const result = await axios.get(
-            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/qr-code',
-            {
-                headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    ref: '00000000_did_edu_card_school_cn',
-                    transaction_id
-                }
-            }
-        )
-        res.json(result.data)
-    } catch (err) {
-        console.error(err.response?.data || err)
-        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr error' })
-    }
-})
-
-// 投票：查詢第二階段驗證結果（匿名投票）
-app.get('/vote-qr-result', async (req, res) => {
-    const { transaction_id } = req.query
-    try {
-        const result = await axios.get(
-            'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
-            {
-                headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    transaction_id
-                }
-            }
-        )
-        res.json(result.data)
-    } catch (err) {
-        console.error(err.response?.data || err)
-        res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr-result error' })
-    }
-})
-
-// 投票：查詢第二階段，匿名投票提交
-app.post('/submit-vote', async (req, res) => {
-    const { transaction_id, school, option } = req.body
-
-    if (!transaction_id || !school || !option) {
-        return res.status(400).json({ error: '缺少必要欄位' })
-    }
-
-    try {
-        const conn = await db.promise()
-        await conn.query(
-            'INSERT INTO anonymous_votes (transaction_id, school, option_selected, voted_at) VALUES (?, ?, ?, NOW())',
-            [transaction_id, school, option]
-        )
-        res.json({ success: true, message: '投票成功' })
-    } catch (error) {
-        console.error('🗳️ 投票失敗：', error)
-        res.status(500).json({ error: '投票記錄失敗' })
-    }
-})
-
 
 // 匿名留言板
 
@@ -407,7 +378,7 @@ app.get('/broad-verify', async (req, res) => {
                     'Access-Token': VERIFY_TOKEN
                 },
                 params: {
-                    ref: '00000000_did_edu_card_school_cn',
+                    ref: '00000000_did_edu_card_school_cn_v2',
                     transaction_id
                 }
             }
@@ -423,19 +394,46 @@ app.get('/broad-verify', async (req, res) => {
 app.get('/broad-qr-result', async (req, res) => {
     const { transaction_id } = req.query
     try {
-        const result = await axios.get(
+        const payload = {
+            transactionId: transaction_id,
+            transaction_id
+        }
+        const result = await axios.post(
             'https://verifier-sandbox.wallet.gov.tw/api/oidvp/result',
+            payload,
             {
                 headers: {
-                    'Access-Token': VERIFY_TOKEN
-                },
-                params: {
-                    transaction_id
+                    'Access-Token': VERIFY_TOKEN,
+                    'Content-Type': 'application/json'
                 }
             }
         )
-        res.json(result.data)
+        res.json(normalizeVerifyResponse(result.data))
     } catch (err) {
+        const apiError = err.response?.data
+        const rawParams = apiError?.params
+        let parsedParams
+
+        if (typeof rawParams === 'string') {
+            try {
+                parsedParams = JSON.parse(rawParams)
+            } catch {
+                parsedParams = undefined
+            }
+        } else if (rawParams && typeof rawParams === 'object') {
+            parsedParams = rawParams
+        }
+
+        if (parsedParams?.code === 4002) {
+            return res.json(
+                normalizeVerifyResponse({
+                    verify_result: false,
+                    pending: true,
+                    message: parsedParams?.message || 'verify result not found'
+                })
+            )
+        }
+
         console.error(err.response?.data || err)
         res.status(err.response?.status || 500).json(err.response?.data || { error: 'vote-qr-result error' })
     }

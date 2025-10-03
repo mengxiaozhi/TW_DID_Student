@@ -1,5 +1,5 @@
 <template>
-    <main class="py-8 px-4 md:px-8">
+    <main class="py-8 px-4 md:px-8 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen fade-in">
         <div
             class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200 transition-all duration-300 hover:shadow-xl">
             <div class="flex items-center justify-center mb-6">
@@ -61,9 +61,9 @@
                 <div class="pt-4 border-t border-slate-200 text-center">
                     <p style="font-size: 0.9em; margin-top:1.5em;">
                         請參閱
-                        <router-link class="underline blue-500" to="terms" target="_blank">使用條款</router-link>
+                        <router-link class="underline blue-500" to="/terms" target="_blank">使用條款</router-link>
                         與
-                        <router-link class="underline" to="privacy" target="_blank">隱私政策</router-link>
+                        <router-link class="underline" to="/privacy" target="_blank">隱私政策</router-link>
                     </p>
                     <br>
                     <p class="text-xs text-slate-500 md:text-sm ">© 版權所有

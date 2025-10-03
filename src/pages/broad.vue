@@ -1,6 +1,6 @@
 <template>
     <div class="min-h-screen p-3 sm:p-4 md:p-6">
-        <div class="max-w-4xl mx-auto">
+        <div class="max-w-4xl mx-auto fade-in">
             <!-- 頁面標題 -->
             <div class="bg-white shadow-md rounded-lg sm:rounded-xl p-3 sm:p-4 mb-4">
                 <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
@@ -463,7 +463,7 @@
                 <div v-if="showPreviewModal"
                     class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 overflow-y-auto">
                     <div
-                        class="bg-white max-w-3xl w-full rounded-2xl shadow-xl p-6 relative animate-fadeIn max-h-[90vh] overflow-y-auto">
+                        class="bg-white max-w-3xl w-full rounded-2xl shadow-xl p-6 relative max-h-[90vh] overflow-y-auto">
                         <button @click="closePreview"
                             class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-full hover:bg-slate-100 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"

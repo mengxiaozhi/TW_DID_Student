@@ -1,5 +1,5 @@
 <template>
-    <main class="py-8 px-4 md:px-8 bg-slate-50 min-h-screen">
+    <main class="py-8 px-4 md:px-8 bg-slate-50 min-h-screen fade-in">
         <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-xl p-8 border border-slate-200">
             <div class="text-center mb-6">
                 <h1 class="text-2xl font-bold text-secondary">隱私政策</h1>
