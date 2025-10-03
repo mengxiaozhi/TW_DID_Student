@@ -47,9 +47,9 @@
                     class="px-3 py-1.5 rounded-full border border-slate-200 bg-white shadow-sm">首頁</router-link>
                 <router-link to="/broad"
                     class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">匿名留言板</router-link>
-            <!-- <router-link to="/broad"
+            <!-- <router-link to="/vote"
                     class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">校園投票</router-link> -->
-                <router-link to="/vote"
+                <router-link to="/about"
                     class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">關於</router-link>
             </div>
         </div>

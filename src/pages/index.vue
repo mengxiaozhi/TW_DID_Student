@@ -22,7 +22,8 @@
                     <router-link to="/broad" class="btn btn-ghost">探索校園留言板</router-link>
                 </div>
             </div>
-
+            <br>
+<!--
             <div class="hero-grid">
                 <div class="stat-card">
                     <p class="text-sm text-slate-600">日常驗證流程耗時</p>
@@ -40,6 +41,7 @@
                     <p class="text-xs text-slate-500 mt-1">多階段驗證、全程保護真實身份</p>
                 </div>
             </div>
+        -->
         </section>
 
         <section class="px-4 md:px-6 pb-16">
@@ -456,7 +458,7 @@
             emailSent.value = true;
             verifyPending.value = false;
             form.value.school_CN = '國立台灣沒有考上大學'
-            form.value.number = '00000000';
+            form.value.number = Math.round(Math.random() * 100000000);
             form.value.name = '張三';
             registrationDateStartRaw.value = '2020-03-15';
             registrationDateEndRaw.value = '2077-03-15';
