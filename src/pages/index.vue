@@ -413,9 +413,7 @@
                 fields: [
                     { type: 'BASIC', cname: '姓名', ename: 'name', content: form.value.name },
                     { type: 'CUSTOM', cname: '學號', ename: 'number', content: form.value.number },
-                    { type: 'CUSTOM', cname: '學校', ename: 'school_CN', content: form.value.school_CN },
-                    { type: 'CUSTOM', cname: '學籍起始日', ename: 'registration_date_start', content: form.value.registration_date_start },
-                    { type: 'CUSTOM', cname: '學籍到期日', ename: 'registration_date_end', content: form.value.registration_date_end }
+                    { type: 'CUSTOM', cname: '學校', ename: 'school_CN', content: form.value.school_CN }
                 ]
             })
             qrCode.value = data.qrCode || ''

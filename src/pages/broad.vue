@@ -215,31 +215,31 @@
                                 <p class="text-slate-500">成為第一個分享想法的人！</p>
                             </div>
 
-                            <div v-else class="columns-1 sm:columns-2 gap-6">
-                                <div v-for="msg in messages" :key="msg.id" @click="(e) => onMessageCardClick(e, msg)"
-                                    class="mb-6 break-inside-avoid rounded-2xl border border-slate-200/60 bg-white/95 p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
-                                    <div class="flex items-start gap-3">
-                                        <div v-if="msg.author_name"
-                                            class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
-                                        </div>
-                                        <div v-else
-                                            class="h-10 w-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
-                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1">
-                                            <div class="flex flex-wrap items-center gap-2 justify-between">
+                            <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                <article v-for="msg in messages" :key="msg.id" @click="(e) => onMessageCardClick(e, msg)"
+                                    class="group relative flex flex-col rounded-2xl border border-slate-200/60 bg-white/95 p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer">
+                                    <header class="flex items-start justify-between gap-3">
+                                        <div class="flex items-start gap-3">
+                                            <div v-if="msg.author_name"
+                                                class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
+                                            <div v-else
+                                                class="h-12 w-12 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                </svg>
+                                            </div>
+                                            <div class="space-y-2">
                                                 <div class="flex flex-wrap items-center gap-2">
                                                     <span v-if="msg.author_name"
-                                                        class="text-sm font-medium text-secondary flex items-center gap-1">
+                                                        class="inline-flex items-center gap-1 text-sm font-medium text-secondary">
                                                         {{ msg.author_name }}
                                                         <svg xmlns="http://www.w3.org/2000/svg"
                                                             class="h-3.5 w-3.5 text-primary" fill="none"
@@ -251,107 +251,129 @@
                                                     </span>
                                                     <span v-else class="text-sm font-medium text-slate-600">匿名用戶</span>
                                                     <span
-                                                        class="bg-primary/10 text-secondary text-xs px-2.5 py-0.5 rounded-full font-medium">
-                                                        {{ msg.school }}
+                                                        class="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-secondary">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M3 7l9-4 9 4-9 4-9-4zM3 7v6a9 9 0 009 9m9-9V7" />
+                                                        </svg>
+                                                        <span>{{ msg.school }}</span>
                                                     </span>
                                                 </div>
-                                                <span class="text-xs text-slate-400">{{ formatTime(msg.created_at)
-                                                }}</span>
-                                            </div>
-
-                                            <p class="mt-3 text-slate-700 whitespace-pre-wrap break-words leading-relaxed"
-                                                v-html="parseContent(msg.content)" @click="onContentClick($event)"></p>
-
-                                            <div class="mt-4 flex justify-between">
-                                                <div class="flex gap-5 text-xs text-slate-500">
-                                                    <button @click.stop="handleLike(msg)"
-                                                        class="flex items-center gap-1.5 hover:text-primary transition group">
-                                                        <div
-                                                            class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                                                            </svg>
-                                                        </div>
-                                                        <span class="hidden md:block">讚同</span>
-                                                        <span class="text-secondary font-medium">({{ msg.likes || 0
-                                                        }})</span>
-                                                    </button>
-                                                    <button
-                                                        @click.stop="verifiedSchool ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
-                                                        class="flex items-center gap-1.5 hover:text-primary transition group">
-                                                        <div
-                                                            class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
-                                                            </svg>
-                                                        </div>
-                                                        <span class="hidden md:block">回覆</span>
-                                                    </button>
-                                                    <button @click.stop="shareMessage(msg.id)"
-                                                        class="flex items-center gap-1.5 hover:text-primary transition group">
-                                                        <div
-                                                            class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
-                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                                            </svg>
-                                                        </div>
-                                                        <span class="hidden md:block">分享</span>
-                                                    </button>
+                                                <div class="flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                                                    <span class="inline-flex items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                        </svg>
+                                                        {{ formatTime(msg.created_at) }}
+                                                    </span>
+                                                    <span v-if="msg.replies?.length"
+                                                        class="inline-flex items-center gap-1">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5"
+                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
+                                                                d="M7 8h10M7 12h4m5 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3" />
+                                                        </svg>
+                                                        {{ msg.replies.length }} 則回覆
+                                                    </span>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <button @click.stop="shareMessage(msg.id)"
+                                            class="rounded-full border border-slate-200 p-2 text-slate-400 transition hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                            </svg>
+                                        </button>
+                                    </header>
 
-                                            <div v-if="msg.showReplyBox" class="mt-4 space-y-2">
-                                                <textarea v-model="msg.replyContent" rows="2"
-                                                    class="w-full p-3 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition"
-                                                    placeholder="輸入回覆內容..."></textarea>
+                                    <div class="mt-4 text-sm leading-relaxed text-slate-700 whitespace-pre-wrap break-words"
+                                        v-html="parseContent(msg.content)" @click="onContentClick($event)"></div>
+
+                                    <div class="mt-5 flex flex-col gap-4 text-xs text-slate-500">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <button @click.stop="handleLike(msg)"
+                                                class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-3 py-1.5 font-medium transition hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                                                </svg>
+                                                <span>讚同</span>
+                                                <span class="text-secondary font-semibold">({{ msg.likes || 0 }})</span>
+                                            </button>
+                                            <button
+                                                @click.stop="verifiedSchool ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
+                                                class="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50/80 px-3 py-1.5 font-medium transition hover:border-primary/40 hover:bg-primary/10 hover:text-primary">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                                                </svg>
+                                                <span>回覆</span>
+                                                <span class="text-secondary font-semibold">({{ msg.replies?.length || 0
+                                                    }})</span>
+                                            </button>
+                                        </div>
+
+                                        <div v-if="msg.showReplyBox"
+                                            class="space-y-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3 text-sm">
+                                            <textarea v-model="msg.replyContent" rows="2"
+                                                class="w-full resize-none rounded-lg border border-slate-200 bg-white p-3 text-sm text-slate-600 focus:border-primary/40 focus:ring-2 focus:ring-primary/20 transition"
+                                                placeholder="輸入回覆內容..."></textarea>
+                                            <div class="flex justify-end">
                                                 <button @click.stop="submitReply(msg)"
-                                                    class="btn btn-primary btn-sm self-start">
+                                                    class="btn btn-primary btn-sm px-4">
                                                     發佈回覆
                                                 </button>
                                             </div>
+                                        </div>
 
-                                            <div v-if="msg.replies && msg.replies.length"
-                                                class="mt-4 pl-4 border-l-2 border-slate-200 space-y-3 text-sm">
-                                                <div v-for="(r, index) in msg.replies.slice(0, 3)" :key="r.id"
-                                                    class="hover:bg-slate-50 rounded-lg p-2 -ml-2">
-                                                    <div class="text-slate-700 font-medium">
-                                                        {{ r.author_name || '匿名用戶｜' + r.school }}
-                                                    </div>
-                                                    <div class="text-slate-600 mt-1">{{ r.content }}</div>
-                                                    <div class="text-xs text-slate-400 mt-1">{{ formatTime(r.created_at)
-                                                    }}</div>
+                                        <div v-if="msg.replies && msg.replies.length"
+                                            class="space-y-3 rounded-xl border border-dashed border-slate-200 bg-white/70 p-3 text-sm">
+                                            <div v-for="(r, index) in msg.replies.slice(0, 3)" :key="r.id || index"
+                                                class="rounded-lg bg-slate-50/80 p-3 shadow-sm">
+                                                <div class="flex items-center justify-between text-xs text-slate-400">
+                                                    <span class="font-medium text-slate-600">
+                                                        {{ r.author_name || ('匿名用戶｜' + r.school) }}
+                                                    </span>
+                                                    <span>{{ formatTime(r.created_at) }}</span>
                                                 </div>
-                                                <button v-if="msg.replies.length > 3" @click.stop="openPreview(msg)"
-                                                    class="text-xs text-primary hover:underline flex items-center gap-1">
-                                                    <span>查看全部 {{ msg.replies.length }} 則回覆</span>
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
-                                                        viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round"
-                                                            stroke-width="2" d="M9 5l7 7-7 7" />
-                                                    </svg>
-                                                </button>
+                                                <div class="mt-1 text-sm text-slate-600">{{ r.content }}</div>
                                             </div>
+                                            <button v-if="msg.replies.length > 3" @click.stop="openPreview(msg)"
+                                                class="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline">
+                                                <span>查看全部 {{ msg.replies.length }} 則回覆</span>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
+                                                    viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="2" d="M9 5l7 7-7 7" />
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
-                                </div>
+                                </article>
                             </div>
 
-                            <div v-if="messages.length >= 10" class="flex justify-center mt-8">
-                                <button @click="loadMoreMessages"
-                                    class="btn btn-outline px-6 py-2.5 flex items-center gap-2">
+                            <div v-if="hasMore" class="mt-10 flex justify-center">
+                                <button ref="infiniteScrollTrigger" @click="loadMoreMessages"
+                                    class="flex items-center gap-2 rounded-full border border-slate-200 px-4 py-2 text-xs text-slate-500 transition hover:border-primary/40 hover:text-primary">
                                     <span v-if="loadingMore"
-                                        class="animate-spin rounded-full h-4 w-4 border-b-2 border-primary/50"></span>
-                                    <span v-else>載入更多留言</span>
+                                        class="h-4 w-4 animate-spin rounded-full border-b-2 border-primary/60"></span>
+                                    <span>{{ loadingMore ? '載入更多留言中...' : '向下滾動將自動載入更多留言' }}</span>
                                 </button>
+                            </div>
+                            <div v-else-if="messages.length" class="mt-10 text-center text-xs text-slate-400">
+                                已經沒有更多留言
                             </div>
                         </div>
                     </section>
@@ -706,7 +728,7 @@
 
 
 <script setup>
-    import { ref, onMounted, onUnmounted, watch, computed } from 'vue'
+    import { ref, onMounted, onUnmounted, watch, computed, nextTick } from 'vue'
     import axios from 'axios'
 
     const tid = ref(crypto.randomUUID())
@@ -887,12 +909,14 @@
     const submitting = ref(false)
     const loading = ref(true)
     const loadingMore = ref(false)
+    const hasMore = ref(true)
     const page = ref(1)
     const pageSize = ref(10)
     const searchTerm = ref('')
     const showMobileSearch = ref(false)
     const composeSection = ref(null)
     const searchSection = ref(null)
+    const infiniteScrollTrigger = ref(null)
 
     // 排序方式，預設最新
     const sortBy = ref('time_desc')
@@ -900,6 +924,7 @@
     const showPreviewModal = ref(false)
 
     const showBackToTop = ref(false)
+    let infiniteObserver = null
 
     const isVerified = computed(() => Boolean(verifiedSchool.value))
     const messageCountLabel = computed(() => messages.value.length.toLocaleString('zh-TW'))
@@ -959,15 +984,43 @@
         showBackToTop.value = window.scrollY > 300
     }
 
+    const observeInfiniteScroll = () => {
+        if (typeof window === 'undefined') return
+
+        if (infiniteObserver) {
+            infiniteObserver.disconnect()
+            infiniteObserver = null
+        }
+
+        if (!infiniteScrollTrigger.value || !hasMore.value) return
+
+        infiniteObserver = new IntersectionObserver((entries) => {
+            const entry = entries[0]
+            if (entry?.isIntersecting && hasMore.value && !loading.value && !loadingMore.value) {
+                loadMoreMessages()
+            }
+        }, {
+            root: null,
+            rootMargin: '0px 0px 320px 0px',
+            threshold: 0
+        })
+
+        infiniteObserver.observe(infiniteScrollTrigger.value)
+    }
+
     onMounted(() => {
         restoreBoardSession()
         fetchMessages()
         window.addEventListener('scroll', handleScroll)
+        nextTick(() => observeInfiniteScroll())
     })
 
     onUnmounted(() => {
         window.removeEventListener('scroll', handleScroll)
-        if (refreshInterval) clearInterval(refreshInterval)
+        if (infiniteObserver) {
+            infiniteObserver.disconnect()
+            infiniteObserver = null
+        }
         if (countdownInterval.value) clearInterval(countdownInterval.value)
     })
 
@@ -1121,6 +1174,7 @@
 
             messages.value = newList
             page.value = 1
+            hasMore.value = newList.length === pageSize.value
 
             // ✅ 改為讀取 params.id
             const idParam = parseInt(route.params.id)
@@ -1135,13 +1189,14 @@
             }
         } catch (e) {
             console.error('取得留言失敗', e)
+            hasMore.value = false
         } finally {
             loading.value = false
         }
     }
 
     const loadMoreMessages = async () => {
-        if (loadingMore.value) return
+        if (loadingMore.value || !hasMore.value) return
         loadingMore.value = true
         try {
             const nextPage = page.value + 1
@@ -1170,6 +1225,9 @@
             if (newList.length) {
                 messages.value = [...messages.value, ...newList]
                 page.value = nextPage
+                hasMore.value = newList.length === pageSize.value
+            } else {
+                hasMore.value = false
             }
         } catch (e) {
             console.error('載入更多留言失敗', e)
@@ -1320,17 +1378,17 @@
         return output
     }
 
-
-
-    let refreshInterval = null
-
-    onMounted(() => {
-        fetchMessages()
+    watch(infiniteScrollTrigger, () => {
+        nextTick(() => observeInfiniteScroll())
     })
 
-    onUnmounted(() => {
-        if (refreshInterval) clearInterval(refreshInterval)
-        if (countdownInterval.value) clearInterval(countdownInterval.value)
+    watch(hasMore, (newVal) => {
+        if (!newVal && infiniteObserver) {
+            infiniteObserver.disconnect()
+            infiniteObserver = null
+        } else if (newVal) {
+            nextTick(() => observeInfiniteScroll())
+        }
     })
 
     watch(verifyMode, () => {
