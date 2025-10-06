@@ -1,8 +1,8 @@
 <template>
     <div class="min-h-screen flex flex-col">
         <section class="hero-intro">
-            <div class="space-y-6">
-                <span class="hero-badge">
+            <div class="space-y-6 text-center lg:text-left">
+                <span class="hero-badge mx-auto lg:mx-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
@@ -12,11 +12,11 @@
                     <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-snug">
                         三步驟完成 <span class="text-primary">數位學生證</span>，同步支援驗證、留言與校務應用
                     </h1>
-                    <p class="text-slate-600 text-base md:text-lg leading-relaxed">
+                    <p class="text-slate-600 text-base md:text-lg leading-relaxed max-w-3xl mx-auto lg:mx-0">
                         透過政府 DID 沙盒串接，學生可快速生成並導入個人憑證，校務單位也能即時驗證，確保身份資訊安全可信。
                     </p>
                 </div>
-                <div class="flex flex-wrap items-center gap-3">
+                <div class="hero-actions">
                     <button class="btn btn-primary" @click="activeTab = 'generate'">開始生成學生證</button>
                     <button class="btn btn-outline" @click="activeTab = 'verify'">立即驗證學生證</button>
                     <router-link to="/broad" class="btn btn-ghost">探索校園留言板</router-link>
@@ -151,7 +151,7 @@
                                 </div>
                             </div>
 
-                            <div v-if="verified" class="space-y-6">
+                            <div v-if="verified && !qrCode" class="space-y-6">
                                 <div class="space-y-2">
                                     <div class="divider-label">STEP 2 ｜ 補齊卡面資訊</div>
                                     <h3 class="text-xl font-semibold text-slate-900">補充個人顯示資訊</h3>
@@ -184,13 +184,13 @@
                                         <div class="grid gap-4 md:grid-cols-2">
                                             <div>
                                                 <label class="block mb-2 text-sm font-semibold text-slate-700">學籍起始日</label>
-                                                <input type="date" v-model="registrationDateStartRaw"
-                                                    class="w-full rounded-xl border border-slate-300 py-3 px-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all" />
+                                                <input type="date" v-model="registrationDateStartRaw" readonly tabindex="-1"
+                                                    class="w-full rounded-xl border border-slate-300 py-3 px-3 bg-slate-100 text-slate-600 focus:outline-none focus:ring-0 focus:border-slate-300 cursor-not-allowed" />
                                             </div>
                                             <div>
                                                 <label class="block mb-2 text-sm font-semibold text-slate-700">學籍到期日</label>
-                                                <input type="date" v-model="registrationDateEndRaw"
-                                                    class="w-full rounded-xl border border-slate-300 py-3 px-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all" />
+                                                <input type="date" v-model="registrationDateEndRaw" readonly tabindex="-1"
+                                                    class="w-full rounded-xl border border-slate-300 py-3 px-3 bg-slate-100 text-slate-600 focus:outline-none focus:ring-0 focus:border-slate-300 cursor-not-allowed" />
                                             </div>
                                         </div>
 
@@ -343,7 +343,9 @@
     const form = ref({
         name: '',
         number: '',
-        school_CN: ''
+        school_CN: '',
+        registration_date_start: '',
+        registration_date_end: ''
     })
 
     const registrationDateStartRaw = ref('')
@@ -367,6 +369,27 @@
         }
     })
 
+    const formatDateInput = (date) => {
+        const year = date.getFullYear()
+        const month = `${date.getMonth() + 1}`.padStart(2, '0')
+        const day = `${date.getDate()}`.padStart(2, '0')
+        return `${year}-${month}-${day}`
+    }
+
+    const setDefaultRegistrationDates = (baseDate = new Date()) => {
+        const start = new Date(baseDate)
+        const end = new Date(baseDate)
+        end.setFullYear(end.getFullYear() + 1)
+
+        const startStr = formatDateInput(start)
+        const endStr = formatDateInput(end)
+
+        registrationDateStartRaw.value = startStr
+        registrationDateEndRaw.value = endStr
+        form.value.registration_date_start = startStr.replace(/-/g, '')
+        form.value.registration_date_end = endStr.replace(/-/g, '')
+    }
+
     const generateUUID = () => {
         verifyTid.value = crypto.randomUUID()
         verifiedData.value = []
@@ -381,6 +404,7 @@
         }
 
         try {
+            setDefaultRegistrationDates(new Date())
             const data = await createStudentCard({
                 email: email.value,
                 sessionToken: email.value === 'did-test@xiaozhi.moe' ? 'TEST_BYPASS' : sessionToken.value,
@@ -389,7 +413,9 @@
                 fields: [
                     { type: 'BASIC', cname: '姓名', ename: 'name', content: form.value.name },
                     { type: 'CUSTOM', cname: '學號', ename: 'number', content: form.value.number },
-                    { type: 'CUSTOM', cname: '學校', ename: 'school_CN', content: form.value.school_CN }
+                    { type: 'CUSTOM', cname: '學校', ename: 'school_CN', content: form.value.school_CN },
+                    { type: 'CUSTOM', cname: '學籍起始日', ename: 'registration_date_start', content: form.value.registration_date_start },
+                    { type: 'CUSTOM', cname: '學籍到期日', ename: 'registration_date_end', content: form.value.registration_date_end }
                 ]
             })
             qrCode.value = data.qrCode || ''
@@ -460,8 +486,7 @@
             form.value.school_CN = '國立台灣沒有考上大學'
             form.value.number = Math.round(Math.random() * 100000000);
             form.value.name = '張三';
-            registrationDateStartRaw.value = '2020-03-15';
-            registrationDateEndRaw.value = '2077-03-15';
+            setDefaultRegistrationDates(new Date())
             sessionToken.value = 'TEST_BYPASS'
             alert('測試帳號免驗證成功');
             return;
@@ -507,6 +532,10 @@
     })
 
     watch(activeTab, async (newTab) => {
+        if (newTab === 'generate') {
+            setDefaultRegistrationDates(new Date())
+        }
+
         if (newTab === 'verify') {
             generateUUID()
             await verifyCard()
@@ -514,6 +543,7 @@
     })
 
     onMounted(() => {
+        setDefaultRegistrationDates(new Date())
         if (activeTab.value === 'verify') {
             generateUUID()
             verifyCard()

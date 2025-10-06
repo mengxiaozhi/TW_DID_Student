@@ -4,6 +4,7 @@ const cors = require('cors')
 const nodemailer = require('nodemailer')
 const mysql = require('mysql2')
 const crypto = require('crypto')
+const jwt = require('jsonwebtoken')
 require('dotenv').config()
 
 const app = express()
@@ -17,6 +18,11 @@ app.use(express.json())
 const ISSUE_TOKEN = process.env.ISSUE_TOKEN
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN
 const TEST_BYPASS_EMAIL = process.env.TEST_EMAIL || 'did-test@xiaozhi.moe'
+const VERIFIER_BASE_URL = 'https://verifier-sandbox.wallet.gov.tw/api/oidvp'
+const VOTE_VERIFY_REF = '00000000_did_edu_card_full'
+const VOTE_QR_REF = '00000000_did_edu_card_school'
+const VOTE_OPTIONS = ['同意', '不同意', '無意見/棄權']
+const VOTE_QUESTION = '是否應該禁止在學校使用手機'
 
 const SESSION_TTL = 15 * 60 * 1000 // 15 minutes
 const verifiedSessions = new Map() // email -> { token, expires }
@@ -46,6 +52,207 @@ const clearSessionToken = (email) => {
     if (email) verifiedSessions.delete(email)
 }
 
+const ensureBoardJwtConfig = () => {
+    if (!BOARD_JWT_SECRET) {
+        throw new Error('BOARD_JWT_SECRET is not configured')
+    }
+}
+
+const safeTrim = (value) => {
+    if (typeof value !== 'string') return ''
+    return value.trim()
+}
+
+const toBoolean = (value) => value === true || value === 'true' || value === 1 || value === '1'
+
+const buildTransactionParams = (transactionId) => {
+    const trimmed = safeTrim(transactionId)
+    if (!trimmed) return null
+    return {
+        transactionId: trimmed,
+        transaction_id: trimmed
+    }
+}
+
+const callVerifier = (endpoint, { method = 'get', params, data } = {}) => {
+    if (!VERIFY_TOKEN) {
+        throw new Error('VERIFY_TOKEN is not configured')
+    }
+
+    const config = {
+        method: method?.toLowerCase() || 'get',
+        url: `${VERIFIER_BASE_URL}/${endpoint}`,
+        headers: {
+            'Access-Token': VERIFY_TOKEN
+        }
+    }
+
+    if (config.method === 'post') {
+        config.headers['Content-Type'] = 'application/json'
+    }
+
+    if (params) {
+        config.params = params
+    }
+
+    if (data) {
+        config.data = data
+    }
+
+    return axios(config)
+}
+
+const extractVerifierError = (err) => {
+    let data = err?.response?.data
+    if (!data) return null
+    if (typeof data === 'string') {
+        try {
+            data = JSON.parse(data)
+        } catch {
+            return null
+        }
+    }
+    if (data && typeof data === 'object') {
+        let params = data.params
+        if (typeof params === 'string') {
+            try {
+                params = JSON.parse(params)
+            } catch {
+                params = undefined
+            }
+        }
+        if (params && typeof params === 'object' && params.code) {
+            return { code: Number(params.code), message: params.message }
+        }
+    }
+    return null
+}
+
+const handleVerifierError = (res, err, fallbackMessage) => {
+    const status = err?.response?.status || 500
+    const payload = err?.response?.data || { error: fallbackMessage }
+    console.error(payload || err)
+    res.status(status).json(payload)
+}
+
+const hashCardIdentity = ({ name, number, school }) => {
+    const base = `${safeTrim(name)}::${safeTrim(number)}::${safeTrim(school)}`
+    return crypto.createHash('sha256').update(base).digest('hex')
+}
+
+const pickClaimValue = (claims, keys) => {
+    if (!Array.isArray(claims)) return ''
+    for (const key of keys) {
+        const match = claims.find((claim) => claim?.ename === key || claim?.name === key)
+        if (match?.value) {
+            const trimmed = safeTrim(match.value)
+            if (trimmed) return trimmed
+        }
+    }
+    return ''
+}
+
+const buildBoardIdentity = ({ claims, transactionId }) => {
+    const school = pickClaimValue(claims, ['school_CN', 'school', 'organization'])
+    const name = pickClaimValue(claims, ['name', 'full_name', 'displayName'])
+
+    if (!school) {
+        return null
+    }
+
+    return {
+        school,
+        name: name || null,
+        mode: name ? 'realname' : 'anonymous',
+        transactionId: transactionId || null
+    }
+}
+
+const generateBoardSubject = () => {
+    if (typeof crypto.randomUUID === 'function') {
+        return crypto.randomUUID()
+    }
+    return crypto.randomBytes(16).toString('hex')
+}
+
+const issueBoardJwt = (identity) => {
+    ensureBoardJwtConfig()
+
+    const payload = {
+        sub: generateBoardSubject(),
+        school: identity.school,
+        mode: identity.mode || (identity.name ? 'realname' : 'anonymous'),
+        scope: ['board:message', 'board:reply', 'board:like']
+    }
+
+    if (identity.name) {
+        payload.name = identity.name
+    }
+
+    if (identity.transactionId) {
+        payload.tid = identity.transactionId
+    }
+
+    return jwt.sign(payload, BOARD_JWT_SECRET, {
+        expiresIn: BOARD_JWT_TTL,
+        issuer: BOARD_JWT_ISSUER,
+        audience: BOARD_JWT_AUDIENCE
+    })
+}
+
+const buildBoardIdentityResponse = (identity, token) => {
+    const decoded = jwt.decode(token)
+    return {
+        school: identity.school,
+        name: identity.name,
+        mode: identity.mode,
+        expires_at: decoded?.exp ? decoded.exp * 1000 : null
+    }
+}
+
+const requireBoardAuth = (req, res, next) => {
+    try {
+        ensureBoardJwtConfig()
+    } catch (error) {
+        console.error(error)
+        return res.status(500).json({ error: '留言板驗證設定錯誤' })
+    }
+
+    const header = req.headers['authorization'] || ''
+    if (!header?.startsWith('Bearer ')) {
+        return res.status(401).json({ error: '缺少身份驗證', code: 'TOKEN_MISSING' })
+    }
+
+    const token = header.slice(7)
+
+    try {
+        const decoded = jwt.verify(token, BOARD_JWT_SECRET, {
+            issuer: BOARD_JWT_ISSUER,
+            audience: BOARD_JWT_AUDIENCE
+        })
+
+        if (!decoded?.school) {
+            return res.status(401).json({ error: '身份驗證失敗', code: 'TOKEN_INVALID' })
+        }
+
+        req.boardIdentity = {
+            school: decoded.school,
+            name: decoded.name || null,
+            mode: decoded.mode || (decoded.name ? 'realname' : 'anonymous')
+        }
+        req.boardTokenExp = decoded.exp || null
+        req.boardToken = token
+
+        next()
+    } catch (err) {
+        if (err.name === 'TokenExpiredError') {
+            return res.status(401).json({ error: '身份驗證已過期', code: 'TOKEN_EXPIRED' })
+        }
+        console.error('Board auth error:', err)
+        res.status(401).json({ error: '身份驗證失敗', code: 'TOKEN_INVALID' })
+    }
+}
+
 const normalizeVerifyResponse = (payload) => {
     if (!payload || typeof payload !== 'object') return payload
 
@@ -68,6 +275,11 @@ const db = mysql.createPool({
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME
 })
+
+const BOARD_JWT_SECRET = process.env.BOARD_JWT_SECRET
+const BOARD_JWT_TTL = process.env.BOARD_JWT_TTL_SECONDS || '7d'
+const BOARD_JWT_ISSUER = 'chihlee-board'
+const BOARD_JWT_AUDIENCE = 'board-users'
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -299,7 +511,7 @@ app.get('/verify-qr', async (req, res) => {
                     'Access-Token': VERIFY_TOKEN
                 },
                 params: {
-                    ref: '00000000_did_edu_card_full_v2',
+                    ref: '00000000_did_edu_card_full',
                     transaction_id: tid,
                     transactionId: tid
                 }
@@ -365,6 +577,265 @@ app.get('/verify-result', async (req, res) => {
     }
 })
 
+// 投票功能
+
+// 投票：產生第一階段 QR（身分驗證／領票）
+app.get('/vote-verify', async (req, res) => {
+    const transactionId = safeTrim(req.query?.transaction_id)
+    if (!transactionId) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
+
+    try {
+        const params = {
+            ref: VOTE_VERIFY_REF,
+            ...buildTransactionParams(transactionId)
+        }
+        const { data } = await callVerifier('qr-code', { params })
+        res.json(data)
+    } catch (err) {
+        handleVerifierError(res, err, 'vote-qr error')
+    }
+})
+
+// 投票：查詢第一階段結果（領票）
+app.get('/vote-verify-result', async (req, res) => {
+    const transactionId = safeTrim(req.query?.transaction_id)
+    if (!transactionId) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
+
+    try {
+        const payload = buildTransactionParams(transactionId)
+        if (!payload) {
+            return res.status(400).json({ error: 'transaction_id is required' })
+        }
+
+        const { data } = await callVerifier('result', {
+            method: 'post',
+            data: payload
+        })
+
+        const normalized = normalizeVerifyResponse(data)
+
+        if (!normalized?.verify_result) {
+            return res.json(normalized)
+        }
+
+        const claims = normalized?.data?.[0]?.claims || []
+        const studentNumber = pickClaimValue(claims, ['number', 'student_id', 'studentId'])
+        const studentName = pickClaimValue(claims, ['name', 'student_name'])
+
+        if (!studentNumber) {
+            return res.status(400).json({ error: '找不到學號資訊' })
+        }
+
+        const schoolName = pickClaimValue(claims, ['school_cn', 'school_CN', 'school']) || null
+
+        const cardHash = hashCardIdentity({
+            name: studentName,
+            number: studentNumber,
+            school: schoolName || ''
+        })
+
+        const ballotToken = crypto.randomBytes(24).toString('hex')
+        const ballotTokenHash = crypto.createHash('sha256').update(ballotToken).digest('hex')
+
+        const pool = db.promise()
+        const [records] = await pool.query('SELECT id FROM vote_records WHERE card_hash = ?', [cardHash])
+
+        if (records.length > 0) {
+            return res.status(403).json({ error: '此身份已領取投票資格，無法重複領票' })
+        }
+
+        await pool.query(
+            `INSERT INTO vote_records (student_number, school, transaction_id, ballot_token_hash, card_hash, verified_at, has_voted)
+             VALUES (?, ?, ?, ?, ?, NOW(), 0)`,
+            [studentNumber, schoolName, transactionId, ballotTokenHash, cardHash]
+        )
+
+        normalized.ballot_token = ballotToken
+        normalized.card_hash = cardHash
+        normalized.vote_options = VOTE_OPTIONS
+        normalized.vote_question = VOTE_QUESTION
+        normalized.student_number = studentNumber
+        if (schoolName) {
+            normalized.school = schoolName
+        }
+
+        res.json(normalized)
+    } catch (err) {
+        const verifierErr = extractVerifierError(err)
+        if (verifierErr?.code === 4002) {
+            return res.json({
+                verify_result: false,
+                pending: true,
+                message: verifierErr.message || 'verify result not found'
+            })
+        }
+        handleVerifierError(res, err, 'vote-verify-result error')
+    }
+})
+
+// 投票：產生第二階段 QR（匿名驗證）
+app.get('/vote-qr', async (req, res) => {
+    const transactionId = safeTrim(req.query?.transaction_id)
+    if (!transactionId) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
+
+    try {
+        const params = {
+            ref: VOTE_QR_REF,
+            ...buildTransactionParams(transactionId)
+        }
+        const { data } = await callVerifier('qr-code', { params })
+        res.json(data)
+    } catch (err) {
+        handleVerifierError(res, err, 'vote-qr error')
+    }
+})
+
+// 投票：查詢第二階段結果（匿名驗證）
+app.get('/vote-qr-result', async (req, res) => {
+    const transactionId = safeTrim(req.query?.transaction_id)
+    if (!transactionId) {
+        return res.status(400).json({ error: 'transaction_id is required' })
+    }
+
+    try {
+        const payload = buildTransactionParams(transactionId)
+        if (!payload) {
+            return res.status(400).json({ error: 'transaction_id is required' })
+        }
+
+        const { data } = await callVerifier('result', {
+            method: 'post',
+            data: payload
+        })
+
+        res.json(normalizeVerifyResponse(data))
+    } catch (err) {
+        const verifierErr = extractVerifierError(err)
+        if (verifierErr?.code === 4002) {
+            return res.json({
+                verify_result: false,
+                pending: true,
+                message: verifierErr.message || 'verify result not found'
+            })
+        }
+        handleVerifierError(res, err, 'vote-qr-result error')
+    }
+})
+
+// 投票：提交匿名投票
+app.post('/submit-vote', async (req, res) => {
+    const transactionId = safeTrim(req.body?.transaction_id)
+    const option = safeTrim(req.body?.option)
+    const ballotToken = safeTrim(req.body?.ballot_token)
+
+    if (!transactionId || !option || !ballotToken) {
+        return res.status(400).json({ error: '缺少必要欄位' })
+    }
+
+    if (!VOTE_OPTIONS.includes(option)) {
+        return res.status(400).json({ error: '不支援的投票選項' })
+    }
+
+    const ballotTokenHash = crypto.createHash('sha256').update(ballotToken).digest('hex')
+    const pool = db.promise()
+
+    try {
+        const payload = buildTransactionParams(transactionId)
+        if (!payload) {
+            return res.status(400).json({ error: 'transaction_id is required' })
+        }
+
+        const { data } = await callVerifier('result', {
+            method: 'post',
+            data: payload
+        })
+
+        const normalized = normalizeVerifyResponse(data)
+
+        if (!normalized?.verify_result) {
+            return res.status(400).json({ error: '尚未完成匿名驗證' })
+        }
+
+        const claims = normalized?.data?.[0]?.claims || []
+        const schoolName = pickClaimValue(claims, ['school_cn', 'school_CN', 'school']) || '未知學校'
+
+        const [records] = await pool.query('SELECT id, has_voted FROM vote_records WHERE ballot_token_hash = ?', [ballotTokenHash])
+
+        if (!records.length) {
+            return res.status(403).json({ error: '尚未取得投票資格或驗證已失效' })
+        }
+
+        const record = records[0]
+
+        if (record.has_voted) {
+            return res.status(409).json({ error: '此票已完成投票' })
+        }
+
+        const [usedTx] = await pool.query('SELECT id FROM anonymous_votes WHERE transaction_id = ?', [transactionId])
+        if (usedTx.length > 0) {
+            return res.status(409).json({ error: '此交易已提交過投票' })
+        }
+
+        const conn = await db.promise().getConnection()
+        try {
+            await conn.beginTransaction()
+            await conn.query(
+                `INSERT INTO anonymous_votes (transaction_id, ballot_token_hash, school, option_selected, voted_at, vote_record_id)
+                 VALUES (?, ?, ?, ?, NOW(), ?)`,
+                [transactionId, ballotTokenHash, schoolName, option, record.id]
+            )
+            await conn.query('UPDATE vote_records SET has_voted = 1, voted_at = NOW() WHERE id = ?', [record.id])
+            await conn.commit()
+        } catch (err) {
+            await conn.rollback()
+            throw err
+        } finally {
+            conn.release()
+        }
+
+        res.json({ success: true, message: '投票成功' })
+    } catch (err) {
+        console.error('🗳️ 投票失敗:', err?.response?.data || err)
+        handleVerifierError(res, err, '投票記錄失敗')
+    }
+})
+
+// 投票：即時統計
+app.get('/vote-stats', async (req, res) => {
+    try {
+        const pool = db.promise()
+        const [rows] = await pool.query(
+            `SELECT option_selected AS option_name, COUNT(*) AS total FROM anonymous_votes GROUP BY option_selected`
+        )
+
+        const totals = Object.fromEntries(VOTE_OPTIONS.map((option) => [option, 0]))
+        for (const row of rows || []) {
+            const optionName = safeTrim(row.option_name)
+            if (optionName && Object.prototype.hasOwnProperty.call(totals, optionName)) {
+                totals[optionName] = Number(row.total) || 0
+            }
+        }
+
+        const totalVotes = Object.values(totals).reduce((sum, count) => sum + count, 0)
+
+        res.json({
+            question: VOTE_QUESTION,
+            options: VOTE_OPTIONS,
+            totals,
+            totalVotes
+        })
+    } catch (err) {
+        handleVerifierError(res, err, '取得投票統計失敗')
+    }
+})
+
+
 // 匿名留言板
 
 // 匿名留言板：匿名驗證
@@ -378,7 +849,7 @@ app.get('/broad-verify', async (req, res) => {
                     'Access-Token': VERIFY_TOKEN
                 },
                 params: {
-                    ref: '00000000_did_edu_card_school_cn_v2',
+                    ref: '00000000_did_edu_card_school',
                     transaction_id
                 }
             }
@@ -408,7 +879,27 @@ app.get('/broad-qr-result', async (req, res) => {
                 }
             }
         )
-        res.json(normalizeVerifyResponse(result.data))
+        const normalized = normalizeVerifyResponse(result.data)
+
+        if (normalized?.verify_result) {
+            const claims = normalized?.data?.[0]?.claims || []
+            const identity = buildBoardIdentity({ claims, transactionId: transaction_id })
+
+            if (identity) {
+                try {
+                    const token = issueBoardJwt(identity)
+                    normalized.board_jwt = token
+                    normalized.board_identity = buildBoardIdentityResponse(identity, token)
+                } catch (jwtError) {
+                    console.error('Board JWT issuance error:', jwtError)
+                    normalized.board_jwt_error = 'JWT issuance failed'
+                }
+            } else {
+                console.warn('Unable to derive board identity from claims')
+            }
+        }
+
+        res.json(normalized)
     } catch (err) {
         const apiError = err.response?.data
         const rawParams = apiError?.params
@@ -440,20 +931,28 @@ app.get('/broad-qr-result', async (req, res) => {
 })
 
 // 匿名留言板：發佈留言
-app.post('/board-message', async (req, res) => {
-    const { school, content, author_name } = req.body
+app.post('/board-message', requireBoardAuth, async (req, res) => {
+    const { content, useRealName } = req.body || {}
+    const sanitizedContent = safeTrim(content)
 
-    if (!school || !content) {
-        return res.status(400).json({ error: '缺少必要欄位' })
+    if (!sanitizedContent) {
+        return res.status(400).json({ error: '內容不可為空' })
     }
+
+    const { school, name } = req.boardIdentity
+    const authorName = toBoolean(useRealName) && name ? name : null
 
     try {
         const conn = await db.promise()
         await conn.query(
             'INSERT INTO board_messages (school, content, author_name, created_at) VALUES (?, ?, ?, NOW())',
-            [school, content, author_name || null]
+            [school, sanitizedContent, authorName]
         )
-        res.json({ success: true, message: '留言成功' })
+        res.json({
+            success: true,
+            message: '留言成功',
+            board_identity: buildBoardIdentityResponse(req.boardIdentity, req.boardToken)
+        })
     } catch (err) {
         console.error('留言錯誤:', err)
         res.status(500).json({ error: '伺服器錯誤' })
@@ -544,14 +1043,28 @@ app.get('/board-with-replies', async (req, res) => {
 })
 
 // 匿名留言板：留言按讚
-app.post('/board-like', async (req, res) => {
-    const { message_id } = req.body
-    if (!message_id) return res.status(400).json({ error: '缺少 message_id' })
+app.post('/board-like', requireBoardAuth, async (req, res) => {
+    const messageId = Number(req.body?.message_id)
+    if (!Number.isInteger(messageId)) {
+        return res.status(400).json({ error: '缺少 message_id' })
+    }
 
     try {
         const conn = await db.promise()
-        await conn.query('UPDATE board_messages SET likes = likes + 1 WHERE id = ?', [message_id])
-        res.json({ success: true })
+        const [updateResult] = await conn.query('UPDATE board_messages SET likes = likes + 1 WHERE id = ?', [messageId])
+
+        if (!updateResult?.affectedRows) {
+            return res.status(404).json({ error: '留言不存在' })
+        }
+
+        const [rows] = await conn.query('SELECT likes FROM board_messages WHERE id = ?', [messageId])
+        const likes = rows?.[0]?.likes ?? null
+
+        res.json({
+            success: true,
+            likes,
+            board_identity: buildBoardIdentityResponse(req.boardIdentity, req.boardToken)
+        })
     } catch (err) {
         console.error('按讚錯誤:', err)
         res.status(500).json({ error: '伺服器錯誤' })
@@ -559,19 +1072,27 @@ app.post('/board-like', async (req, res) => {
 })
 
 //匿名留言板：發送回覆
-app.post('/board-reply', async (req, res) => {
-    const { message_id, school, content, author_name } = req.body
-    if (!message_id || !school || !content) {
+app.post('/board-reply', requireBoardAuth, async (req, res) => {
+    const messageId = Number(req.body?.message_id)
+    const sanitizedContent = safeTrim(req.body?.content)
+
+    if (!Number.isInteger(messageId) || !sanitizedContent) {
         return res.status(400).json({ error: '缺少必要欄位' })
     }
+
+    const { school, name } = req.boardIdentity
+    const authorName = toBoolean(req.body?.useRealName) && name ? name : null
 
     try {
         const conn = await db.promise()
         await conn.query(
             'INSERT INTO board_replies (message_id, school, content, author_name) VALUES (?, ?, ?, ?)',
-            [message_id, school, content, author_name || null]
+            [messageId, school, sanitizedContent, authorName]
         )
-        res.json({ success: true })
+        res.json({
+            success: true,
+            board_identity: buildBoardIdentityResponse(req.boardIdentity, req.boardToken)
+        })
     } catch (err) {
         console.error('回覆錯誤:', err)
         res.status(500).json({ error: '伺服器錯誤' })

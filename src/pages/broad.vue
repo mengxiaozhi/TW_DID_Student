@@ -1,10 +1,12 @@
 <template>
     <div class="board-page min-h-screen bg-slate-50">
-        <section class="relative overflow-hidden bg-gradient-to-br from-white via-[#f3f8fc] to-[#e6f0f8] border-b border-slate-200/60 pb-24">
+        <section
+            class="relative overflow-hidden bg-gradient-to-br pb-24">
             <div class="hero-intro py-10 md:py-14">
-                <div class="space-y-6">
-                    <span class="hero-badge">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="space-y-6 text-center xl:text-left">
+                    <span class="hero-badge mx-auto xl:mx-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
                         校園匿名交流
@@ -13,12 +15,13 @@
                         <h1 class="text-3xl md:text-4xl font-bold text-slate-900 leading-snug">
                             驗證後再發聲，打造可信賴的 <span class="text-primary">匿名留言板</span>
                         </h1>
-                        <p class="text-slate-600 text-base md:text-lg leading-relaxed max-w-2xl">
+                        <p class="text-slate-600 text-base md:text-lg leading-relaxed max-w-2xl mx-auto xl:mx-0">
                             DID 驗證與留言系統整合於同一個體驗，分享真實觀點同時保留匿名，讓每一次校園交流都更安全、更具影響力。
                         </p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-3">
-                        <button class="btn btn-primary" @click="verifiedSchool ? scrollToCompose() : (showVerificationModal = true)">
+                    <div class="hero-actions justify-center xl:justify-start">
+                        <button class="btn btn-primary"
+                            @click="verifiedSchool ? scrollToCompose() : (showVerificationModal = true)">
                             {{ verifiedSchool ? '撰寫留言' : '立即完成驗證' }}
                         </button>
                         <button class="btn btn-outline" @click="openSearchPanel">
@@ -29,7 +32,7 @@
                         </button>
                     </div>
                 </div>
-
+                <!--
                 <div class="hero-grid mt-8">
                     <div class="stat-card">
                         <p class="text-sm text-slate-600">已載入留言</p>
@@ -53,6 +56,7 @@
                         <p class="text-xs text-slate-500 mt-1">{{ verificationDetail }}</p>
                     </div>
                 </div>
+                            -->
             </div>
         </section>
 
@@ -65,7 +69,8 @@
                                 <h2 class="text-xl font-semibold text-slate-900">分享你的觀點</h2>
                                 <p class="text-sm text-slate-500">完成 DID 驗證後即可匿名或實名留言</p>
                             </div>
-                            <button v-if="verifiedSchool" @click="logout" class="btn btn-outline btn-sm whitespace-nowrap">
+                            <button v-if="verifiedSchool" @click="logout"
+                                class="btn btn-outline btn-sm whitespace-nowrap">
                                 登出
                             </button>
                         </header>
@@ -73,22 +78,28 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <span v-if="verifiedSchool"
                                 class="inline-flex items-center gap-2 rounded-full bg-primary/10 text-secondary text-xs font-semibold px-3 py-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
                                 </svg>
                                 {{ verifiedSchool }}
                             </span>
                             <span v-else
                                 class="inline-flex items-center gap-2 rounded-full bg-amber-100 text-amber-700 text-xs font-semibold px-3 py-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 尚未驗證
                             </span>
                             <span v-if="verifiedName"
                                 class="inline-flex items-center gap-2 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1.5">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>
                                 {{ verifiedName }}
                             </span>
@@ -103,9 +114,12 @@
                         <div v-if="!verifiedSchool"
                             class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl px-4 py-4">
                             <div class="flex items-start gap-3">
-                                <div class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                <div
+                                    class="h-10 w-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
                                 </div>
                                 <div>
@@ -127,7 +141,8 @@
                                 class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/80 border border-slate-200 rounded-2xl px-4 py-3">
                                 <div class="text-xs text-slate-600 space-y-1">
                                     <p v-if="verifiedSchool" class="font-medium text-slate-700">
-                                        {{ useRealName && verifiedName ? `${verifiedName}｜${verifiedSchool}` : `${verifiedSchool}｜匿名發布` }}
+                                        {{ useRealName && verifiedName ? `${verifiedName}｜${verifiedSchool}` :
+                                            `${verifiedSchool}｜匿名發布` }}
                                     </p>
                                     <p v-else class="font-medium text-slate-600">完成驗證後即可留言</p>
                                     <p class="text-[11px] text-slate-500">支援貼上連結、#標籤 與圖片網址展示。</p>
@@ -135,8 +150,10 @@
                                 <button type="submit" :disabled="submitting || !newMessage.trim() || !verifiedSchool"
                                     class="btn btn-primary min-h-[44px] px-5">
                                     <span v-if="submitting" class="flex items-center gap-2">
-                                        <svg class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <svg class="h-4 w-4 animate-spin text-white" xmlns="http://www.w3.org/2000/svg"
+                                            fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor"
                                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
                                             </path>
@@ -150,9 +167,12 @@
                             <div v-if="!verifiedSchool"
                                 class="absolute inset-0 rounded-2xl bg-white/60 backdrop-blur-[1px] flex items-center justify-center cursor-not-allowed"
                                 @click="showVerificationModal = true">
-                                <div class="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm text-slate-700 shadow-md">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                <div
+                                    class="flex items-center gap-2 rounded-full bg-white/90 px-4 py-2 text-sm text-slate-700 shadow-md">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                                     </svg>
                                     點擊以驗證身份
                                 </div>
@@ -161,7 +181,8 @@
                     </section>
 
                     <section class="surface p-0">
-                        <header class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-b border-slate-200 px-6 py-5">
+                        <header
+                            class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between border-b border-slate-200 px-6 py-5">
                             <div>
                                 <h2 class="text-lg font-semibold text-slate-900">最新留言</h2>
                                 <p class="text-sm text-slate-500">即時收錄校園交流</p>
@@ -182,8 +203,10 @@
 
                             <div v-else-if="messages.length === 0"
                                 class="text-center bg-slate-50 rounded-2xl p-12 border border-dashed border-slate-200">
-                                <div class="bg-white rounded-full w-24 h-24 mx-auto mb-4 flex items-center justify-center shadow-inner">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <div
+                                    class="bg-white rounded-full w-24 h-24 mx-auto mb-4 flex items-center justify-center shadow-inner">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-slate-300" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                             d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                     </svg>
@@ -198,14 +221,18 @@
                                     <div class="flex items-start gap-3">
                                         <div v-if="msg.author_name"
                                             class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
                                         <div v-else
                                             class="h-10 w-10 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center flex-shrink-0 shadow-sm">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                             </svg>
                                         </div>
                                         <div class="flex-1">
@@ -214,9 +241,11 @@
                                                     <span v-if="msg.author_name"
                                                         class="text-sm font-medium text-secondary flex items-center gap-1">
                                                         {{ msg.author_name }}
-                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5 text-primary"
-                                                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                            class="h-3.5 w-3.5 text-primary" fill="none"
+                                                            viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2"
                                                                 d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                                                         </svg>
                                                     </span>
@@ -226,7 +255,8 @@
                                                         {{ msg.school }}
                                                     </span>
                                                 </div>
-                                                <span class="text-xs text-slate-400">{{ formatTime(msg.created_at) }}</span>
+                                                <span class="text-xs text-slate-400">{{ formatTime(msg.created_at)
+                                                }}</span>
                                             </div>
 
                                             <p class="mt-3 text-slate-700 whitespace-pre-wrap break-words leading-relaxed"
@@ -238,23 +268,24 @@
                                                         class="flex items-center gap-1.5 hover:text-primary transition group">
                                                         <div
                                                             class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                                     stroke-width="2"
                                                                     d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                                                             </svg>
                                                         </div>
                                                         <span class="hidden md:block">讚同</span>
-                                                        <span class="text-secondary font-medium">({{ msg.likes || 0 }})</span>
+                                                        <span class="text-secondary font-medium">({{ msg.likes || 0
+                                                        }})</span>
                                                     </button>
                                                     <button
                                                         @click.stop="verifiedSchool ? (msg.showReplyBox = !msg.showReplyBox) : showVerificationModal = true"
                                                         class="flex items-center gap-1.5 hover:text-primary transition group">
                                                         <div
                                                             class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                                     stroke-width="2"
                                                                     d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
@@ -266,8 +297,8 @@
                                                         class="flex items-center gap-1.5 hover:text-primary transition group">
                                                         <div
                                                             class="p-1.5 rounded-full bg-slate-50 group-hover:bg-primary/10 transition">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4"
+                                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                                     stroke-width="2"
                                                                     d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
@@ -296,15 +327,16 @@
                                                         {{ r.author_name || '匿名用戶｜' + r.school }}
                                                     </div>
                                                     <div class="text-slate-600 mt-1">{{ r.content }}</div>
-                                                    <div class="text-xs text-slate-400 mt-1">{{ formatTime(r.created_at) }}</div>
+                                                    <div class="text-xs text-slate-400 mt-1">{{ formatTime(r.created_at)
+                                                    }}</div>
                                                 </div>
                                                 <button v-if="msg.replies.length > 3" @click.stop="openPreview(msg)"
                                                     class="text-xs text-primary hover:underline flex items-center gap-1">
                                                     <span>查看全部 {{ msg.replies.length }} 則回覆</span>
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                                         viewBox="0 0 24 24" stroke="currentColor">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                            d="M9 5l7 7-7 7" />
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                            stroke-width="2" d="M9 5l7 7-7 7" />
                                                     </svg>
                                                 </button>
                                             </div>
@@ -326,8 +358,7 @@
                 </div>
 
                 <div class="space-y-6">
-                    <section ref="searchSection"
-                        class="surface p-6 space-y-6">
+                    <section ref="searchSection" class="surface p-6 space-y-6">
                         <div class="space-y-1">
                             <h3 class="text-lg font-semibold text-slate-900">快速搜尋</h3>
                             <p class="text-sm text-slate-500">輸入關鍵字或變更排序條件</p>
@@ -345,8 +376,7 @@
                                     class="w-full rounded-xl border border-slate-200 py-2.5 pr-3 pl-9 text-sm placeholder-slate-400 transition focus:border-primary/40 focus:ring-2 focus:ring-primary/20" />
                             </div>
                             <div class="flex flex-wrap gap-2">
-                                <button @click="fetchMessages"
-                                    class="btn btn-primary btn-sm">
+                                <button @click="fetchMessages" class="btn btn-primary btn-sm">
                                     套用搜尋
                                 </button>
                                 <button v-if="searchTerm" @click="clearSearch"
@@ -416,8 +446,7 @@
         <div v-if="showMobileSearch"
             class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex justify-center items-center p-4 sm:hidden">
             <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-5 relative">
-                <button @click="closeMobileSearch"
-                    class="absolute top-3 right-3 text-slate-400 hover:text-slate-600">
+                <button @click="closeMobileSearch" class="absolute top-3 right-3 text-slate-400 hover:text-slate-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -475,10 +504,8 @@
 
         <div v-if="showPreviewModal"
             class="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 flex items-center justify-center p-4 overflow-y-auto">
-            <div
-                class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 relative space-y-6">
-                <button @click="closePreview"
-                    class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 relative space-y-6">
+                <button @click="closePreview" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -499,8 +526,10 @@
                         <div class="flex-1">
                             <div class="flex flex-wrap items-center gap-2 justify-between">
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <span class="text-sm font-semibold text-secondary">{{ previewMessage?.author_name || '匿名用戶' }}</span>
-                                    <span class="bg-primary/10 text-secondary text-xs px-2.5 py-0.5 rounded-full font-medium">
+                                    <span class="text-sm font-semibold text-secondary">{{ previewMessage?.author_name ||
+                                        '匿名用戶' }}</span>
+                                    <span
+                                        class="bg-primary/10 text-secondary text-xs px-2.5 py-0.5 rounded-full font-medium">
                                         {{ previewMessage?.school }}
                                     </span>
                                 </div>
@@ -516,7 +545,8 @@
                     <button @click="previewMessage && handleLike(previewMessage)"
                         class="flex items-center gap-2 text-sm text-slate-500 hover:text-primary transition">
                         <div class="p-2 rounded-full bg-slate-100 hover:bg-primary/10 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
                             </svg>
@@ -526,7 +556,8 @@
                     <button @click="previewMessage?.id && shareMessage(previewMessage.id)"
                         class="flex items-center gap-2 text-sm text-slate-500 hover:text-primary transition">
                         <div class="p-2 rounded-full bg-slate-100 hover:bg-primary/10 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                             </svg>
@@ -549,8 +580,7 @@
                         <textarea v-model="previewMessage.replyContent" rows="2"
                             class="w-full p-4 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-primary/30 focus:border-primary outline-none transition mb-2"
                             placeholder="輸入回覆內容..."></textarea>
-                        <button @click="submitReply(previewMessage)"
-                            class="btn btn-primary btn-sm">
+                        <button @click="submitReply(previewMessage)" class="btn btn-primary btn-sm">
                             發佈回覆
                         </button>
                     </div>
@@ -572,8 +602,8 @@
                         </div>
                     </div>
                     <div v-else class="text-center py-8 text-slate-400 bg-slate-50 rounded-xl">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-slate-300"
-                            fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mx-auto mb-2 text-slate-300" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
                                 d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
                         </svg>
@@ -664,7 +694,8 @@
 
         <button v-show="showBackToTop" @click="scrollToTop"
             class="fixed bottom-5 right-5 z-50 bg-primary text-white rounded-full p-3 shadow-lg hover:bg-primary/80 transition">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" />
             </svg>
         </button>
@@ -689,6 +720,167 @@
     const showVerificationModal = ref(false)
     const verifyMode = ref('anonymous')
     const useRealName = ref(false)
+
+    const BOARD_TOKEN_STORAGE_KEY = 'chihlee_board_jwt'
+    const boardToken = ref('')
+    const boardTokenExpiry = ref(null)
+    let authErrorNotified = false
+
+    const clearBoardSession = () => {
+        boardToken.value = ''
+        boardTokenExpiry.value = null
+        verifiedSchool.value = ''
+        verifiedName.value = ''
+        useRealName.value = false
+        if (typeof window !== 'undefined') {
+            try {
+                window.localStorage.removeItem(BOARD_TOKEN_STORAGE_KEY)
+            } catch (err) {
+                console.warn('無法移除留言板 Token', err)
+            }
+        }
+    }
+
+    const decodeBoardToken = (token) => {
+        if (!token) return null
+        try {
+            const parts = token.split('.')
+            if (parts.length < 2) return null
+            const base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/')
+            const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4)
+
+            const toBytes = () => {
+                if (typeof window !== 'undefined' && typeof window.atob === 'function') {
+                    const binary = window.atob(padded)
+                    const bytes = new Uint8Array(binary.length)
+                    for (let i = 0; i < binary.length; i += 1) {
+                        bytes[i] = binary.charCodeAt(i)
+                    }
+                    return bytes
+                }
+                if (typeof Buffer !== 'undefined') {
+                    return Uint8Array.from(Buffer.from(padded, 'base64'))
+                }
+                throw new Error('No available base64 decoder')
+            }
+
+            const bytes = toBytes()
+            let jsonText
+
+            if (typeof TextDecoder !== 'undefined') {
+                jsonText = new TextDecoder('utf-8', { fatal: false }).decode(bytes)
+            } else {
+                // fallback：使用 escape 轉換避免亂碼
+                let binary = ''
+                for (let i = 0; i < bytes.length; i += 1) {
+                    binary += String.fromCharCode(bytes[i])
+                }
+                jsonText = decodeURIComponent(escape(binary))
+            }
+
+            return JSON.parse(jsonText)
+        } catch (err) {
+            console.warn('解析留言板 Token 失敗', err)
+            return null
+        }
+    }
+
+    const applyBoardIdentity = ({ token, identity, preserveRealNamePreference = false }) => {
+        if (!token || !identity?.school) {
+            clearBoardSession()
+            return
+        }
+
+        boardToken.value = token
+        boardTokenExpiry.value = identity.expires_at || null
+        verifiedSchool.value = identity.school
+        verifiedName.value = identity.name || ''
+
+        if (!preserveRealNamePreference) {
+            useRealName.value = identity.mode === 'realname' && Boolean(identity.name)
+        } else if (!identity.name) {
+            useRealName.value = false
+        }
+
+        if (typeof window !== 'undefined') {
+            try {
+                window.localStorage.setItem(BOARD_TOKEN_STORAGE_KEY, token)
+            } catch (err) {
+                console.warn('無法儲存留言板 Token', err)
+            }
+        }
+    }
+
+    const restoreBoardSession = () => {
+        if (typeof window === 'undefined') return
+        const stored = window.localStorage.getItem(BOARD_TOKEN_STORAGE_KEY)
+        if (!stored) return
+
+        const payload = decodeBoardToken(stored)
+        if (!payload?.school) {
+            window.localStorage.removeItem(BOARD_TOKEN_STORAGE_KEY)
+            return
+        }
+
+        if (payload.exp && payload.exp * 1000 <= Date.now()) {
+            window.localStorage.removeItem(BOARD_TOKEN_STORAGE_KEY)
+            return
+        }
+
+        applyBoardIdentity({
+            token: stored,
+            identity: {
+                school: payload.school,
+                name: payload.name || '',
+                mode: payload.mode || (payload.name ? 'realname' : 'anonymous'),
+                expires_at: payload.exp ? payload.exp * 1000 : null
+            }
+        })
+    }
+
+    const handleBoardRequestError = (error) => {
+        if (error?.response?.status === 401) {
+            clearBoardSession()
+            showVerificationModal.value = true
+            verifyFailed.value = false
+
+            if (!authErrorNotified) {
+                authErrorNotified = true
+                alert('身份驗證已過期，請重新驗證')
+                setTimeout(() => { authErrorNotified = false }, 1500)
+            }
+        }
+    }
+
+    const syncIdentityFromResponse = (data) => {
+        if (data?.board_identity && boardToken.value) {
+            applyBoardIdentity({
+                token: boardToken.value,
+                identity: data.board_identity,
+                preserveRealNamePreference: true
+            })
+        }
+    }
+
+    const boardPost = async (url, payload = {}) => {
+        if (!boardToken.value) {
+            showVerificationModal.value = true
+            throw new Error('缺少身份驗證')
+        }
+
+        try {
+            const res = await axios.post(url, payload, {
+                headers: {
+                    Authorization: `Bearer ${boardToken.value}`
+                }
+            })
+            syncIdentityFromResponse(res.data)
+            return res
+        } catch (error) {
+            handleBoardRequestError(error)
+            throw error
+        }
+    }
 
     const newMessage = ref('')
     const messages = ref([])
@@ -768,6 +960,7 @@
     }
 
     onMounted(() => {
+        restoreBoardSession()
         fetchMessages()
         window.addEventListener('scroll', handleScroll)
     })
@@ -824,9 +1017,7 @@
         verifyFailed.value = false
         tid.value = crypto.randomUUID()
         verificationCountdown.value = 60
-        verifiedSchool.value = ''
-        verifiedName.value = ''
-        useRealName.value = false
+        clearBoardSession()
 
         try {
             const endpoint = verifyMode.value === 'anonymous'
@@ -870,19 +1061,20 @@
                 clearTimeout(verifyTimeout)
                 clearInterval(countdownInterval.value)
 
-                const claims = result.data.data?.[0]?.claims || []
-                const schoolClaim = claims.find(c => c.ename === 'school_CN')
-                const nameClaim = claims.find(c => c.ename === 'name')
+                const token = result.data.board_jwt
+                const identity = result.data.board_identity
 
-                verifiedSchool.value = schoolClaim?.value || '未知學校'
-
-                if (verifyMode.value === 'realname') {
-                    verifiedName.value = nameClaim?.value || ''
-                    useRealName.value = !!verifiedName.value
+                if (token && identity?.school) {
+                    applyBoardIdentity({ token, identity })
+                    showVerificationModal.value = false
+                    fetchMessages()
+                } else {
+                    verifyFailed.value = true
+                    const errorMessage = result.data.board_jwt_error
+                        ? '無法建立留言身份，請稍後再試'
+                        : '未取得驗證資訊，請重新驗證'
+                    alert(errorMessage)
                 }
-
-                showVerificationModal.value = false
-                fetchMessages()
             } else if (result.data.verify_result === false) {
                 // 明確失敗
                 clearInterval(verifyInterval)
@@ -989,25 +1181,25 @@
 
     const likeMessage = async (id) => {
         try {
-            const res = await axios.post(`https://api.xiaozhi.moe/chihlee/board-like`, { message_id: id })
+            const res = await boardPost(`https://api.xiaozhi.moe/chihlee/board-like`, { message_id: id })
 
             const target = messages.value.find(m => m.id === id)
             if (target) {
-                // 優先使用後端回傳值
                 if (res.data?.likes !== undefined) {
                     target.likes = res.data.likes
                 } else {
-                    // 或前端自行加一
                     target.likes = (target.likes || 0) + 1
                 }
             }
         } catch (e) {
-            console.error('按讚失敗', e)
+            if (e?.message !== '缺少身份驗證' && e?.response?.status !== 401) {
+                console.error('按讚失敗', e)
+            }
         }
     }
 
     const handleLike = async (msg) => {
-        if (!verifiedSchool.value) {
+        if (!verifiedSchool.value || !boardToken.value) {
             showVerificationModal.value = true
             return
         }
@@ -1017,35 +1209,48 @@
 
     const submitReply = async (msg) => {
         const content = msg.replyContent?.trim()
-        if (!content || !verifiedSchool.value) return
+        if (!content || !verifiedSchool.value || !boardToken.value) {
+            if (!verifiedSchool.value || !boardToken.value) {
+                showVerificationModal.value = true
+            }
+            return
+        }
         try {
-            await axios.post(`https://api.xiaozhi.moe/chihlee/board-reply`, {
+            await boardPost(`https://api.xiaozhi.moe/chihlee/board-reply`, {
                 message_id: msg.id,
-                school: verifiedSchool.value,
                 content,
-                author_name: useRealName.value && verifiedName.value ? verifiedName.value : undefined
+                useRealName: useRealName.value && Boolean(verifiedName.value)
             })
             msg.replyContent = ''
             msg.showReplyBox = false
             fetchMessages()
         } catch (e) {
-            alert('回覆失敗')
+            if (e?.response?.status !== 401) {
+                alert('回覆失敗')
+            }
         }
     }
 
     const submitMessage = async () => {
-        if (!newMessage.value.trim() || !verifiedSchool.value) return
+        const content = newMessage.value.trim()
+        if (!content || !verifiedSchool.value || !boardToken.value) {
+            if (!verifiedSchool.value || !boardToken.value) {
+                showVerificationModal.value = true
+            }
+            return
+        }
         submitting.value = true
         try {
-            await axios.post(`https://api.xiaozhi.moe/chihlee/board-message`, {
-                school: verifiedSchool.value,
-                content: newMessage.value.trim(),
-                author_name: useRealName.value && verifiedName.value ? verifiedName.value : undefined
+            await boardPost(`https://api.xiaozhi.moe/chihlee/board-message`, {
+                content,
+                useRealName: useRealName.value && Boolean(verifiedName.value)
             })
             newMessage.value = ''
             await fetchMessages()
         } catch (e) {
-            alert('留言發佈失敗，請稍後重試')
+            if (e?.response?.status !== 401) {
+                alert('留言發佈失敗，請稍後重試')
+            }
         } finally {
             submitting.value = false
         }
@@ -1063,6 +1268,7 @@
     }
 
     const logout = () => {
+        clearBoardSession()
         location.reload()
     }
 

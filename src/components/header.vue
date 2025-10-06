@@ -17,7 +17,7 @@
                 <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
                     <router-link to="/" class="hover:text-primary transition">首頁</router-link>
                     <router-link to="/broad" class="hover:text-primary transition">匿名留言板</router-link>
-                    <!-- <router-link to="/vote" class="hover:text-primary transition">校園投票</router-link>-->
+                    <router-link to="/vote" class="hover:text-primary transition">校園投票</router-link>
                     <router-link to="/about" class="hover:text-primary transition">關於專案</router-link>
                 </nav>
 
@@ -47,8 +47,8 @@
                     class="px-3 py-1.5 rounded-full border border-slate-200 bg-white shadow-sm">首頁</router-link>
                 <router-link to="/broad"
                     class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">匿名留言板</router-link>
-            <!-- <router-link to="/vote"
-                    class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">校園投票</router-link> -->
+                <router-link to="/vote"
+                    class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">校園投票</router-link>
                 <router-link to="/about"
                     class="px-3 py-1.5 rounded-full border border-transparent bg-slate-100">關於</router-link>
             </div>

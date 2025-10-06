@@ -57,3 +57,10 @@ export const checkEmailVerification = (email) => {
         '查詢信箱驗證狀態失敗'
     )
 }
+
+export const fetchVoteStats = () => {
+    return request(
+        () => client.get('/vote-stats'),
+        '取得投票統計失敗'
+    )
+}

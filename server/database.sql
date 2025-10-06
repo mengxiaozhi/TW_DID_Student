@@ -36,3 +36,29 @@ CREATE TABLE board_replies (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (message_id) REFERENCES board_messages(id) ON DELETE CASCADE
 );
+
+-- 投票：領票紀錄
+CREATE TABLE vote_records (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_number VARCHAR(100),
+    school VARCHAR(100),
+    transaction_id VARCHAR(120),
+    ballot_token_hash CHAR(64),
+    card_hash CHAR(64) NOT NULL UNIQUE,
+    verified_at DATETIME,
+    has_voted TINYINT(1) DEFAULT 0,
+    voted_at DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 投票：匿名投票紀錄
+CREATE TABLE anonymous_votes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    transaction_id VARCHAR(120) NOT NULL,
+    ballot_token_hash CHAR(64) NOT NULL,
+    school VARCHAR(100),
+    option_selected VARCHAR(100) NOT NULL,
+    voted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    vote_record_id INT,
+    FOREIGN KEY (vote_record_id) REFERENCES vote_records(id)
+);

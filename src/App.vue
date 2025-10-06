@@ -25,7 +25,7 @@
 
 
 <template>
-    <div class="app-shell">
+    <div class="app-shell" style="background: linear-gradient(180deg, #f0f6fb 0%, #f7f9fc 50%, #ffffff 100%);">
         <headerVue />
         <!--<banner />-->
         <RouterView v-slot="{ Component, route: viewRoute }">
